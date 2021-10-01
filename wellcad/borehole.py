@@ -1,10 +1,10 @@
-from pywellcad.log import *
-from pywellcad.depth import *
-from pywellcad.header import *
-from pywellcad.title import *
-from pywellcad.page import *
-from pywellcad.workspace import *
-from pywellcad.odbc import *
+from .log import Log
+from .depth import Depth
+from .header import Header
+from .title import Title
+from .page import Page
+from .workspace import Workspace
+from .odbc import Odbc
 
 
 class Borehole:
@@ -164,7 +164,7 @@ class Borehole:
 	def get_odbc(self):
 		"""Returns an object to access the ODBC module."""
 		obj_odbc = self.dispatch.ODBC
-		return ODBC(obj_odbc) 
+		return Odbc(obj_odbc) 
 
 
 	def connect_to(self, server_name, server_address, port_number="1600"):

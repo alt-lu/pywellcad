@@ -1,4 +1,4 @@
-class ODBC:
+class Odbc:
 
 	def __init__(self, odbc_dispatch):
 		"""Creates the odbc object.
