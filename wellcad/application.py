@@ -123,8 +123,8 @@ class Application:
         Closes the borehole document defined by the zero based index.
         If no index is specified the last opened borehole document will
         be closed. The SaveAs dialog box will be displayed if the
-        prompt_for_saving isset to True (default). To close the borehole
-        document without saving set the flag to False.
+        prompt_for_saving flag is set to True (default). To close the
+        borehole document without saving set the flag to False.
         
         Arguments:
             prompt_for_saving -- (Optional) Boolean.
@@ -136,13 +136,14 @@ class Application:
         self.dispatch.CloseBorehole(prompt_for_saving, index)
 		
 		
-    def get_borehole_count(self):
+    @property
+    def borehole_count(self):
         """Returns the number of borehole documents open in WellCAD."""
         return self.dispatch.NbOfDocuments
 		
 	
     def file_import(self,
-                    filename = "",
+                    file_name = "",
                     prompt_user = True,
                     config_file = "",
                     log_file = ""):
@@ -155,7 +156,7 @@ class Application:
         is left blank the File Open dialog will be displayed. 
 
         Arguments:
-           filename    -- (Optional) Path and name of the file to import.
+           file_name    -- (Optional) Path and name of the file to import.
            prompt_user -- (Optional) Boolean to display the import
                           dialog boxes.
            config_file -- (optional) Path and filename of the
@@ -168,14 +169,14 @@ class Application:
         """
 
         self.dispatch._FlagAsMethod("FileImport")
-        obBhole = self.dispatch.FileImport(filename,
+        obBhole = self.dispatch.FileImport(file_name,
                                            prompt_user,
                                            config_file,
                                            log_file)
         return Borehole(obBhole)
 		
 		
-    def multi_file_import(self, filename = "",
+    def multi_file_import(self, file_name = "",
                           prompt_user = True,
                           config_file = "",
                           log_file = ""):
@@ -189,7 +190,7 @@ class Application:
         blank the File Open dialog will be displayed.
 
         Arguments:
-           filename    -- (Optional) Comma separated list of input
+           file_name    -- (Optional) Comma separated list of input
                           files (path and file name). 
            prompt_user -- (Optional) Boolean to display the import
                           dialog boxes.
@@ -203,7 +204,7 @@ class Application:
         """
 
         self.dispatch._FlagAsMethod("MultiFileImport")
-        obBhole = self.dispatch.MultiFileImport(filename,
+        obBhole = self.dispatch.MultiFileImport(file_name,
                                                 prompt_user,
                                                 config_file,
                                                 log_file)

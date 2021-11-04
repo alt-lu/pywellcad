@@ -9,8 +9,8 @@ class Header:
 		
 		self.dispatch = header_dispatch
 
-
-	def get_nb_of_items(self):
+	@property
+	def nb_of_items(self):
 		"""Number of dynamic text fields in the entire header."""
 		return self.dispatch.NbOfItems
 	
@@ -54,3 +54,29 @@ class Header:
 		"""
         
 		return self.dispatch.ItemName(item_index)
+
+
+	def allow_export_header(self, enable, password):
+		"""Changes the protection status to export the header design
+		
+			Arguments:
+				enable -- Set the argument to True to protect the
+						  header export.
+				password -- String of the password used to protect
+							the header.
+		"""
+
+		self.dispatch.AllowExportHeader(enable, password)
+
+
+	def allow_export_trailer(self, enable, password):
+		"""Changes the protection status to export the trailer design
+		
+			Arguments:
+				enable -- Set the argument to True to protect the
+						  header export.
+				password -- String of the password used to protect
+							the header.
+		"""
+
+		self.dispatch.AllowExportTrailer(enable, password)

@@ -10,12 +10,14 @@ class Depth:
 		self.dispatch = depth_dispatch
 	
 
-	def get_unit(self):
+	@property
+	def unit(self):
 		"""Returns 0 = meter or 1 = feet."""
 		return self.dispatch.Unit
 
 
-	def set_unit(self, unit):
+	@unit.setter
+	def unit(self, unit):
 		"""Sets the depth axis unit.
 		
 		Arguments:
@@ -25,7 +27,8 @@ class Depth:
 		self.dispatch.Unit = unit
 
 
-	def is_used_as_depth_scale(self):
+	@property
+	def depth_reference(self):
 		"""Status of the documents reference axis.
 
 		Returns:
@@ -35,7 +38,8 @@ class Depth:
 		return self.dispatch.UsedAsDepthScale
 
 	
-	def enable_as_depth_scale(self, enable):
+	@depth_reference.setter
+	def depth_reference(self, enable):
 		"""Sets the documents reference axis scale status.
 		
 		Arguments:
@@ -46,12 +50,14 @@ class Depth:
 		self.dispatch.UsedAsDepthScale = enable
 
 
-	def get_scale(self):
+	@property
+	def scale(self):
 		"""Returns 100 for a 1:100 depth scale."""
 		return self.dispatch.Scale
 
 
-	def set_scale(self, scale):
+	@scale.setter
+	def scale(self, scale):
 		"""Sets the depth axis scale.
 		
 		Arguments:
@@ -61,12 +67,14 @@ class Depth:
 		self.dispatch.Scale = scale
 
 
-	def get_decimals(self):
+	@property
+	def decimals(self):
 		"""Returns the number of decimals displayed for the depth."""
 		return self.dispatch.Decimals
 
 
-	def set_decimals(self, decimals):
+	@decimals.setter
+	def decimals(self, decimals):
 		"""Sets the number of decimals displayed in the depth axis.
 		
 		Arguments:
@@ -76,7 +84,8 @@ class Depth:
 		self.dispatch.Decimals = decimals
 	
 
-	def get_horizontal_grid_type(self):
+	@property
+	def horizontal_grid_type(self):
 		"""Returns the type of horizontal grid used.
 		
 		Returns:
@@ -88,7 +97,8 @@ class Depth:
 		return self.dispatch.HorizontalGrid
 
 
-	def set_horizontal_grid_type(self, grid_type):
+	@horizontal_grid_type.setter
+	def horizontal_grid_type(self, grid_type):
 		"""Sets the type of horiz. grid lines displayed.
 		
 		Arguments:
@@ -98,12 +108,14 @@ class Depth:
 		self.dispatch.HorizontalGrid = grid_type
 
 	
-	def get_horizontal_grid_spacing(self):
+	@property
+	def horizontal_grid_spacing(self):
 		"""Returns the spacing of horizontal grid lines."""
 		return self.dispatch.HorizontalGridSpacing
 
 
-	def set_horizontal_grid_spacing(self, grid_spacing):
+	@horizontal_grid_spacing.setter
+	def horizontal_grid_spacing(self, grid_spacing):
 		"""Sets the spacing of the horiz. grid lines displayed.
 		
 		Arguments:
@@ -123,12 +135,14 @@ class Depth:
 		self.dispatch.SetPosition(left_pos, right_pos)
 		
 		
-	def get_left_position(self):
+	@property
+	def left_position(self):
 		"""Returns the left border of the depth axis column."""
 		return self.dispatch.LeftPosition
 
 
-	def set_left_position(self, left_pos):
+	@left_position.setter
+	def left_position(self, left_pos):
 		"""Adjusts the left border of the depth axis column.
 		
 		Arguments:
@@ -137,12 +151,14 @@ class Depth:
 		self.dispatch.LeftPosition = left_pos
 
 
-	def get_right_position(self):
+	@property
+	def right_position(self):
 		"""Returns the right border of the depth axis column."""
 		return self.dispatch.RightPosition
 
 
-	def set_right_position(self, right_pos):
+	@right_position.setter
+	def right_position(self, right_pos):
 		"""Adjusts the right border of the depth axis column.
 		
 		Arguments:

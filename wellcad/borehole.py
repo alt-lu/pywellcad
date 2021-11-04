@@ -21,7 +21,14 @@ class Borehole:
 
 # Methods for general document handling
 
-	def set_name(self, name):
+	@property
+	def name(self):
+		"""Returns the title of a borehole document."""
+		return self.dispatch.Name
+
+
+	@name.setter	
+	def name(self, name):
 		"""Sets the title of a borehole document.
 		
 		Arguments:
@@ -31,24 +38,41 @@ class Borehole:
 		self.dispatch.Name = name
 
 
-	def get_name(self):
-		"""Returns the title of a borehole document."""
-		return self.dispatch.Name
-		
-		
-	def enable_auto_update(self, enable):
-		"""Enables/disables the automatic refresh of the screen.
+	@property
+	def version_major(self):
+		"""Returns the major version number of WellCAD."""
+		return self.dispatch.VersionMajor		
+
+
+	@property
+	def version_minor(self):
+		"""Returns the major version number of WellCAD."""
+		return self.dispatch.VersionMinor		
+
+
+	@property
+	def version_build(self):
+		"""Returns the build number of WellCAD."""
+		return self.dispatch.VersionBuild
+
+
+	@property
+	def auto_update(self):
+		"""Returns True if the auto update of the document is enabled."""
+		return self.dispatch.AutoUpdate
+
+
+	@auto_update.setter	
+	def auto_update(self, flag):
+		"""Sets the auto update status of the borehole document.
 		
 		Arguments:
-			enable -- Boolean enabling the auto refresh if set to True.
+			flag -- set to True to enable the auto update or tp False
+					to disable the automatic refresh.
+
 		"""
 
-		self.dispatch.AutoUpdate = enable		
-
-		
-	def is_auto_update_enabled(self):
-		"""Returns True if the automatic screen refresh is enabled."""
-		return self.dispatch.AutoUpdate
+		self.dispatch.AutoUpdate = flag
 
 
 	def refresh_window(self):
@@ -56,7 +80,7 @@ class Borehole:
 		self.dispatch.RefreshWindow()
 
 
-	def set_draft_mode(self, index):
+	def set_draft_mode(self, display_mode = 0):
 		"""Toggles the view of the borehole document.
 		
 		A borehole document can be displayed in the following modes:
@@ -65,13 +89,13 @@ class Borehole:
 		2 - Draft
 
 		Arguments:
-			index -- Integer specifying the document viewing mode
+			display_mode -- Integer specifying the document viewing mode
 		"""
 
-		self.dispatch.SetDraftMode(index)
+		self.dispatch.SetDraftMode(display_mode)
 
 
-	def minimize_window(self):
+	def minimize_document_window(self):
 		"""Shrinks the document window to an icon.
 		
 		Works only if document windows are not tabbed.
@@ -80,7 +104,7 @@ class Borehole:
 		self.dispatch.MinimizeWindow()
 
 	
-	def maximize_window(self):
+	def maximize_document_window(self):
 		"""Enlarges the document window to fit the WellCAD frame.
 		
 		Works only if document windows are not tabbed.
@@ -88,13 +112,13 @@ class Borehole:
 
 		self.dispatch.MaximizeWindow()
 		
-
-	def get_bottom_depth(self):
+	@property
+	def bottom_depth(self):
 		"""Returns the bottom of the document in actual depth units."""
 		return self.dispatch.BottomDepth
 
-
-	def get_top_depth(self):
+	@property
+	def top_depth(self):
 		"""Returns the top of the document in actual depth units."""
 		return self.dispatch.TopDepth
 
@@ -231,11 +255,11 @@ class Borehole:
 								 logfile)
 
 
-	def do_print(self,
-				 enable_dialog,
-				 top_depth,
-				 bottom_depth,
-				 nb_of_copies):
+	def print(self,
+			  enable_dialog,
+			  top_depth,
+			  bottom_depth,
+			  nb_of_copies):
 		"""Sends the current document to the printer.
 
 		If the print dialog box is displayed the user can select the
@@ -257,7 +281,8 @@ class Borehole:
 
 # Methods for general log handling
 
-	def get_nb_of_logs(self):
+	@property
+	def nb_of_logs(self):
 		"""Number of logs present in the borehole document."""
 		return self.dispatch.NbOfLogs
 
@@ -279,7 +304,7 @@ class Borehole:
 
 
 	def get_title(self, log_name):
-		"""Returns an object fr the tile of a log.
+		"""Returns an object for the tile of a log.
 
 		Arguments:
 			log_name -- Title of the log as shown in the propeties.
@@ -291,7 +316,7 @@ class Borehole:
 		return Title(obTitle)
 
 
-	def insert_new_log(self, log_type):
+	def new_log(self, log_type):
 		"""Creates a new log and log object.
 		
 		The log type that will be created depends on the
@@ -318,7 +343,8 @@ class Borehole:
 		22 - OLE Log
 		23 - Shading Log
 		24 - Marker Log
-		25 - Marker Log
+		25 - Breakout Log
+		26 - Bio Log
 		
 		Arguments:
 			log_type -- Integer specifying the type of log. 
@@ -365,18 +391,20 @@ class Borehole:
 		return Log(obLog)
 
 
-	def add_log(self, oblog_orig):
+	def copy_log(self, oblog):
 		"""Copy and pastes a log.
 		
 		Copies a log within the same or between two borehole documents.
 
 		Arguments:
-			oblog_orig -- An object of the log to copy.
+			oblog -- An object of the log to copy.
+
 		Returns:
 			An object of the copied log.
 		"""
 
-		oblog_copy = self.dispatch.AddLog(oblog_orig)
+		self.dispatch._FlagAsMethod("AddLog")
+		oblog_copy = self.dispatch.AddLog(oblog.dispatch)
 		return Log(oblog_copy)
 
 
@@ -503,7 +531,7 @@ class Borehole:
 
 
 	def merge_same_log_items(self, log):
-		"""Merges data intervals with same litho codes.
+		"""Merges data intervals with same litho codes or text.
 		
 		Arguments:
 			log -- Zero based index (integer) or title (string) of
@@ -534,7 +562,10 @@ class Borehole:
 						shift,
 						top_depth="",
 						bottom_depth=""):
-		"""Performs a bulk shift to all the data within the log.
+		"""Performs a bulk shift to all the log's data.
+
+		If top_depth and bottom_depth are specified the depth shift
+		will be restricted to this interval.
 
 		Arguments:
 			log -- Zero based index (integer) or title (string) of
@@ -607,7 +638,162 @@ class Borehole:
 
 # Common log processes
 
-	def normalize(self, log, prompt_user=True, config=""):
+	def filter_log(self, log, prompt_user=True, config=""):
+		"""Applies a user selected filter to Well Logs.
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+		
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			An object of the filtered log.
+		"""
+
+		self.dispatch._FlagAsMethod("FilterLog")
+		oblog = self.dispatch.FilterLog(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def filter_log_average(self, log, filter_width, circular_data = False, data_unit = "degrees"):
+		"""Applies an average filter to a well log.
+			
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			filter_width -- Interger defining the length of the filter
+						    window in samples.
+			circular_data -- Boolean defining whether the log contain angular data.
+			data_unit -- Either 'degrees' or 'radians'. 
+
+		Returns:
+			An object of the filtered log.
+		"""
+
+		# compose in-line parameter string
+		circular_data_flag = "no"
+		if circular_data:
+			circular_data_flag = "yes"
+		config = "FilterType=MovingAverage, MaxDepthRange=yes,\
+			      FilterWidth="+str(max(1,filter_width))\
+				  +",CircularData="+circular_data_flag\
+				  +",DataUnit="+data_unit
+		# call method
+		self.dispatch._FlagAsMethod("FilterLog")
+		oblog = self.dispatch.FilterLog(log, False, config)
+		return Log(oblog)
+
+
+	def filter_log_median(self, log, filter_width, circular_data = False, data_unit = "degrees"):
+		"""Applies a median filter to a well log.
+			
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			filter_width -- Interger defining the length of the filter
+						    window in samples.
+			circular_data -- True if the log contains angular data
+							 (default = False).
+			data_unit -- Either 'degrees' or 'radians'
+						 (default = 'degrees'). 
+
+		Returns:
+			An object of the filtered log.
+		"""
+
+		# compose in-line parameter string
+		circular_data_flag = "no"
+		if circular_data:
+			circular_data_flag = "yes"
+		config = "FilterType=Median, MaxDepthRange=yes,\
+			      FilterWidth="+str(max(1,filter_width))\
+				  +",CircularData="+circular_data_flag\
+				  +",DataUnit="+data_unit
+		# call method
+		self.dispatch._FlagAsMethod("FilterLog")
+		oblog = self.dispatch.FilterLog(log, False, config)
+		return Log(oblog)
+
+
+	def filter_log_weighted_ave(self, log, filter_width, circular_data = False, data_unit = "degrees"):
+		"""Applies a weighted average filter to a well log.
+			
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			filter_width -- Interger defining the length of the filter
+						    window in samples.
+			circular_data -- True if the log contains angular data
+							 (default = False).
+			data_unit -- Either 'degrees' or 'radians'
+						 (default = 'degrees'). 
+
+		Returns:
+			An object of the filtered log.
+		"""
+
+		# compose in-line parameter string
+		circular_data_flag = "no"
+		if circular_data:
+			circular_data_flag = "yes"
+		config = "FilterType=WeightedAverage, MaxDepthRange=yes,\
+			      FilterWidth="+str(max(1,filter_width))\
+				  +",CircularData="+circular_data_flag\
+				  +",DataUnit="+data_unit
+		# call method
+		self.dispatch._FlagAsMethod("FilterLog")
+		oblog = self.dispatch.FilterLog(log, False, config)
+		return Log(oblog)
+
+
+	def block_log(self, log, prompt_user=True, config=""):
+		"""Calculates statistics for log data per depth interval.
+		
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+		self.dispatch.BlockLog(log, prompt_user, config)
+
+
+	def multi_log_statistics(self, logs, prompt_user=True, config=""):
+		"""Calculates statistical values from multiple logs.
+		
+		Statistical values are derived from multiple logs at the
+		same depth.
+		E.g. an avege density from two density logs.
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation.
+
+		Arguments:
+			logs -- Title (string) or list of the log(s) to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+		"""
+
+		self.dispatch.ExtractWellLogStatistics(logs, prompt_user, config)
+
+
+	def normalize_perc_log(self, log, prompt_user=True, config=""):
 		"""Normalizes the data in a Percentage or Analysis Log.
 
 		For a full list of prcessing parameters please refer to the
@@ -617,11 +803,1918 @@ class Borehole:
 			log -- Zero based index (integer) or title (string) of
 				   the log to normalize.
 			prompt_user -- If set to False the processing parameters
-						   will be taken from config.
+						   will be taken from the config file/string.
 			config -- Path and name of the configuration file or
-					  parameter string.
+					  a parameter string.
 		
 		"""
 
-		self.dispatch.normalize(log, prompt_user, config)
+		self.dispatch.Normalize(log, prompt_user, config)
 
+
+	def resample_log(self, log, prompt_user=True, config=""):
+		"""Resamples a data set using the new sample step provided.
+		
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch._FlagAsMethod("ResampleLog")
+		oblog = self.dispatch.ResampleLog(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def interpolate_log(self, log, prompt_user=True, config=""):
+		"""Applies a linear interpolation across gaps in a data set.
+		
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			An object of the interpolated log.
+		"""
+
+		self.dispatch._FlagAsMethod("InterpolateLog")
+		oblog = self.dispatch.InterpolateLog(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def borehole_deviation(self, prompt_user=True, config=""):
+		"""Computes Azimuth, Tilt and RBR.
+		
+		The method uses accelerometer and inclinometer x,y,z components
+		of an orientation sensor to compute borhole azimuth, tilt and
+		relative bearing (RBR). The input logs are specified int the
+		config file or in-line as part of the config string.
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+		
+		self.dispatch.CalculateBoreholeDeviation(prompt_user, config)
+
+
+	def borehole_coordinates(self, prompt_user=True, config=""):
+		"""Creates Northing, Easting and TVD data.
+		
+		Using borehole azimuth and tilt as input data this method
+		calculates northing, easting and tvd coordinates and outputs
+		them in well / mud logs.
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation.
+
+		Arguments:
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch.CalculateBoreholeCoordinates(prompt_user, config)
+
+
+	def borehole_closure(self, prompt_user=True, config=""):
+		"""Derives closure distance, closure angle and dog-leg data.
+		
+		Using borehole azimuth, tilt, northing and easting as input
+		data this method calculates the drift distance (closure), 
+		drift angle (cllosure angle) and the dog-leg-severity and
+		outputs the data in well / mud logs.
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation.
+
+		Arguments:
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch.CalculateBoreholeClosure(prompt_user, config)
+
+
+	def elog_correction(self, prompt_user=True, config=""):
+		""" Environmental corrections for normal resisitivity data.
+		
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation.
+
+		Arguments:
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			An object of the last corrected log.
+		"""
+
+		self.dispatch._FlagAsMethod("ElogCorrection")
+		oblog = self.dispatch.ElogCorrection(prompt_user, config)
+		return Log(oblog)
+
+
+# Image & Structure logs processes
+	
+	def correct_image_traces(self, log):
+		""" Replaces NoData traces in an image log.
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+
+		"""
+
+		self.dispatch.CorrectBadTraces(log)
+
+	
+	def conditional_testing(self, log_if, log_then, prompt_user=True, config=""):
+		"""Applies If-Then-Else testing to image logs.
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation.
+
+		Arguments:
+			log_if -- Zero based index (integer) or title (string) of
+				   	  the log used for the If clause.
+			log_then -- Zero based index (integer) or title (string) of
+				   	  the log used for the Then clause.		 
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+		self.dispatch._FlagAsMethod("ApplyConditionalTesting")
+		oblog = self.dispatch.ApplyConditionalTesting(log_if, log_then, prompt_user, config)
+		return Log(oblog)
+
+
+	def filter_image(self, log, prompt_user=True, config=""):
+		"""Average, median and clipping filter for image logs
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			An object of the filtered image log.
+
+		"""
+		self.dispatch._FlagAsMethod("FilterImageLog")
+		oblog = self.dispatch.FilterImageLog(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def mirror_image(self, log):
+		"""Flips an image at the 180° position
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+
+		"""
+
+		self.dispatch._FlagAsMethod("MirrorImage")
+		self.dispatch.MirrorImage(log)
+
+
+	def rotate_image(self, log, prompt_user=True, config=""):
+		"""Rotates an image log by a fixed or log value.
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+		
+		"""
+
+		self.dispatch.RotateImage(log, prompt_user, config)
+
+
+	def orient_image_highside(self, log, prompt_user=True, config=""):
+		"""Rotates an image to the inverse direction of gravity.
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+		self.dispatch.OrientImageToHighside(log, prompt_user, config)
+
+
+	def orient_image_north(self, log, prompt_user=True, config=""):
+		"""Rotates an image to mag north.
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch.OrientImageToNorth(log, prompt_user, config)
+
+
+	def image_statistics(self, log, prompt_user=True, config=""):
+		"""Extracts statistics across single or multiple image logs
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+		self.dispatch.ExtractImageLogStatistics(log, prompt_user, config)
+
+	
+	def normalize_image(self, log, prompt_user=True, config=""):
+		"""Applies Static or Dynamic normalization to image logs
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			A log object of the normalized image.
+
+		"""
+
+		self.dispatch._FlagAsMethod("NormalizeImage")
+		oblog = self.dispatch.NormalizeImage(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def image_complexity_map(self, log, prompt_user=True, config=""):
+		"""Computes the complexity map from an RGB or image log
+  
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			A log object of the complexity log.
+
+		"""
+
+		self.dispatch._FlagAsMethod("ImageComplexityMap")
+		oblog = self.dispatch.ImageComplexityMap(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def fluid_velocity(self, log, prompt_user=True, config=""):
+		"""Estimates the fluid velocity from ATV travel time data
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			A log object of the velocity log.
+
+		"""
+		self.dispatch._FlagAsMethod("CalculateFluidVelocity")
+		oblog = self.dispatch.CalculateFluidVelocity(log, prompt_user, config)
+		return Log(oblog)
+
+	
+	def acoustic_caliper(self, log, prompt_user=True, config=""):
+		"""Computes the borehole cdiameter from ATV travel time data
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch.CalculateAcousticCaliper(log, prompt_user=True, config="")
+
+
+	def apparent_to_true(self, log, prompt_user=True, config=""):
+		"""Corrects apparent structure picks for borehole deviation
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			A log object of the corrected log.
+
+		"""
+
+		self.dispatch._FlagAsMethod("ApplyStructureApparentToTrueCorrection")
+		oblog = self.dispatch.ApplyStructureApparentToTrueCorrection(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def true_to_apparent(self, log, prompt_user=True, config=""):
+		"""Returns true structure picks to apparent ones
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			A log object of the apparent picks.
+
+		"""
+
+		self.dispatch._FlagAsMethod("ApplyStructureTrueToApparentCorrection")
+		oblog = self.dispatch.ApplyStructureTrueToApparentCorrection(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def recalculate_structure_azimuth(self, log, prompt_user=True, config=""):
+		"""Applies a rotation to the dip direction of structure picks
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch.RecalculateStructureAzimuth(log, prompt_user, config)
+
+
+	def recalculate_structure_dip(self, log, prompt_user=True, config=""):
+		"""Corrects dip angles for caliper variations
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+		
+		self.dispatch.RecalculateStructureDip(log, prompt_user, config)
+
+
+	def remove_structure_dip(self,log, prompt_user=True, config=""):
+		"""Conducts a residual dip analysis
+
+		Removes a given regional dip and azimuth from the data in a
+		structure log and recalculates new Dip and Azimuth angles.
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+		
+		Returns:
+			A log object for the new structure picks.
+
+		"""
+
+		self.dispatch._FlagAsMethod("RemoveStructuralDip")
+		oblog = self.dispatch.RemoveStructuralDip(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def color_components(self, log, method=0, model=0, prompt_user=False):
+		"""Extracts color data like red, green and blue intensities
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			method -- 0 (Average), 1 (Mode), 2 (Image Log)
+			model -- 0 (RGB), 1 (HSV), 2(YUV), 3 (CIELAB)
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch.ExtractColorComponents(log, method, model, prompt_user)
+
+
+	def color_classification(self, log, prompt_user=True, config=""):
+		"""Performs a classification of color values in an RGB log
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			Object of the resulting Analysis log or RGB log
+
+		"""
+
+		self.dispatch._FlagAsMethod("ColorClassification")
+		oblog = self.dispatch.ColorClassification (log, prompt_user, config)
+		return Log(oblog)
+
+
+	def brightness_and_contrast(self, log, prompt_user=True):
+		"""Adjusts the brightness and contrast in RGB logs
+
+		A full description of the method is given in the Automation
+		Module chapter of the WellCAD help documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+
+		"""
+
+		self.dispatch.AdjustImageBrightnessAndContrast(log, prompt_user)
+
+	
+	def structure_statistics(self, log, prompt_user=True, config=""):
+		"""Performs interval based statistics of Structure logs
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch._FlagAsMethod("ExtractStructureIntervalStatistic")
+		oblog = self.dispatch.ExtractStructureIntervalStatistic(log, prompt_user, config)
+		return Log(oblog)
+	
+
+	def rqd(self, log, prompt_user=True, config=""):
+		"""Rock quality designation based on Structure logs
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch._FlagAsMethod("RQD")
+		oblog = self.dispatch.RQD(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def representative_picks(self, log, prompt_user=True, config=""):
+		"""Determines the representative pick from pick clusters
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch._FlagAsMethod("RepresentativePicks")
+		oblog = self.dispatch.RepresentativePicks(log, prompt_user, config)
+		return Log(oblog)
+
+
+# Cased hole processes
+
+	def dead_sensor_correction(self, log, prompt_user=True, config=""):
+		"""Corrects errorneous data columns in Image logs
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+		self.dispatch.CorrectDeadSensor(log, prompt_user, config)
+
+	
+	def shift_correction(self, log, prompt_user=True, config=""):
+		"""Corrects the drift of data (e.g. MFC) in Image logs
+		
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+		self.dispatch._FlagAsMethod("ShiftCorrection")
+		oblog = self.dispatch.ShiftCorrection(log, prompt_user, config)
+		return Log(oblog)
+
+	
+	def fluid_velocity(self, log, prompt_user=True, config=""):
+		"""Estimates the borehole fluid velocity from ATV travel times
+		
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+		self.dispatch._FlagAsMethod("CalculateFluidVelocity")
+		oblog = self.dispatch.CalculateFluidVelocity(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def centralize(self, log, prompt_user=True, config=""):
+		"""Removes tool decentralization effects from ATV travel times 
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+		self.dispatch._FlagAsMethod("Centralize")
+		oblog = self.dispatch.Centralize(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def acoustic_caliper(self, log, prompt_user=True, config=""):
+		"""Computes borehole diameter and radius from ATV travel times
+		
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch.CalculateAcousticCaliper(log, prompt_user, config)
+
+	
+	def casing_thickness(self, log, prompt_user=True, config=""):
+		"""Computes the thickness of a casing based on ATV travel times
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+		
+		"""
+		self.dispatch.CalculateCasingThickness(log, prompt_user, config)
+
+
+	def metal_loss(self, log, prompt_user=True, config=""):
+		"""Metal loss computation from inner radius data of a pipe 
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+		
+		"""
+
+		self.dispatch._FlagAsMethod("CalculateApparentMetalLoss")
+		oblog = self.dispatch.CalculateApparentMetalLoss(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def radius_to_from_diameter(self, log, prompt_user=True, config=""):
+		"""Converts Image log data between radius and diameter
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch._FlagAsMethod("RadiusToFromDiameter")
+		oblog = self.dispatch.RadiusToFromDiameter(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def radius_to_diameter(self, log):
+		"""Converts radius data in an Image log to diameter values
+	
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the Image log to process.
+		
+		"""
+		prompt_user=False
+		config="Method=TwoTimesRadius"
+		self.dispatch._FlagAsMethod("RadiusToFromDiameter")
+		oblog = self.dispatch.RadiusToFromDiameter(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def diameter_to_radius(self, log):
+		"""Converts diameter data in an Image log to radius values
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the Image log to process.
+
+		"""
+		prompt_user=False
+		config="Method=HalfDiameter"
+		self.dispatch._FlagAsMethod("RadiusToFromDiameter")
+		oblog = self.dispatch.RadiusToFromDiameter(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def outer_inner_radius_diameter(self, log, prompt_user=True, config=""):
+		"""Adds or subtracts thickness from inner radius or diameter data
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+		self.dispatch._FlagAsMethod("OuterInnerRadiusDiameter")
+		oblog = self.dispatch.OuterInnerRadiusDiameter(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def casing_normalization(self, log, prompt_user=True, config=""):
+		"""Subtracts a trace average (or other) value from an Image log
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch._FlagAsMethod("CasedHoleNormalization")
+		oblog = self.dispatch.CasedHoleNormalization(log, prompt_user, config)
+		return Log(oblog)
+
+
+# FWS processes
+
+	def correct_fws_traces(self, log):
+		"""Replaces NO DATA traces in a FWS log
+		
+		Arguments:
+			log -- Zero based index (integer) or title (string) of
+				   the log to process.
+
+		"""
+
+		self.dispatch.CorrectBadTraces(log)
+
+
+	def stack_fws_traces(self, log, prompt_user=True, config=""):
+		"""Stacks multiple FWS traces to create and average trace
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch._FlagAsMethod("StackTraces")
+		oblog = self.dispatch.StackTraces(False, log, prompt_user, config)
+		return Log(oblog)
+
+
+	def reverse_fws_amplitude(self, log):
+		"""Inverts the amplitudes in a FWS log
+
+		Arguments:
+			log -- Zero based index (integer) or title (string) of
+				   the log to process.
+
+		"""
+
+		self.dispatch.ReverseAmplitude(log)
+
+
+	def filter_fws(self, log, prompt_user=True, config=""):
+		"""Average, weighted average and frequency filter for FWS logs
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			Object of the filtered FWS log.
+
+		"""
+
+		self.dispatch._FlagAsMethod("FilterFWSLog")
+		oblog = self.dispatch.FilterFWSLog(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def filter_fws_average(self, log, filter_width):
+		"""Applies a moving average filter to the traces of an FWS log
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			filter_width -- Length of the filter window in us.
+		
+		Returns:
+			Object of the filtered FWS log.
+			
+		"""
+
+		config = "FilterType=MovingAverage, FilterWidth="+str(max(1,filter_width))
+		self.dispatch._FlagAsMethod("FilterFWSLog")
+		oblog = self.dispatch.FilterFWSLog(log, False, config)
+		return Log(oblog)
+
+
+	def filter_fws_weighted(self, log, filter_width):
+		"""Applies a weighted average filter to the traces of an FWS log
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			filter_width -- Length of the filter window in us.
+
+		Returns:
+			Object of the filtered FWS log.
+		
+		"""
+
+		config = "FilterType=WeightedAverage , FilterWidth="+str(max(1,filter_width))
+		self.dispatch._FlagAsMethod("FilterFWSLog")
+		oblog = self.dispatch.FilterFWSLog(log, False, config)
+		return Log(oblog)	
+
+
+	def filter_fws_frequency(self, log, low_pass, low_cut, high_pass, high_cut):
+		"""Applies a frequency filter to the traces of an FWS log
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			low_pass -- Low pass frequency of filter in kHz.
+			low_cut -- Low cut-off frequency of filter in kHz.
+			high_pass -- High pass frequency of filter in kHz.
+			high_cut -- High cut-off frequency of filter in kHz.
+
+		Returns:
+			Object of the filtered FWS log.
+
+		"""
+
+		config = "FilterType=Frequency,\
+				 LowCut="+str(min(low_cut,low_pass))\
+				 + ",LowPass="+str(max(low_cut,low_pass))\
+				 + ",HighPass="+str(min(high_cut,high_pass))\
+				 + ",HighCut="+str(max(high_cut,high_pass))	 
+		self.dispatch._FlagAsMethod("FilterFWSLog")
+		oblog = self.dispatch.FilterFWSLog(log, False, config)
+		return Log(oblog)
+
+
+	def correct_standoff(self, log, prompt_user=True, config=""):
+		"""Corrects intercept times for the stand-off of tool and formation
+		
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Return:
+			Object of the resulting log
+
+		"""
+
+		self.dispatch._FlagAsMethod("ApplyStandOffCorrection")
+		oblog = self.dispatch.ApplyStandOffCorrection(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def compensated_velocity(self, log, prompt_user=True, config=""):
+		"""Slowness or velocity computed from two receiver arrival times
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch._FlagAsMethod("CompensatedVelocity")
+		oblog = self.dispatch.CompensatedVelocity(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def semblance_processing(self, prompt_user=True, config=""):
+		"""Performs a vlocity analysis for the multiple receivers
+		
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+		
+		Returns:
+			Object of the resulting depth-slowness-semblance log
+
+		"""
+
+		self.dispatch._FlagAsMethod("ApplySemblanceProcessing")
+		oblog = self.dispatch.ApplySemblanceProcessing(prompt_user, config)
+		return Log(oblog)
+
+
+	def reflected_tubewave(self, log, prompt_user=True, config=""):
+		"""Extracts the cumulative energy from reflected tube waves
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			Object of the log containing the cumulative energy.
+
+		"""
+		self.dispatch._FlagAsMethod("ProcessReflectedTubeWave")
+		oblog = self.dispatch.ProcessReflectedTubeWave(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def first_arrival(self, log, prompt_user=True, config=""):
+		"""Picks the intercept time of the first arrival
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+		
+		Returns:
+			Object of the log containing the first arrival times.
+
+		"""
+
+		self.dispatch._FlagAsMethod("PickFirstArrival")
+		oblog = self.dispatch.PickFirstArrival(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def cement_bond(self, log, prompt_user=True, config=""):
+		"""Determines the cement bond from first arrival amplitudes
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch.CementBond(log, prompt_user, config)
+	
+
+	def e1_arrival(self, log, prompt_user=True, config=""):
+		"""Determines the arrival time of the E1 amplitude 
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			Object of the log containing the E1 arrival times
+
+		"""
+
+		self.dispatch._FlagAsMethod("PickE1Arrival")
+		oblog = self.dispatch.PickE1Arrival(log, prompt_user, config)
+		return Log(oblog)
+
+	
+	def e1_amplitude(self, fws_log, arrival_log, prompt_user=True):
+		"""Uses the E1 arrival time to extract the E1 amplitude
+
+		A full description of the method is given in the Automation
+		Module chapter of the WellCAD help documentation. 
+
+		Arguments:
+			fws_log	-- Zero based index (integer) or title (string) of
+				   	   the log to process.
+			arrival_log -- Index or title of the E1 arrival time log
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+		
+		Returns:
+			Object of the log containing the E1 amplitude.
+
+		"""
+
+		self.dispatch._FlagAsMethod("ExtractE1Amplitude")
+		oblog = self.dispatch.ExtractE1Amplitude(fws_log, arrival_log, prompt_user)
+		return Log(oblog)
+
+
+	def adjust_to_extremum(self, fws_log,
+						  arrival_log,
+						  prompt_user=True,
+						  config=""):
+		"""Traveltime pick shifted to the nearest amplitude extremum
+
+		A full description of the method is given in the Automation
+		Module chapter of the WellCAD help documentation. 
+
+		Arguments:
+			fws_log	-- Zero based index (integer) or title (string) of
+				   	   the log to process.
+			arrival_log -- Index or title of the arrival time log
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+		Returns:
+			Object of the log containing the E1 amplitude.
+
+		"""
+
+		self.dispatch._FlagAsMethod("AdjustPickToExtremum")
+		oblog = self.dispatch.AdjustPickToExtremum (fws_log,
+													arrival_log,
+													prompt_user,
+													config)
+		return Log(oblog)
+	
+
+	def window_amplitude(self, log, prompt_user=True, config=""):
+		"""Extracts the max amplitude from a given time window
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			Object of the amplitude log.
+
+		"""
+		self.dispatch._FlagAsMethod("ExtractWindowPeakAmplitude")
+		oblog = self.dispatch.ExtractWindowPeakAmplitude (log, prompt_user, config)
+		return Log(oblog)
+
+
+	def mechanical_properties(self, p_slowness, s_slowness, density=""):
+		"""Computes a set of rock mechanical parameters from the input data
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			p-slowness	-- Zero based index (integer) or title (string) of
+				   		   the log containing the p-slowness data.
+			s-slowness	-- Zero based index (integer) or title (string) of
+				   		   the log containing the s-slowness data.
+			density	-- Zero based index (integer) or title (string) of
+				   	   the log containing the density data.
+
+		"""
+
+		self.dispatch.CalculateMechanicalProperties (p_slowness, s_slowness, density)
+		
+
+	def integrated_traveltime(self, log, prompt_user=True, config=""):
+		"""Integrated traveltime from slowness or velocity data
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			Object of the integrated traveltime log.
+
+		"""
+
+		self.dispatch._FlagAsMethod("IntegratedTravelTime")
+		oblog = self.dispatch.IntegratedTravelTime(log, prompt_user, config)
+		return Log(oblog)
+
+
+# Spectral gamma processes
+	
+	def stack_spectra(self, log, prompt_user=True, config=""):
+		"""Stacks multiple spectra to derive n average spectrum
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			Object of the stacked spectra in an FWS log type.
+
+		"""
+
+		self.dispatch._FlagAsMethod("StackTraces")
+		oblog = self.dispatch.StackTraces(True, log, prompt_user, config)
+		return Log(oblog)
+
+
+	def borehole_correction(self, log, prompt_user=True, config=""):
+		"""Applies corrections to FWS and Well logs
+		
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		Returns:
+			Object of the corrected log.
+			
+		"""
+
+		self.dispatch._FlagAsMethod("ApplyNaturalGammaBoreholeCorrection ")
+		oblog = self.dispatch.ApplyNaturalGammaBoreholeCorrection (log, prompt_user, config)
+		return Log(oblog)
+
+
+	def gamma_calibration(self, log, k_factor, prompt_user=False):	
+		"""Multiples total gamma values with the k-factor.
+		
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			k_factor -- Calibration factir for GR measurement.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+
+				
+		"""
+		config = "K-Factor="+str(k_factor)
+		self.dispatch.ApplyTotalGammaCalibration(log, prompt_user, config)
+
+
+	def spectrum_statistics(self, log, prompt_user=True, config=""):
+		"""Derives min, max and total counts from spectra in a FWS log type
+		
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch.CalculateSpectrumTotalCount(log, prompt_user, config)	
+
+
+	def spectrometric_ratios(self, log_a, log_b, log_c, prompt_user=True, config=""):
+		"""Computes spectrometric ratios like U/Th or U/k
+		
+		By default the ratios log_b/log_a, log_b/log_c and log_c/log_a
+		will be computed.
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log_a	-- Zero based index (integer) or title (string) of
+				   	   the log to process.
+			log_b	-- Zero based index (integer) or title (string) of
+				   	   the log to process.
+			log_c	-- Zero based index (integer) or title (string) of
+				   	   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch.SpectrometricRatios(log_a, log_b, log_c, prompt_user, config)
+
+
+	def full_spectrum_analysis(self, log_spectrum, log_time, prompt_user=True, config=""):
+		""" Full spectrum analysis using a calibration from Medusa Systems
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log_spectrum -- Zero based index (integer) or title (string) of
+				   	   		log to process.
+			log_time -- Zero based index (integer) or title (string) of
+				   	    the sample time log.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch.ProcessMedusaSpectrumData(log_spectrum, log_time, prompt_user, config)
+
+
+	def process_spectrum(self, log, prompt_user=True, config=""):
+		"""Performs a windows stripping based on a calibration model
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+		
+		"""
+
+		self.dispatch.ProcessSpectrumData(log, prompt_user, config)	
+
+
+	def compute_gr(self, log_k, log_u, log_th, prompt_user=True, config=""):
+		"""Computes total gamma ray from K, U and Th isotope concentrations
+
+		A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log_k	-- Zero based index (integer) or title (string) of
+				   	   the log containing the concentrations of K.
+			log_u	-- Zero based index (integer) or title (string) of
+				   	   the log containing the concentrations of U.
+			log_th	-- Zero based index (integer) or title (string) of
+				   	   the log containing the concentrations of Th.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string. 
+
+		"""
+		self.dispatch._FlagAsMethod("ComputeGR")
+		oblog = self.dispatch.ComputeGR(log_k, log_u, log_th, prompt_user, config)
+		return Log(oblog)
+
+
+# NMR processes
+
+	def process_nmr(self, log, prompt_user=True, config=""):
+		"""Performs a post-processing of NMRSA's BMR tool raw data
+		
+		 A full description of the method and its parameters is given
+		in the Automation Module chapter of the WellCAD help
+		documentation. 
+
+		Arguments:
+			log	-- Zero based index (integer) or title (string) of
+				   the log to process.
+			prompt_user -- If set to False the processing parameters
+						   will be taken from the config file/string.
+			config -- Path and name of the configuration file or
+					  a parameter string.
+
+		"""
+
+		self.dispatch.ProcessNMRSAData(log, prompt_user, config)	
+
+
+# Groundwater processes
+
+	def water_salinity(self, log, prompt_user=True, config=""):
+		"""Salinity estimation from fluid conductivity or resisitivity.
+
+		The log's unit will be used to distinguish between conductivity
+		(S/m, S/cm, uS/cm) and resistivity (ohm.m, ohm.cm) as input.
+		For a full description of the method and processing parameters
+		please refer to the Automation chapter of the WellCAD help
+		documentation.
+
+		Arguments:
+		log -- Name or index of the well or mud log containing the
+			   conductivity or resisitivity values.
+		prompt_user -- If set to False the processing parameters
+					   will be taken from the config file/string.
+		config -- Path and name of the configuration file or
+				  a parameter string.
+
+		Returns:
+		Log object of the resulting salinity log.
+
+		"""
+
+		self.dispatch._FlagAsMethod("WaterSalinity")
+		oblog = self.dispatch.WaterSalinity(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def water_resistivity(self, log, prompt_user=True, config=""):
+		"""Temperature correction for fluid conductivity or resisitivity.
+
+		For a full description of the method and processing parameters
+		please refer to the Automation chapter of the WellCAD help
+		documentation.
+
+		Arguments:
+		log -- Name or index of the well or mud log containing the
+			   conductivity or resisitivity values.
+		prompt_user -- If set to False the processing parameters
+					   will be taken from the config file/string.
+		config -- Path and name of the configuration file or
+				  a parameter string.
+
+		"""
+
+		self.dispatch.WaterResistivity(log, prompt_user, config)	
+
+
+	def shale_volume(self, log, prompt_user=True, config=""):
+		"""Estimates the shale volume from Gamma Ray or SP data.
+
+		For a full description of the method and processing parameters
+		please refer to the Automation chapter of the WellCAD help
+		documentation.
+
+		Arguments:
+		log -- Name or index of the well or mud log containing the
+			   Gamma Ray or SP values.
+		prompt_user -- If set to False the processing parameters
+					   will be taken from the config file/string.
+		config -- Path and name of the configuration file or
+				  a parameter string.
+
+		Returns:
+		Log object of the resulting shale volume log.
+
+		"""
+
+		self.dispatch._FlagAsMethod("ShaleVolume")
+		oblog = self.dispatch.ShaleVolume(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def porosity_sonic(self, log, prompt_user=True, config=""):
+		"""Computes porosity from transit time data.
+
+		For a full description of the method and processing parameters
+		please refer to the Automation chapter of the WellCAD help
+		documentation.
+
+		Arguments:
+		log -- Name or index of the well or mud log containing the
+			   formation resistivty (Rt) values.
+		prompt_user -- If set to False the processing parameters
+					   will be taken from the config file/string.
+		config -- Path and name of the configuration file or
+				  a parameter string.
+
+		Returns:
+		Log object of the resulting porosity log.
+
+		"""
+
+		self.dispatch._FlagAsMethod("PorositySonic")
+		oblog = self.dispatch.PorositySonic(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def porosity_archie(self, log, prompt_user=True, config=""):
+		"""Computes porosity from formation resistivity data.
+
+		For a full description of the method and processing parameters
+		please refer to the Automation chapter of the WellCAD help
+		documentation.
+
+		Arguments:
+		log -- Name or index of the well or mud log containing the
+			   formation resistivty (Rt) values.
+		prompt_user -- If set to False the processing parameters
+					   will be taken from the config file/string.
+		config -- Path and name of the configuration file or
+				  a parameter string.
+
+		Returns:
+		Log object of the resulting porosity log.
+
+		"""
+
+		self.dispatch._FlagAsMethod("PorosityArchie")
+		oblog = self.dispatch.PorosityArchie(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def porosity_density(self, log, prompt_user=True, config=""):
+		"""Computes porosity from density data.
+
+		For a full description of the method and processing parameters
+		please refer to the Automation chapter of the WellCAD help
+		documentation.
+
+		Arguments:
+		log -- Name or index of the well or mud log containing the
+			   density values.
+		prompt_user -- If set to False the processing parameters
+					   will be taken from the config file/string.
+		config -- Path and name of the configuration file or
+				  a parameter string.
+		
+		Returns:
+		Log object of the resulting porosity log.
+
+		"""
+
+		self.dispatch._FlagAsMethod("PorosityDensity")
+		oblog = self.dispatch.PorosityDensity(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def porosity_neutron(self, log, prompt_user=True, config=""):
+		"""Applies a shale correction to neutron porosity data.
+
+		For a full description of the method and processing parameters
+		please refer to the Automation chapter of the WellCAD help
+		documentation.
+
+		Arguments:
+		log -- Name or index of the well or mud log containing the
+			   neutron porosity values.
+		prompt_user -- If set to False the processing parameters
+					   will be taken from the config file/string.
+		config -- Path and name of the configuration file or
+				  a parameter string.
+		
+		Returns:
+		Log object of the corrected porosity log.
+
+		"""
+
+		self.dispatch._FlagAsMethod("PorosityNeutron")
+		oblog = self.dispatch.PorosityNeutron (log, prompt_user, config)
+		return Log(oblog)
+
+
+	def permeability(self, log, prompt_user=True, config=""):
+		"""Estimates permeabilty from porosity data.
+
+		Porosity values should be between 0 and 1.
+		For a full description of the method and processing parameters
+		please refer to the Automation chapter of the WellCAD help
+		documentation.
+
+		Arguments:
+		log -- Name or index of the well or mud log containing the
+			   porosity values.
+		prompt_user -- If set to False the processing parameters
+					   will be taken from the config file/string.
+		config -- Path and name of the configuration file or
+				  a parameter string.
+		
+		Returns:
+		Log object of the resulting permeability log.
+
+		"""
+		
+		self.dispatch._FlagAsMethod("Permeability")
+		oblog = self.dispatch.Permeability(log, prompt_user, config)
+		return Log(oblog)
+
+
+	def hydraulic_conductivity(self, log, prompt_user=True, config=""):
+		"""Computes the hydraulic conductivity from permeability data.
+
+		For a full description of the method and processing parameters
+		please refer to the Automation chapter of the WellCAD help
+		documentation.
+
+		Arguments:
+		log -- Name or index of the log containing the
+			   permeability values.
+		prompt_user -- If set to False the processing parameters
+					   will be taken from the config file/string.
+		config -- Path and name of the configuration file or
+				  a parameter string.
+		
+		Returns:
+		Log object of the resulting log.
+
+		"""
+
+		self.dispatch._FlagAsMethod("HydraulicConductivity")
+		oblog = self.dispatch.HydraulicConductivity(log, prompt_user, config)
+		return Log(oblog)
+
+
+# CoreCAD processes
+
+	def grainsize_statistics(self, log, prompt_user=True, config=""):
+		"""Computes statistics from a grainsize distribution curve.
+
+		For a full description of the method and processing parameters
+		please refer to the Automation chapter of the WellCAD help
+		documentation.
+
+		Arguments:
+		log -- Name or index of the log containing the
+			   grainsize values.
+		prompt_user -- If set to False the processing parameters
+					   will be taken from the config file/string.
+		config -- Path and name of the configuration file or
+				  a parameter string.
+
+		"""
+
+		self.dispatch.ExtractGrainSizeStatistics(log,
+												 prompt_user,
+												 config)
+
+
+	def grainsize_sorting(self,
+						  log_min,
+						  log_max,
+						  prompt_user=True,
+						  config=""):
+		"""Classifies grainsize values based on min and max logs.
+
+		For a full description of the method and processing parameters
+		please refer to the Automation chapter of the WellCAD help
+		documentation.	
+		
+		Arguments:
+		log_min -- Name or index of the log containing the logged
+				   minimum grainsize value.
+		log_max -- Name or index of the log containing the logged
+				   maximum grainsize value.
+		prompt_user -- If set to False the processing parameters
+					   will be taken from the config file/string.
+		config -- Path and name of the configuration file or
+				  a parameter string.
+
+		Returns:
+		Log object of the resulting classified log.
+
+		"""
+
+		self.dispatch._FlagAsMethod("GrainSizeSorting")
+		oblog = self.dispatch.GrainSizeSorting(log_min,
+											   log_max,
+											   prompt_user,
+											   config)
+		return Log(oblog)
+
+
+# Protection options
+
+	def allow_protection(self, enable, password):
+		"""Changes the protection status of a document.
+
+		Arguments:
+			enable -- Set to True to protect the borehole document.
+			password -- String of the password used to protect
+						the borehole document.
+
+		"""
+
+		self.dispatch.EnableProtection(enable, password)
+
+
+	def enable_protection(self, password):
+		"""Enables the document protection.
+
+		Arguments:
+			password -- String of the password used to protect
+						the borehole document.
+
+		"""
+
+		self.dispatch.EnableProtection(True, password)	
+
+
+	def disable_protection(self, password):
+		"""Disables the document protection.
+
+		Arguments:
+			password -- String of the password used to protect
+						the borehole document.
+
+		"""
+
+		self.dispatch.EnableProtection(False, password)	
+
+
+	def allow_insert_log(self, enable, password):
+		"""Changes the protection status for inserting new logs.
+
+		Arguments:
+			enable -- Set to True to allow adding new annotations
+					  to the borehole document.
+			password -- String of the password used to protect
+						the borehole document.
+
+		"""
+
+		self.dispatch.AllowInsertLog(enable, password)
+
+	
+	def allow_save_template(self, enable, password):
+		"""Changes the protection status for saving layout templates.
+
+		Arguments:
+			enable -- Set to True to allow saving layout templates
+					  of the borehole document.
+			password -- String of the password used to protect
+						the borehole document.
+
+		"""
+
+		self.dispatch.AllowSaveTemplate(enable, password)
+
+
+	def allow_file_export(self, enable, password):
+		"""Changes the protection status for exporting data.
+
+		Arguments:
+			enable -- Set to True to allow the export of data
+					  from the borehole document.
+			password -- String of the password used to protect
+						the borehole document.
+
+		"""
+
+		self.dispatch.AllowExportFile(enable, password)
+
+
+	def allow_modify_annotation(self, enable, password):
+		"""Changes the protection status to modify annotations.
+
+		Arguments:
+			enable -- Set to True to allow editing existing annotations
+					  in the borehole document.
+			password -- String of the password used to protect
+						the borehole document.
+
+		"""
+
+		self.dispatch.AllowModifyAnnotation(enable, password)
+	
+
+	def allow_insert_annotation(self, enable, password):
+		"""Changes the protection status for inserting annotations.
+
+		Arguments:
+			enable -- Set to True to allow adding new annotations
+					  to the borehole document.
+			password -- String of the password used to protect
+						the borehole document.
+
+		"""
+
+		self.dispatch.AllowInsertAnnotation(enable, password)
+
+
+	def allow_modify_header(self, enable, password):
+		"""Changes the protection status of the header content.
+
+		Arguments:
+			enable -- Set to True to allow edition of the
+					  document header data.
+			password -- String of the password used to protect
+						the borehole document.
+
+		"""
+
+		self.dispatch.AllowModifyHeadersContent (enable, password)	
