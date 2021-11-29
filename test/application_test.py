@@ -22,14 +22,14 @@ try:
     doc_name = obj_bhole.name
     obj_bhole.name = "Master Test 3"
 except:
-	PrintException("Get/Set Name")
+    PrintException("Get/Set Name")
 
 
 try:
     doc_name = f"{obj_bhole.version_major}.{obj_bhole.version_minor}b{obj_bhole.version_build}"
     obj_bhole.name = doc_name
 except:
-	PrintException("Get Versions")
+    PrintException("Get Versions")
     
 
 try:
@@ -37,79 +37,79 @@ try:
     is_auto_update = obj_bhole.auto_update
     obj_bhole.auto_update = True
 except:
-	PrintException("AutoUpdate")
+    PrintException("AutoUpdate")
     
     
 try:
     obj_bhole.refresh_window()
 except:
-	PrintException("RefreshWindow")
+    PrintException("RefreshWindow")
     
 
 try:
     obj_bhole.set_draft_mode(2)
 except:
-	PrintException("SetDraftMode")
+    PrintException("SetDraftMode")
     
     
 try:
     obj_bhole.minimize_document_window()
 except:
-	PrintException("MinimizeWindow")
+    PrintException("MinimizeWindow")
     
     
 try:
     obj_bhole.maximize_document_window()
 except:
-	PrintException("MaximizeWindow")
+    PrintException("MaximizeWindow")
     
     
 try:
     bot_depth = obj_bhole.bottom_depth
 except:
-	PrintException("GetBottomDepth")
+    PrintException("GetBottomDepth")
     
 
 try:
     top_depth = obj_bhole.top_depth
 except:
-	PrintException("GetTopDepth")
+    PrintException("GetTopDepth")
     
 
 try:
     obj_bhole.set_visible_depth_range(1.0, 10.0)
 except:
-	PrintException("SetVisibleDepthRange")
+    PrintException("SetVisibleDepthRange")
     
 
 try:
     obj_header = obj_bhole.get_header()
 except:
-	PrintException("GetHeader")
+    PrintException("GetHeader")
     
 
 try:
     obj_depth = obj_bhole.get_depth()
 except:
-	PrintException("GetDepth")
+    PrintException("GetDepth")
 
 
 try:
     obj_page = obj_bhole.get_page()
 except:
-	PrintException("GetPage")
+    PrintException("GetPage")
  
  
 try:
     obj_title = obj_bhole.get_title(0)
 except:
-	PrintException("Get Title")
+    PrintException("Get Title")
  
  
 try:
     obj_odbc = obj_bhole.get_odbc()
 except:
-	PrintException("Get ODBC")
+    PrintException("Get ODBC")
 
     
     
@@ -117,51 +117,51 @@ except:
 try:
     nb_of_logs = obj_bhole.nb_of_logs
 except:
-	PrintException("Nb Of Logs") 
+    PrintException("Nb Of Logs") 
  
 
 try:
     obj_log = obj_bhole.get_log("GR")
     obj_log = obj_bhole.get_log(0)
 except:
-	PrintException("Get Log") 
+    PrintException("Get Log") 
 
 
 try:
     obj_log = obj_bhole.convert_log_to("GR", 3, False)
 except:
-	PrintException("Convert Log To") 
+    PrintException("Convert Log To") 
 
 
 try:
     obj_log = obj_bhole.new_log(1)
 except:
-	PrintException("Insert New Log")
+    PrintException("Insert New Log")
 
 
 try:
     obj_log_orig = obj_bhole.get_log("GR")
     obj_log_copy = obj_bhole.copy_log(obj_log_orig)
 except:
-	PrintException("Add Log")     
+    PrintException("Add Log")     
 
 
 try:
     obj_bhole.clear_log_contents(obj_bhole.nb_of_logs-1) 
 except:
-	PrintException("Clear Contents")  
+    PrintException("Clear Contents")  
     
     
 try:
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)
 except:
-	PrintException("Remove Log")
+    PrintException("Remove Log")
   
   
 try:
     obj_bhole.apply_template(r"C:\Temp\Well1.wdt",False) 
 except:
-	PrintException("Apply Template")   
+    PrintException("Apply Template")   
 
 
 # Common log edition
@@ -169,31 +169,31 @@ try:
     obj_bhole.slice_log("GR",30.5) 
     obj_bhole.merge_logs("GR#1", "GR#2", True, False)
 except:
-	PrintException("Slice and Merge")
+    PrintException("Slice and Merge")
 
 
 try:
     obj_bhole.merge_same_log_items("Litho") 
 except:
-	PrintException("Merge Same Log Items")      
+    PrintException("Merge Same Log Items")      
 
 
 try:
     obj_bhole.extend_log("GR", 0.0, 7.0) 
 except:
-	PrintException("Extend Log")
+    PrintException("Extend Log")
 
 
 try:
     obj_bhole.depth_shift_log("GR", 0.5, 0.0, 5.0) 
 except:
-	PrintException("Depth Shift Log")
+    PrintException("Depth Shift Log")
 
 
 try:
     obj_bhole.depth_match_log("RES","Shift") 
 except:
-	PrintException("Depth Match Log")
+    PrintException("Depth Match Log")
     
     
 try:
@@ -204,7 +204,7 @@ try:
                        False,
                        "Litho") 
 except:
-	PrintException("Fill Log")
+    PrintException("Fill Log")
 
 # Common Processes
 try:
@@ -216,7 +216,7 @@ try:
     obj_bhole.filter_log_median("GR", 15)
     obj_bhole.filter_log_weighted_ave("GR", 15)
 except:
-	PrintException("Filter Log")
+    PrintException("Filter Log")
 
 
 try:
@@ -227,31 +227,31 @@ try:
                                    OutputLogAsText=no,\
                                    OutputLogAsGraphic=yes")
 except:
-	PrintException("Block Log")
+    PrintException("Block Log")
 
 
 try:
     obj_log = obj_bhole.normalize_perc_log("Compo", False)
 except:
-	PrintException("Normalize Perc Log")
+    PrintException("Normalize Perc Log")
 
 
 try:
     obj_log = obj_bhole.normalize_perc_log("Compo", False)
 except:
-	PrintException("Extract Multi Log Statistics")
+    PrintException("Extract Multi Log Statistics")
 
 
 try:
     obj_log = obj_bhole.resample_log("GR", False, "SamplingRate=0.2")
 except:
-	PrintException("Resample Log")
+    PrintException("Resample Log")
     
     
 try:
     obj_log = obj_bhole.interpolate_log("Dens", False, "MaximumGap = 1")
 except:
-	PrintException("Resample Log")
+    PrintException("Resample Log")
     
 
 try:
@@ -263,7 +263,7 @@ try:
                                   InclY=Gy,\
                                   InclZ=Gz")  
 except:
-	PrintException("Borehole Deviation")
+    PrintException("Borehole Deviation")
     
     
 try:
@@ -275,7 +275,7 @@ try:
                                         BoreholeDiameter=2.20,\
                                         FluidResistivity=25")
 except:
-	PrintException("Elog Correction")  
+    PrintException("Elog Correction")  
 
     
 
@@ -284,33 +284,33 @@ except:
 try:
     obj_bhole.correct_image_traces("AMP")
 except:
-	PrintException("Correct Bad Traces")
+    PrintException("Correct Bad Traces")
 
 
 try:
     obj_bhole.conditional_testing("AMP", "AMP", False)
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)
 except:
-	PrintException("Conditional Testing")
+    PrintException("Conditional Testing")
 
 
 try:
     obj_bhole.filter_image("AMP", False, "FilterType = Average, FilterWidth = 3, FilterHeight = 3")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)
 except:
-	PrintException("Filter Image Log")
+    PrintException("Filter Image Log")
     
 
 try:
     obj_log = obj_bhole.mirror_image("AMP")
 except:
-	PrintException("Mirror Image")
+    PrintException("Mirror Image")
 
 
 try:
     obj_bhole.rotate_image("AMP", False, "RotateBy = 90, RotateClockwise = yes")
 except:
-	PrintException("Rotate Image")
+    PrintException("Rotate Image")
     
     
 try:
@@ -321,7 +321,7 @@ try:
                                     InclY=Gy,\
                                     InclZ=Gz")
 except:
-	PrintException("Rotate Image Highside")  
+    PrintException("Rotate Image Highside")  
   
  
 try:
@@ -332,19 +332,19 @@ try:
                                  InclY=Gy,\
                                  InclZ=Gz")
 except:
-	PrintException("Rotate Image North")   
+    PrintException("Rotate Image North")   
     
 
 try:
     obj_bhole.normalize_image("AMP", False, "Mode=Static")
 except:
-	PrintException("Normalize Image")
+    PrintException("Normalize Image")
     
 
 try:
     obj_bhole.image_complexity_map("AMP", False, "LogType=2")
 except:
-	PrintException("Image Complexity")
+    PrintException("Image Complexity")
     
 
 try:
@@ -354,7 +354,7 @@ try:
                              CalibrationPoint2 = 5.0,96")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)
 except:
-	PrintException("Estimate Fluid Velocity")
+    PrintException("Estimate Fluid Velocity")
     
 
 try:
@@ -363,7 +363,7 @@ try:
                                 FluidVelocity=1500,\
                                 FluidVelocityUnit=m/s")
 except:
-	PrintException("Calculate Caliper")
+    PrintException("Calculate Caliper")
     
 
 try:
@@ -372,7 +372,7 @@ try:
                                 ReferenceIsNorth=yes")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)
 except:
-	PrintException("Apparent to True")
+    PrintException("Apparent to True")
 
 
 try:
@@ -381,7 +381,7 @@ try:
                                ReferenceIsNorth=yes")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)
 except:
-	PrintException("True to Apparent")
+    PrintException("True to Apparent")
 
 
 try:
@@ -389,7 +389,7 @@ try:
                                             RotateClockwise=yes")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)
 except:
-	PrintException("Recalculate Structure Azimuth")
+    PrintException("Recalculate Structure Azimuth")
     
 
 try:
@@ -398,7 +398,7 @@ try:
                                         CaliperUnit=mm")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)
 except:
-	PrintException("Recalculate Structure Dip")
+    PrintException("Recalculate Structure Dip")
     
 
 try:
@@ -407,7 +407,7 @@ try:
                                    Dip=10")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)
 except:
-	PrintException("Structural Dip Removal")
+    PrintException("Structural Dip Removal")
 
 
 try:
@@ -418,33 +418,33 @@ try:
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)
 except:
-	PrintException("Extract Color Component")
+    PrintException("Extract Color Component")
     
 
 try:
     obj_bhole.brightness_and_contrast("OBI", False)
 except:
-	PrintException("Brightness and Contrast") 
+    PrintException("Brightness and Contrast") 
 
 
 try:
     obj_bhole.color_classification("OBI", False,f"{path}\ColorClassification.ini")
 except:
-	PrintException("Color Classification")    
+    PrintException("Color Classification")    
     
     
 try:
     obj_bhole.structure_statistics("Structure",False, "Reference=1,\
                                     OutputAverageAzimuth=yes")
 except:
-	PrintException("Structure Interval Statistics")
+    PrintException("Structure Interval Statistics")
     
 
  try:
     obj_bhole.rqd("Structure",False, "AttributeName1=Type,\
                    AttributeValues1=0-Joint")
 except:
-	PrintException("RQD")
+    PrintException("RQD")
 
 
 try:
@@ -452,13 +452,13 @@ try:
                                     AzimuthWindow=15.0,\
                                     DepthWindow=0.5")
 except:
-	PrintException("Representative Picks")
+    PrintException("Representative Picks")
 
 
 try:
     obj_bhole.borehole_deviation(False,"MagX=HX, MagY=HY, MagZ=HZ, InclX=GX, InclY=GY, InclZ=GZ")
 except:
-	PrintException("Borehole Coordinates")
+    PrintException("Borehole Coordinates")
  
 
 try:
@@ -467,7 +467,7 @@ try:
                                    TiltLog=Tilt,\
                                    Method=MinimumCurvature ")
 except:
-	PrintException("Borehole Coordinates")
+    PrintException("Borehole Coordinates")
     
 
 try:
@@ -477,7 +477,7 @@ try:
                                 NorthingLog=Northing,\
                                 EastingLog=Easting")
 except:
-	PrintException("Borehole Closure")
+    PrintException("Borehole Closure")
     
     
 # cased hole processes
@@ -488,28 +488,28 @@ try:
                                      ReplaceBy=median")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Dead Sensor Correction")
+    PrintException("Dead Sensor Correction")
   
   
 try:
     obj_bhole.shift_correction("TT", False,"Zone1 = 0.1,0.3,1144")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Shift Correction")
+    PrintException("Shift Correction")
 
  
 try:
     obj_bhole.centralize("TT", False)
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Centralize")
+    PrintException("Centralize")
 
  
 try:
     obj_bhole.casing_thickness("TT", False, "TravelTimeUnit = 0.1")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Casing Thickness")
+    PrintException("Casing Thickness")
 
     
 try:
@@ -518,7 +518,7 @@ try:
 
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Metal Loss")
+    PrintException("Metal Loss")
     
 
 try:
@@ -529,7 +529,7 @@ try:
     obj_bhole.diameter_to_radius("TT")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)
 except:
-	PrintException("Radius and Diameter")
+    PrintException("Radius and Diameter")
 
 
 try:
@@ -538,14 +538,14 @@ try:
                                           OutputType=OuterRadius")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Outer Inner Radius Diameter")
+    PrintException("Outer Inner Radius Diameter")
 
 
 try:
     obj_bhole.casing_normalization("TT", False, "Method=Mean")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Casing Normalization")
+    PrintException("Casing Normalization")
   
 
 # fws processes
@@ -553,20 +553,20 @@ except:
 try:
     obj_bhole.correct_fws_traces("RX1")         
 except:
-	PrintException("Correct Bad Traces FWS")
+    PrintException("Correct Bad Traces FWS")
 
 
 try:
     obj_bhole.stack_fws_traces("RX1", False, "NumberOfStacks=5")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)    
 except:
-	PrintException("Stack Traces FWS")
+    PrintException("Stack Traces FWS")
     
 
 try:
     obj_bhole.reverse_fws_amplitude("RX1")         
 except:
-	PrintException("Reverse Amplitude FWS")
+    PrintException("Reverse Amplitude FWS")
 
 
 # groundwater processes
@@ -577,7 +577,7 @@ try:
                              TemperatureUnit=degC")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Water Salinity")
+    PrintException("Water Salinity")
     
     
 try:
@@ -588,7 +588,7 @@ try:
                                 RefTemperatureUnit=degC") 
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Water Resistivity")
+    PrintException("Water Resistivity")
 
 
 try:
@@ -598,7 +598,7 @@ try:
                                      Equation=0")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Shale Volume")
+    PrintException("Shale Volume")
  
  
 try:
@@ -610,7 +610,7 @@ try:
                                        FluidSlownessUnit=us/ft")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Sonic Porosity")
+    PrintException("Sonic Porosity")
 
 
 try:
@@ -619,7 +619,7 @@ try:
                                         RwUnit=ohm.m")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Archie Porosity")
+    PrintException("Archie Porosity")
  
  
 try:
@@ -631,7 +631,7 @@ try:
                                          FluidDensityUnit=g/cc")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Density Porosity")
+    PrintException("Density Porosity")
 
     
 try:
@@ -640,14 +640,14 @@ try:
                                          ShaleNPhi=50")
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Neutron Porosity")
+    PrintException("Neutron Porosity")
    
 
 try:
     obj_log = obj_bhole.permeability("NPHI", False, "CementationFactor=2.0")  
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Permeability") 
+    PrintException("Permeability") 
 
 
 try:
@@ -658,7 +658,7 @@ try:
                                                ViscosityUnit=Pa.s")   
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)           
 except:
-	PrintException("Hydraulic Conductivity")    
+    PrintException("Hydraulic Conductivity")    
     
 
 
@@ -671,4 +671,4 @@ try:
         
     obj_wcad.quit(False)
 except:
-	PrintException("Quit")   
+    PrintException("Quit")   

@@ -11,37 +11,37 @@ class Application:
         """
 
         self.dispatch = Dispatch("WellCAD.Application")
-		
+        
 
     def show_window(self):
         """Displays the WellCAD workspace on screen."""
         self.dispatch.ShowWindow
-		
+        
 
     def minimize_window(self):
         """Collapses the application window to an icon."""
         self.dispatch.MinimizeWindow()
-		
-		
+        
+        
     def maximize_window(self):
         """Extends the application window to full screen."""
         self.dispatch.MaximizeWindow()
-		
-		
+        
+        
     def cascade(self):
         """Cascades all borehole document windows (unless tabbed)"""
         self.dispatch.Cascade()
-		
+        
 
     def tile_horizontally(self):
         """Arranges document windows horizontally (unless tabbed)"""
         self.dispatch.TileHorizontally()
-		
-	
+        
+    
     def tile_vertically(self):
         """Arranges document windows vertically (unless tabbed)"""
         self.dispatch.TileVertically()
-		
+        
 
     def new_borehole(self, template = ""):
         """Creates a borehole document object.
@@ -115,8 +115,8 @@ class Application:
 
         obBhole = self.dispatch.GetActiveBorehole
         return Borehole(obBhole)
-		
-		
+        
+        
     def close_borehole(self, prompt_for_saving = True, index = -1):
         """Closes a specific borehole document.
         
@@ -134,14 +134,14 @@ class Application:
         if index == -1:
             index = self.dispatch.NbOfDocuments - 1
         self.dispatch.CloseBorehole(prompt_for_saving, index)
-		
-		
+        
+        
     @property
     def borehole_count(self):
         """Returns the number of borehole documents open in WellCAD."""
         return self.dispatch.NbOfDocuments
-		
-	
+        
+    
     def file_import(self,
                     file_name = "",
                     prompt_user = True,
@@ -174,8 +174,8 @@ class Application:
                                            config_file,
                                            log_file)
         return Borehole(obBhole)
-		
-		
+        
+        
     def multi_file_import(self, file_name = "",
                           prompt_user = True,
                           config_file = "",
@@ -209,8 +209,8 @@ class Application:
                                                 config_file,
                                                 log_file)
         return Borehole(obBhole)
-		
-		
+        
+        
     def quit(self, prompt_for_saving = True):
         """Closes all borehole documents and exits WellCAD.
         

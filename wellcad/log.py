@@ -18,14 +18,14 @@ class Log:
         Arguments:
         __________
         file_name: Str
-    		Path and name of the file to export.
-    	prompt_user: Bool
-    		If set to False no dialog box will be displayed.
-    	config: Str
-    		Path and name of the .ini file containing the export parameters.
-    	logfile: Str
-    		Format of the saved file. LAS, DLIS, EMF, CGM, JPG, PNG, TIF, BMP, WCL and PDF are supported.
-    	"""
+            Path and name of the file to export.
+        prompt_user: Bool
+            If set to False no dialog box will be displayed.
+        config: Str
+            Path and name of the .ini file containing the export parameters.
+        logfile: Str
+            Format of the saved file. LAS, DLIS, EMF, CGM, JPG, PNG, TIF, BMP, WCL and PDF are supported.
+        """
         self.dispatch.FileExport(file_name, prompt_user, config, logfile)
 
     def nb_of_data(self):
@@ -44,7 +44,7 @@ class Log:
         Argument:
         __________
         text: Str
-        	The new name of the log.
+            The new name of the log.
         
         self.dispatch.Name = name
         """
@@ -55,7 +55,7 @@ class Log:
         Argument:
         __________
         text: Str
-        	The new name of the log.
+            The new name of the log.
         """
 
         self.dispatch.Name = name
@@ -66,7 +66,7 @@ class Log:
         Argument:
         __________
         text: Str
-        	The new name of the log."""
+            The new name of the log."""
         return self.dispatch.Name
 
     def set_title_comment(self, comment):
@@ -75,7 +75,7 @@ class Log:
         Argument:
         __________
         comment: Str
-        	The new comment of the log title.
+            The new comment of the log title.
         """
 
         self.dispatch.TitleComment = comment
@@ -86,7 +86,7 @@ class Log:
         Argument:
         __________
         comment: Str
-        	The new comment of the log title."""
+            The new comment of the log title."""
         return self.dispatch.TitleComment
 
     """
@@ -101,7 +101,7 @@ class Log:
         Argument:
         __________
         comment: Str
-        	The new comment of the log title.
+            The new comment of the log title.
         
         self.dispatch.TitleComment = comment
     """
@@ -179,7 +179,7 @@ class Log:
         Argument:
         __________
         unit: Str
-        	The unit of the log.
+            The unit of the log.
         
         self.dispatch.LogUnit = unit
     '''
@@ -197,7 +197,7 @@ class Log:
         Argument:
         __________
         position: Float
-        	Value between 0 and 1.
+            Value between 0 and 1.
         """
         self.dispatch.LeftPosition = position
     '''
@@ -208,7 +208,7 @@ class Log:
         Argument:
         __________
         position: Float
-        	Value between 0 and 1.
+            Value between 0 and 1.
         """
         self.dispatch.LeftPosition = position
 
@@ -218,7 +218,7 @@ class Log:
         Argument:
         __________
         position: Float
-        	Value between 0 and 1.
+            Value between 0 and 1.
         """
         return self.dispatch.LeftPosition
 
@@ -246,7 +246,7 @@ class Log:
         Argument:
         __________
         position: Float
-        	Value between 0 and 1.
+            Value between 0 and 1.
         """
         self.dispatch.RightPosition = position
 
@@ -256,7 +256,7 @@ class Log:
         Argument:
         __________
         position: Float
-        	Value between 0 and 1.
+            Value between 0 and 1.
         """
         return self.dispatch.RightPosition
 
@@ -1811,14 +1811,14 @@ class Log:
         Arguments:
         __________
         file_name: Str
-    		Path and name of the file to export.
-    	allowpicture: Bool
-    		Set to True to allow graphic files to be displayed using an internal viewer.
-    	topdepth: Float
-    		Top depth of the interval in current depth units.
-    	bottomdepth: Float
-    		Bottom depth of the interval in current depth units.
-    	"""
+            Path and name of the file to export.
+        allowpicture: Bool
+            Set to True to allow graphic files to be displayed using an internal viewer.
+        topdepth: Float
+            Top depth of the interval in current depth units.
+        bottomdepth: Float
+            Bottom depth of the interval in current depth units.
+        """
         self.dispatch.InsertNewOleBoxFromFile(file_name, allowpicture, topdepth, bottomdepth)
 
 # Engineering Log

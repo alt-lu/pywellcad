@@ -22,17 +22,17 @@ obj_log = obj_bhole.get_log("GR")
 try:
     obj_log.file_export(r"C:\Temp\Well1.wcl", False, r"C:\Temp\Well1.ini", "LAS")
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.nb_of_data()
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.set_name("blabla")
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.get_title_comment()
@@ -47,133 +47,133 @@ except:
 try:
     obj_log.top_depth()
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.bottom_depth()
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.do_settings_dlg()
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.get_data_table()
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 # PROBLEME !!!!!!!!
 try:
     obj_log.set_data_table()
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.set_position(3, 4)
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 
 try:
     obj_log.data_min()
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.data_max()
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 
 try:
     obj_log.set_log_unit("csv")
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.get_log_unit()
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 
 try:
     obj_log.set_left_position(0.3)
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.get_left_position()
 except:
-	PrintException("ShowWindow")
-	
+    PrintException("ShowWindow")
+    
 
 
 try:
     obj_log.set_right_position(0.3)
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.get_right_position()
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.set_position(0,0.1)
 except:
-	PrintException("ShowWindow")
-	
+    PrintException("ShowWindow")
+    
 try:
     obj_log.type()
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 
 
 try:
     obj_log.hide_log_title()
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.set_border_style(1)
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.get_border_style()
 except:
-	PrintException("ShowWindow")
-	
+    PrintException("ShowWindow")
+    
 try:
     obj_log.hide_log_data()
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 
 try:
     obj_log.display_border()
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.clear_history()
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.nb_of_history_item()
 except:
-	PrintException("ShowWindow")
-	
+    PrintException("ShowWindow")
+    
 
 
 try:
     obj_log.history_item_date(1)
 except:
-	PrintException("ShowWindow")
+    PrintException("ShowWindow")
 
 try:
     obj_log.history_item_description(1)
@@ -327,4 +327,4 @@ try:
         
     obj_wcad.quit(False)
 except:
-	PrintException("Quit")
+    PrintException("Quit")
