@@ -29,32 +29,37 @@ class Application:
         
         
     def cascade(self):
-        """Cascades all borehole document windows (unless tabbed)"""
+        """Cascades all borehole document windows (unless tabbed)."""
         self.dispatch.Cascade()
         
 
     def tile_horizontally(self):
-        """Arranges document windows horizontally (unless tabbed)"""
+        """Arranges document windows horizontally (unless tabbed)."""
         self.dispatch.TileHorizontally()
         
     
     def tile_vertically(self):
-        """Arranges document windows vertically (unless tabbed)"""
+        """Arranges document windows vertically (unless tabbed)."""
         self.dispatch.TileVertically()
         
 
     def new_borehole(self, template = ""):
-        """Creates a borehole document object.
+        """Creates a new borehole document object.
+
+        The new borehole object is blank by default, unless a template
+        file is provided.
         
-        Creates a new blank borehole document object unless the path
-        to a WDT template file is provided.
+        Parameters
+        ----------
+        template : str
+            An optional path to a borehole document template (.wdt).
+            If provided, the new borehole will be created using the
+            template.
         
-        Arguments:
-            template -- (Optional) String specifying the path to 
-                        the template (.WDT). 
-        
-        Returns:
-            Borehole document object.
+        Returns
+        -------
+        Borehole
+            The new borehole document.
         """
 
         self.dispatch._FlagAsMethod("NewBorehole")
@@ -63,17 +68,19 @@ class Application:
 
         
     def open_borehole(self, path = ""):
-        """Opens a WellCAD .WCL file.
+        """Opens a WellCAD borehole document file (.wcl file).
         
-        Creates a new borehole document object from a .WCL file. If
-        the path is empty the File Open dialog box will be displayed.
+        Parameters
+        ----------
+        path : str
+            The file path to the WellCAD borehole document file to open.
+            If an empty string is provided, the user will be prompted
+            to select a file using a standard File Open dialog box.
         
-        Arguments:
-            path -- (Optional) String specifying the path to
-                    the .WCL file. 
-        
-        Returns:
-            Borehole document object.
+        Returns
+        -------
+        Borehole
+            The opened borehole document.
         """
 
         self.dispatch._FlagAsMethod("OpenBorehole")
@@ -82,18 +89,21 @@ class Application:
         
 
     def get_borehole(self, index = -1):
-        """Creates the object for an open borehole document.
+        """Gets an existing borehole document by index.
         
-        Creates a borehole document object according to the zero based
-        index of the document open in WellCAD. If no parameter is
-        provided the object of the last borehole document opened in
-        WellCAD will be returned.
+        Gets a borehole document object according to the zero-based index of
+        the document open in WellCAD. If no parameter is provided, the most
+        recent borehole document opened in WellCAD will be returned.
         
-        Arguments:
-           index -- Optional zero based index of the borehole document. 
+        Parameters
+        ----------
+        index : (str)
+            An optional zero based index of the borehole document.
         
-        Returns:
-           Borehole document object
+        Returns
+        -------
+        Borehole
+            The borehole document object with the specified index.
         """
 
         if index == -1:
@@ -104,13 +114,12 @@ class Application:
         
         
     def get_active_borehole(self):
-        """Creates an object of the active borehole document.
-        
-        Creates a borehole document object from the currently
-        active borehole document (i.e. the one with the focus).
+        """Gets the active borehole document (i.e. the one that currently has focus).
                    
-        Returns:
-            Borehole document object
+        Returns
+        -------
+        Borehole
+            The active borehole document object
         """
 
         obBhole = self.dispatch.GetActiveBorehole
@@ -120,15 +129,17 @@ class Application:
     def close_borehole(self, prompt_for_saving = True, index = -1):
         """Closes a specific borehole document.
         
-        Closes the borehole document defined by the zero based index.
-        If no index is specified the last opened borehole document will
-        be closed. The SaveAs dialog box will be displayed if the
-        prompt_for_saving flag is set to True (default). To close the
-        borehole document without saving set the flag to False.
+        The borehole document that is closed can be specified by an index,
+        or, if none is provided, the most recently opened borehole document
+        will be closed.
         
-        Arguments:
-            prompt_for_saving -- (Optional) Boolean.
-            index -- (Optional) Zero based index of the document.
+        Parameters
+        ----------
+        prompt_for_saving : bool
+            Whether or not to prompt the user to save the borehole document.
+        index : int
+            The (zero-based) index of the document to close. If not provided,
+            the most recently opened document will be closed.
         """
 
         if index == -1:
@@ -147,7 +158,7 @@ class Application:
                     prompt_user = True,
                     config_file = "",
                     log_file = ""):
-        """Imports the specified file and creates a borehole document.
+        """Imports the specified file into a new borehole document.
         
         Allows import of TFD, LAS, DLIS, TXT, CSV and other file
         formats into WellCAD. Please refer to the WellCAD help
@@ -155,17 +166,22 @@ class Application:
         in the configuration file / parameter string. If filename
         is left blank the File Open dialog will be displayed. 
 
-        Arguments:
-           file_name    -- (Optional) Path and name of the file to import.
-           prompt_user -- (Optional) Boolean to display the import
-                          dialog boxes.
-           config_file -- (optional) Path and filename of the
-                          configuration file or parameter string.
-           log_file    -- (Optional) Path and name of the file to log
-                          error messages.
+        Parameters
+        ----------
+        file_name : str
+            The path of the file to import.
+        prompt_user : bool
+            Whether to display an import dialog box to allow the user
+            to specify import settings.
+        config_file : str
+            Path and filename of the configuration file or parameter string.
+        log_file : str
+            Path and name of the file to log error messages.
         
-        Returns:
-           Borehole document object
+        Returns
+        -------
+        Borehole
+            A new borehole document containing the imported data.
         """
 
         self.dispatch._FlagAsMethod("FileImport")
@@ -180,7 +196,7 @@ class Application:
                           prompt_user = True,
                           config_file = "",
                           log_file = ""):
-        """Creates a single borehole document from all imported file.
+        """Creates a single borehole document from all specified files.
 
         Allows import of multiple TFD, LAS, DLIS, TXT, CSV and other
         file formats into WellCAD. Imported data will be merged into
@@ -189,18 +205,22 @@ class Application:
         configuration file / parameter string. If filename is left
         blank the File Open dialog will be displayed.
 
-        Arguments:
-           file_name    -- (Optional) Comma separated list of input
-                          files (path and file name). 
-           prompt_user -- (Optional) Boolean to display the import
-                          dialog boxes.
-           config_file -- (Optional) Path and filename of the
-                          configuration file or parameter string.
-           log_file    -- (Optional) Path and name of the file to log
-                          error messages.
+        Parameters
+        ----------
+        file_name : str
+            A comma separated list of input files (path and file name). 
+        prompt_user : str
+            Boolean to display the import dialog boxes.
+        config_file : str
+            Path and filename of the configuration file or parameter string.
+        log_file : str
+            Path and name of the file to log error messages.
         
-        Returns:
-           Borehole document object.
+        Returns
+        -------
+        Borehole
+            A newly created borehole document containing the data from the
+            imported files.
         """
 
         self.dispatch._FlagAsMethod("MultiFileImport")
@@ -214,14 +234,10 @@ class Application:
     def quit(self, prompt_for_saving = True):
         """Closes all borehole documents and exits WellCAD.
         
-        When setting the prompt_for_saving parameter to True the SaveAs
-        dialog box will be displayed for each document (default). If
-        the prompt_for_saving parameter is set to False the borehole
-        documents will be closed without saving.
-        
-        Arguments:
-            prompt_for_saving -- Optional boolean to display the
-                                 SaveAs dialog. 
+        Parameters
+        ----------
+        prompt_for_saving : bool
+            Whether to display the Save As dialog box for unsaved documents.
         """
 
         self.dispatch.Quit(prompt_for_saving)

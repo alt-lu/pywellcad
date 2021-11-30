@@ -15,15 +15,15 @@ class Log:
         for a description of the export parameters to be used in the configuration file and
         parameter string.
 
-        Arguments:
-        __________
-        file_name: Str
+        Parameters
+        ----------
+        file_name : str
             Path and name of the file to export.
-        prompt_user: Bool
+        prompt_user : bool
             If set to False no dialog box will be displayed.
-        config: Str
+        config : str
             Path and name of the .ini file containing the export parameters.
-        logfile: Str
+        logfile : str
             Format of the saved file. LAS, DLIS, EMF, CGM, JPG, PNG, TIF, BMP, WCL and PDF are supported.
         """
         self.dispatch.FileExport(file_name, prompt_user, config, logfile)
@@ -41,9 +41,9 @@ class Log:
     def name(self, text):
         Sets the title of a log.
 
-        Argument:
-        __________
-        text: Str
+        Parameters
+        ----------
+        text : str
             The new name of the log.
         
         self.dispatch.Name = name
@@ -52,9 +52,9 @@ class Log:
     def set_name(self, name):
         """Sets the title of a log.
 
-        Argument:
-        __________
-        text: Str
+        Parameters
+        ----------
+        text : str
             The new name of the log.
         """
 
@@ -63,18 +63,18 @@ class Log:
     def get_name(self):
         """Gets the title of a log.
 
-        Argument:
-        __________
-        text: Str
+        Parameters
+        ----------
+        text : str
             The new name of the log."""
         return self.dispatch.Name
 
     def set_title_comment(self, comment):
         """Sets the comment in a log title.
 
-        Argument:
-        __________
-        comment: Str
+        Parameters
+        ----------
+        comment : str
             The new comment of the log title.
         """
 
@@ -83,9 +83,9 @@ class Log:
     def get_title_comment(self):
         """Gets the comment in a log title.
 
-        Argument:
-        __________
-        comment: Str
+        Parameters
+        ----------
+        comment : str
             The new comment of the log title."""
         return self.dispatch.TitleComment
 
@@ -98,9 +98,9 @@ class Log:
     def title_comment(self, comment):
         Sets the comment in a log title.
 
-        Argument:
-        __________
-        comment: Str
+        Parameters
+        ----------
+        comment : str
             The new comment of the log title.
         
         self.dispatch.TitleComment = comment
@@ -133,8 +133,8 @@ class Log:
         in the data table contains the column titles “Depth” and the actual log title).
         The data format for each log equals the data displayed in the Tabular Editor.
 
-        argument:
-        __________
+        Parameters
+        ----------
         data : array
             ...
         """
@@ -151,18 +151,18 @@ class Log:
     def set_log_unit(self, unit):
         '''Sets the unit of a log. Restricted to log types having a unit in the log title.
 
-        Argument:
-        __________
-        unit: Str
+        Parameters
+        ----------
+        unit : str
             The unit of the log.'''
         self.dispatch.LogUnit = unit
 
     def get_log_unit(self):
         '''Gets the unit of a log. Restricted to log types having a unit in the log title.
 
-        Argument:
-        __________
-        unit: Str
+        Parameters
+        ----------
+        unit : str
             The unit of the log.'''
         return self.dispatch.LogUnit
 
@@ -176,9 +176,9 @@ class Log:
     def log_unit(self, unit):
         Sets the unit of a log. Restricted to log types having a unit in the log title.
 
-        Argument:
-        __________
-        unit: Str
+        Parameters
+        ----------
+        unit : str
             The unit of the log.
         
         self.dispatch.LogUnit = unit
@@ -194,9 +194,9 @@ class Log:
     def left_position(self, position):
         """Sets the left position of the log column in percent of the document width.
          
-        Argument:
-        __________
-        position: Float
+        Parameters
+        ----------
+        position : float
             Value between 0 and 1.
         """
         self.dispatch.LeftPosition = position
@@ -205,9 +205,9 @@ class Log:
     def set_left_position(self, position):
         """Sets the left position of the log column in percent of the document width.
 
-        Argument:
-        __________
-        position: Float
+        Parameters
+        ----------
+        position : float
             Value between 0 and 1.
         """
         self.dispatch.LeftPosition = position
@@ -215,9 +215,9 @@ class Log:
     def get_left_position(self):
         """Gets the left position of the log column in percent of the document width.
 
-        Argument:
-        __________
-        position: Float
+        Parameters
+        ----------
+        position : float
             Value between 0 and 1.
         """
         return self.dispatch.LeftPosition
@@ -232,9 +232,9 @@ class Log:
     def right_position(self, position):
         """Sets the right position of the log column in percent of the document width.
 
-        Argument:
-        __________
-        position: Float
+        Parameters
+        ----------
+        position : float
             Value between 0 and 1.
         """
         self.dispatch.RightPosition = position
@@ -243,9 +243,9 @@ class Log:
     def set_right_position(self, position):
         """Sets the right position of the log column in percent of the document width.
 
-        Argument:
-        __________
-        position: Float
+        Parameters
+        ----------
+        position : float
             Value between 0 and 1.
         """
         self.dispatch.RightPosition = position
@@ -253,9 +253,9 @@ class Log:
     def get_right_position(self):
         """Gets the right position of the log column in percent of the document width.
 
-        Argument:
-        __________
-        position: Float
+        Parameters
+        ----------
+        position : float
             Value between 0 and 1.
         """
         return self.dispatch.RightPosition
@@ -263,12 +263,12 @@ class Log:
     def set_position(self, left, right):
         """Sets the left and right position of a log column in percentage of the document width.
 
-        Arguments:
-        __________
-        left: Float
+        Parameters
+        ----------
+        left : float
             Value between 0 and 1.
 
-        right: Float
+        right : float
             Value between 0 and 1.
         """
         self.dispatch.SetPosition(left, right)
@@ -276,9 +276,9 @@ class Log:
     def type(self):  # new lineation log should be added
         """Gets the log type index.
 
-        Argument:
-        __________
-        log_type: Float
+        Parameters
+        ----------
+        log_type : float
             Undefined = 0
             Well log = 1
             Formula log = 2
@@ -336,9 +336,9 @@ class Log:
     def log_background_color_int(self, value):
         """Sets the background color for a log column as an RGB integer value.
 
-        Argument:
-        __________
-        value: Int
+        Parameters
+        ----------
+        value : int
             RGB tuple value.
         """
         self.dispatch.LogBackgroundColor = value
@@ -346,15 +346,15 @@ class Log:
     def log_background_color_rgb(self, r, g, b):
         """Sets the background color for a log column as an RGB tuple.
 
-            Arguments:
-            __________
-            r: Int
-                Value between 0 and 255.
-            g: Int
-                Value between 0 and 255.
-            b: Int
-                Value between 0 and 255.
-            """
+        Parameters
+        ----------
+        r : int
+            Value between 0 and 255.
+        g : int
+            Value between 0 and 255.
+        b : int
+            Value between 0 and 255.
+        """
         colorInt = r + (g*256) + (b*256*256)
         self.dispatch.LogBackgroundColor = colorInt
 
@@ -370,9 +370,9 @@ class Log:
     def set_border_style(self, style):
         """Sets the border style of the log column.
 
-        Argument:
-        __________
-        style : Int
+        Parameters
+        ----------
+        style : int
             Solid = 0
             Dashed = 1
             Dotted = 2
@@ -391,9 +391,9 @@ class Log:
     def border_color_int(self, value):
         """Sets the color used for the log border as an RGB integer value.
 
-        Argument:
-        __________
-        value: Int
+        Parameters
+        ----------
+        value : int
             RGB tuple value.
         """
         self.dispatch.BorderColor = value
@@ -401,15 +401,15 @@ class Log:
     def border_color_rgb(self, r, g, b):
         """Sets the background color for a log column as an RGB tuple.
 
-            Arguments:
-            __________
-            r: Int
-                Value between 0 and 255.
-            g: Int
-                Value between 0 and 255.
-            b: Int
-                Value between 0 and 255.
-            """
+        Parameters
+        ----------
+        r : int
+            Value between 0 and 255.
+        g : int
+            Value between 0 and 255.
+        b : int
+            Value between 0 and 255.
+        """
         colorInt = r + (g * 256) + (b * 256 * 256)
         self.dispatch.LogBackgroundColor = colorInt
 
@@ -429,9 +429,9 @@ class Log:
     def history_item_date(self, index):
         """Gets the date of the history item at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index of the history entry.
         """
         return self.dispatch.HistoryItemDate(index)
@@ -439,9 +439,9 @@ class Log:
     def history_item_description(self, index):
         """Gets the description of the history item at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index of the history entry."""
         return self.dispatch.HistoryItemDescription(index)
 
@@ -455,9 +455,9 @@ class Log:
     def null_value(self, value):
         """Sets the No Data value of a log.
 
-        Argument:
-        __________
-        value: Float
+        Parameters
+        ----------
+        value : float
             numerical value which will represent No Data
         """
         self.dispatch.NullValue = value
@@ -471,9 +471,9 @@ class Log:
     def set_null_value(self, value):
         """Sets the No Data value of a log.
 
-        Argument:
-        __________
-        value: Float
+        Parameters
+        ----------
+        value : float
             numerical value which will represent No Data
         """
         self.dispatch.NullValue = value
@@ -508,9 +508,9 @@ class Log:
     def sample_rate(self, rate):
         """Sets the sample interval of a log in current master depth units.
 
-        Argument:
-        __________
-        rate: Float
+        Parameters
+        ----------
+        rate : float
             numerical value which represents sample rate
         """
         self.dispatch.SampleRate = rate
@@ -523,9 +523,9 @@ class Log:
     def set_sample_rate(self, rate):
         """Sets the sample interval of a log in current master depth units.
 
-        Argument:
-        __________
-        rate: Float
+        Parameters
+        ----------
+        rate : float
             numerical value which represents sample rate
         """
         self.dispatch.SampleRate = rate
@@ -533,9 +533,9 @@ class Log:
     def scale_low(self, scale):
         """Sets the low scale value of the log.
 
-        Argument:
-        __________
-        scale: Float
+        Parameters
+        ----------
+        scale : float
             number which will represent the scale lowest value
         """
         self.dispatch.ScaleLow = scale
@@ -543,9 +543,9 @@ class Log:
     def scale_high(self, scale):
         """Sets the high scale value of the log.
 
-        Argument:
-        __________
-        scale: Float
+        Parameters
+        ----------
+        scale : float
             number which will represent the scale highest value
         """
         self.dispatch.ScaleHigh = scale
@@ -560,9 +560,9 @@ class Log:
     def scale_mode(self, mode):
         """Sets the scale mode for the data display of a Well or Mud Logs.
 
-        Argument:
-        __________
-        mode: Int
+        Parameters
+        ----------
+        mode : int
             linear = 0
             logarithmic = 1
         """
@@ -576,9 +576,9 @@ class Log:
     def set_scale_mode(self, mode):
         """Sets the scale mode for the data display of a Well or Mud Logs.
 
-        Argument:
-        __________
-        mode: Int
+        Parameters
+        ----------
+        mode : int
             linear = 0
             logarithmic = 1
         """
@@ -618,9 +618,9 @@ class Log:
     def maj_grid_spacing(self, spacing):
         """Sets the vertical (major) grid for Well or Mud Logs.
 
-        Argument:
-        __________
-        spacing: Float
+        Parameters
+        ----------
+        spacing : float
             value of the spacing between each grid
         """
         self.dispatch.MajGridSpacing = spacing
@@ -628,9 +628,9 @@ class Log:
     def min_grid_spacing(self, spacing):
         """Sets the vertical (minor) grid for Well or Mud Logs.
 
-        Argument:
-        __________
-        spacing: Float
+        Parameters
+        ----------
+        spacing : float
             value of the spacing between each grid
         """
         self.dispatch.MinGridSpacing = spacing
@@ -651,9 +651,9 @@ class Log:
     def data(self, index):
         """Gets the data value at the specified index from a Well, Mud, Interval or Depth Log.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index of the data point to be retrieved.
         """
         return self.dispatch.Data(index)
@@ -661,9 +661,9 @@ class Log:
     def data_at_depth(self, depth):
         """Gets the data value at the specified depth from a Well, Mud, Interval or Depth Log.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             Depth value at current units at which the data value will be returned
         """
         return self.dispatch.DataAtDepth(depth)
@@ -673,9 +673,9 @@ class Log:
         Percent, Analysis, FWS, Image and RGB Logs. For logs requiring a constant sample step
         (Well, Image, RGB, Analysis Logs) the index 0 corresponds to the Bottom Depth.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index of the depth point to be retrieved.
         """
         return self.dispatch.DataDepth(index)
@@ -683,13 +683,13 @@ class Log:
     def insert_data(self, index, value):
         """Inserts a new data value at the specified index of a Well Log.
 
-        Arguments:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index at which the new data point will be inserted.
             If necessary existing data points will be shifted.
             The index must be lower or equal to the number of data points in the log.
-        value: float
+        value : float
             new data value
         """
         self.dispatch.InsertData(index, value)
@@ -697,13 +697,13 @@ class Log:
     def insert_data_at_depth(self, depth, value):
         """Inserts a new data value at the specified depth of a Well Log.
 
-        Arguments:
-        __________
-        depth: float
+        Parameters
+        ----------
+        depth : float
             Depth in current units at which the new data point should be inserted.
             If necessary existing data points will be shifted.
             The function fails if the added depth does not respect the constant sample rate of the Well Log.
-        value: float
+        value : float
             new data value
         """
         self.dispatch.InsertDataAtDepth(depth, value)
@@ -719,9 +719,9 @@ class Log:
         """Sets the formula to be used in a Formula Log.
         The formula should not include the equal sign.
 
-        Argument:
-        __________
-        formula: Str
+        Parameters
+        ----------
+        formula : str
             equation using standard math symbols
         """
         self.dispatch.Formula(formula)
@@ -735,9 +735,9 @@ class Log:
         """Sets the formula to be used in a Formula Log.
         The formula should not include the equal sign.
 
-        Argument:
-        __________
-        formula: Str
+        Parameters
+        ----------
+        formula : str
             equation using standard math symbols
         """
         self.dispatch.Formula(formula)
@@ -752,9 +752,9 @@ class Log:
     def filter(self, width):
         """Sets the width (in samples) of the display filter used for Well Logs.
 
-        Argument:
-        __________
-        width: Int
+        Parameters
+        ----------
+        width : int
             number of samples which corresponds to the filter width
         """
         self.dispatch.Filter = width
@@ -767,9 +767,9 @@ class Log:
     def set_filter(self, width):
         """Sets the width (in samples) of the display filter used for Well Logs.
 
-        Argument:
-        __________
-        width: Int
+        Parameters
+        ----------
+        width : int
             number of samples which corresponds to the filter width
         """
         self.dispatch.Filter = width
@@ -784,9 +784,9 @@ class Log:
     def fixed_bar_width(self, width):
         """Sets the fixed bar width in 1/10 mm for Mud Logs.
 
-        Argument:
-        __________
-        width: Int
+        Parameters
+        ----------
+        width : int
             number of millimeters
         """
         self.dispatch.FixedBarWidth = width
@@ -800,9 +800,9 @@ class Log:
     def set_fixed_bar_width(self, width):
         """Sets the fixed bar width in 1/10 mm for Mud Logs.
 
-        Argument:
-        __________
-        width: Int
+        Parameters
+        ----------
+        width : int
             number of millimeters
         """
         self.dispatch.FixedBarWidth = width
@@ -810,13 +810,13 @@ class Log:
     def insert_new_interval_item (self, top_depth, bottom_depth, value):
         """Inserts a new interval in an interval log.
 
-        Arguments:
-        __________
-        top_depth: Float
+        Parameters
+        ----------
+        top_depth : float
             top depth of the new interval in current depth units
-        bottom_depth: Float
+        bottom_depth : float
             bottom depth of the new interval in current depth units
-        value: Float
+        value : float
             the new data value
         """
         self.dispatch.InsertNewIntervalItem(top_depth, bottom_depth, value)
@@ -824,9 +824,9 @@ class Log:
     def interval_item(self, index):
         """Gets an interval item object from an Interval Log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             zero based index at which to retrieve the interval item.
         """
         return self.dispatch.IntervalItem(index)
@@ -835,9 +835,9 @@ class Log:
         """Gets an interval item object from an Interval Log at the specified depth in current
         depth units.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             depth value at which to retrieve the interval item.
         """
         return self.dispatch.IntervalItemAtDepth(depth)
@@ -845,13 +845,13 @@ class Log:
     def pen_color(self, r, g, b): # RGB as a hole, maybe have to use a python method to convert R,G and B as one number
         """Sets the pen color used in a Well or Mud Log as RGB color value.
 
-        Arguments:
-        __________
-        r: Int
+        Parameters
+        ----------
+        r : int
             Value between 0 and 255.
-        g: Int
+        g : int
             Value between 0 and 255.
-        b: Int
+        b : int
             Value between 0 and 255.
         """
         colorInt = r + (g * 256) + (b * 256 * 256)
@@ -866,9 +866,9 @@ class Log:
     def pen_style(self, style):
         """Sets the pen style used in a Well or Mud Log.
 
-        Argument:
-        __________
-        style: Int
+        Parameters
+        ----------
+        style : int
             Solid = 0
             Dashed = 1
             Dotted = 2
@@ -886,9 +886,9 @@ class Log:
     def pen_width(self, width):
         """Sets the pen width used in a Well or Mud Log in 1/10 mm.
 
-        Argument:
-        __________
-        width: Int
+        Parameters
+        ----------
+        width : int
             number of millimeters
         """
         self.dispatch.PenWidth = width
@@ -897,9 +897,9 @@ class Log:
         """Removes the data point at the specified index from a Mud or Well Log.
          For Well Logs the data value will be set to NULL.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             zero based index at which the data point will be removed
         """
         self.dispatch.RemoveData(index)
@@ -908,9 +908,9 @@ class Log:
         """Removes the data point at the specified depth from a Mud or Well Log.
          For Well Logs the data value will be set to NULL.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             depth value in current units at which the data point will be removed
         """
         self.dispatch.RemoveDataAtDepth(depth)
@@ -918,9 +918,9 @@ class Log:
     def remove_interval_item(self, index):
         """Removes a data interval from an Interval Log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             zero based index at which the data interval that will be removed
         """
         self.dispatch.RemoveIntervalItem(index)
@@ -928,9 +928,9 @@ class Log:
     def remove_interval_item_at_depth(self, depth):
         """Removes a data interval from an Interval Log at the specified depth.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             depth value in current units at which the data point will be removed
         """
         self.dispatch.RemoveIntervalItemAtDepth(depth)
@@ -944,9 +944,9 @@ class Log:
     def shading(self, position):
         """Sets the the shading position used in a Well or Mud Log.
 
-        Argument:
-        __________
-        position: Int
+        Parameters
+        ----------
+        position : int
             None = 0
             Left = 1
             Right = 2
@@ -963,11 +963,11 @@ class Log:
     def style(self, style_number):
         """Sets the data display style for Mud Logs and Engineering Logs.
 
-        Argument:
-        __________
-        style_number: Int
+        Parameters
+        ----------
+        style_number : int
 
-            Mud Logs:
+            Mud Logs :
             fixed bar = 1
             dynamic bar = 2
             line = 3
@@ -984,12 +984,12 @@ class Log:
 # litho, Coredesc, and percentage logs
 
     def attach_litho_dictionary(self, dictionary):
-        """Attaches a new symbol or pattern library (*.LTH file) to Litho, CoreDesc,
+        """Attaches a new symbol or pattern library (\*.LTH file) to Litho, CoreDesc,
         Strata, Analysis or Percentage Log.
 
-        Argument:
-        __________
-        dictionary: Str
+        Parameters
+        ----------
+        dictionary : str
             path and name of the LTH file to attach
         """
         self.dispatch.AttachLithoDictionary(dictionary)
@@ -998,12 +998,12 @@ class Log:
     def component_name(self, column, code):
         """Sets the color used for the log border as an RGB color value.
 
-        Arguments:
-        __________
-        column: Int
+        Parameters
+        ----------
+        column : int
             Zero based index of the data column in the tabular editor for
             which the component name should be set or retrieved.
-        code: Str
+        code : str
             Code of the component to be used as specified in the litho library of the log.
         """
         self.dispatch.ComponentName(column, code)
@@ -1011,9 +1011,9 @@ class Log:
     def fossil_item(self, index):
         """Gets a Fossil Item object from the CoreDesc Log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index of the item to be retrieved.
         """
         return self.dispatch.FossilItem(index)
@@ -1021,9 +1021,9 @@ class Log:
     def fossil_item_at_depth(self, depth):
         """Gets a fossil item object from the CoreDesc Log at the specified depth.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             depth value in current depth units at which the item will be retrieved
         """
         return self.dispatch.FossilItemAtDepth(depth)
@@ -1031,22 +1031,22 @@ class Log:
     def insert_new_fossil_item(self, top_depth, bottom_depth, litho_code, abundance, dominance, position):
         """Inserts a new data point or interval into a Core Description Log.
 
-        Arguments:
-        __________
-        top_depth: Float
+        Parameters
+        ----------
+        top_depth : float
             Top depth of the new data interval in current depth units.
-        bottom_depth: Float
+        bottom_depth : float
             Bottom depth of the new data interval in current depth units.
-        litho_code: Str
+        litho_code : str
             Code of the symbol representing the feature as defined in the symbol library of the log.
-        abundance: Int
+        abundance : int
             The abundance value associated with the symbol (e.g. between 0 and 9).
-        dominance: Int
+        dominance : int
             The dominance value associated with the symbol
             undiff = 0
             minor = 1
             major = 2
-        position: Float
+        position : float
             A value between 0 and 1 determining the horizontal position of the symbol within the log column.
         """
         self.dispatch.InsertNewFossilItem(top_depth, bottom_depth, litho_code, abundance, dominance, position)
@@ -1054,17 +1054,17 @@ class Log:
     def insert_new_litho_bed(self, top_depth, bottom_depth, litho_code, value, position):
         """Inserts a new lithology bed into a Litho Log.
 
-        Arguments:
-        __________
-        top_depth: Float
+        Parameters
+        ----------
+        top_depth : float
             Top depth of the new data interval in current depth units.
-        bottom_depth: Float
+        bottom_depth : float
             Bottom depth of the new data interval in current depth units.
-        litho_code: Str
+        litho_code : str
             Code of the symbol representing the feature as defined in the symbol library of the log.
-        value: Float
+        value : float
             Hardness value between 0 and 1.
-        position: Float
+        position : float
             A value between 0 and 1 determining the horizontal position Position of a non repeated symbol
             in percent of the track width.
         """
@@ -1073,9 +1073,9 @@ class Log:
     def litho_bed(self, index):
         """Gets a LithoBed object at the specified index from a Lithology Log.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index of the LithoBed to be retrieved.
         """
         return self.dispatch.LithoBed(index)
@@ -1083,9 +1083,9 @@ class Log:
     def litho_bed_at_depth(self, depth):
         """Gets a LithoBed object at the specified depth from a Lithology Log.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             depth value in current depth units at which the item will be retrieved
         """
         return self.dispatch.LithoBedAtDepth(depth)
@@ -1099,9 +1099,9 @@ class Log:
     def litho_dictionary(self, dictionary):
         """Sets the symbol library used by the log as LithoDictionary object.
 
-        Argument:
-        __________
-        dictionary: Str
+        Parameters
+        ----------
+        dictionary : str
             path and name of the LTH file to attach
         """
         self.dispatch.LithoDictionary(dictionary)
@@ -1109,9 +1109,9 @@ class Log:
     def remove_fossil_item(self, index):
         """Removes an item at the specified index from a CoreDesc Log.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index of the fossil item to be removed.
         """
         self.dispatch.RemoveFossilItem(index)
@@ -1119,9 +1119,9 @@ class Log:
     def remove_fossil_item_at_depth(self, depth):
         """Removes an item at the specified index from a CoreDesc Log.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             the depth value of the symbol in current depth units at which it will be removed.
         """
         self.dispatch.RemoveFossilItemAtDepth(depth)
@@ -1129,9 +1129,9 @@ class Log:
     def remove_litho_bed(self, index):
         """Removes a lithology bed from the Lithology log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index of the lithology bed item to be removed.
         """
         self.dispatch.RemoveLithoBed(index)
@@ -1139,9 +1139,9 @@ class Log:
     def remove_litho_bed_at_depth(self, depth):
         """Removes a lithology bed from the Lithology log at the specified depth.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             the depth value in current depth units at which the lithological bed will be removed.
         """
         self.dispatch.RemoveLithoBedAtDepth(depth)
@@ -1151,9 +1151,9 @@ class Log:
     def insert_trace(self, index):
         """Inserts a new data trace into an Image, FWS or Analysis Log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index at which the trace should be added.
             Must be lower or equal the number of data traces within the log.
             If necessary, existing traces will be shifted.
@@ -1163,9 +1163,9 @@ class Log:
     def insert_trace_at_depth(self, depth):
         """Inserts a new data trace into an Image, FWS or Analysis Log at the specified depth.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth value in current depth units at which the new data trace will be inserted.
             If necessary existing traces will be shifted.
             The function fails if the specified depth lies without the constant sample rate of the log
@@ -1177,9 +1177,9 @@ class Log:
         """Remove an entire data trace from an Image, FWS, Analysis or Percentage Log.
         Removing a trace from a log means setting all trace values to NULL.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index of the trace to be set to NULL.
         """
         self.dispatch.RemoveTrace(index)
@@ -1188,9 +1188,9 @@ class Log:
         """Remove an entire data trace from an Image, FWS, Analysis or Percentage Log.
         Removing a trace from a log means setting all trace values to NULL.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth value in current depth units at which the trace will be set to NULL.
         """
         self.dispatch.InsertTraceAtDepth(depth)
@@ -1199,11 +1199,11 @@ class Log:
         """set the data value at the specified row index and position within the trace
          (column index) of an Analysis, Percentage, FWS, Image or RGB Log.
 
-        Arguments:
-        __________
-        depth_index: Int
+        Parameters
+        ----------
+        depth_index : int
             zero based index of the depth (0 = bottom depth).
-        trace_index: Int
+        trace_index : int
             zero based index of the column.
         """
         self.dispatch.TraceData(depth_index, trace_index)
@@ -1219,11 +1219,11 @@ class Log:
         """set the data value at the specified depth and position within
          the trace of an Analysis, Percentage, FWS, Image or RGB Log
 
-        Arguments:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth value at which you would like to retrieve the data value in the current depth units.
-        trace_position: Float
+        trace_position : float
             The position within the trace (time or angle as shown in the column header of the tabular editor,
             not the index) at which you would like to retrieve the data value.
         """
@@ -1238,9 +1238,9 @@ class Log:
     def trace_length(self, length):
         """Sets  the length of a data trace in Image, RGB and FWS Logs.
 
-        Argument:
-        __________
-        length: Str
+        Parameters
+        ----------
+        length : str
             numerical value corresponding to the length of the trace
         """
         self.dispatch.TraceLength(length)
@@ -1254,9 +1254,9 @@ class Log:
     def trace_offset(self, offset):
         """Sets the offset of a data trace in the FWS Log.
 
-        Argument:
-        __________
-        offset: Float
+        Parameters
+        ----------
+        offset : float
             numerical value representing the offset
         """
         self.dispatch.TraceOffset(offset)
@@ -1270,9 +1270,9 @@ class Log:
     def trace_sample_rate(self, rate):
         """Sets the trace sample interval in Image, RGB and FWS Logs.
 
-        Argument:
-        __________
-        rate: Float
+        Parameters
+        ----------
+        rate : float
             numerical value representing the sample rate or interval
         """
         self.dispatch.TraceSampleRate(rate)
@@ -1286,11 +1286,11 @@ class Log:
     def column_name(self, column, name):
         """Sets set the name of a Strata Log column.
 
-        Argument:
-        __________
-        column: Int
+        Parameters
+        ----------
+        column : int
             Zero based index of the column to be retrieved
-        name: Str
+        name : str
             New name of the column.
         """
         self.dispatch.ColumnName(column, name)
@@ -1298,9 +1298,9 @@ class Log:
     def comment_box(self, index):
         """Gets the Comment Box object from the Comment Log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index at which the box will be retrieved.
         """
         return self.dispatch.CommentBox(index)
@@ -1308,9 +1308,9 @@ class Log:
     def comment_box_at_depth(self, depth):
         """Gets the Comment Box object from the Comment Log at the specified depth.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth value in current depth units at which the comment box will be retrieved.
         """
         return self.dispatch.CommentBoxAtDepth(depth)
@@ -1318,13 +1318,13 @@ class Log:
     def insert_new_comment_box(self, top_depth, bottom_depth, text):
         """Sets a new box with the specified text into a Comment Log.
 
-        Arguments:
-        __________
-        top_depth: Float
+        Parameters
+        ----------
+        top_depth : float
             The top of the box in current depth units.
-        bottom_depth: Float
+        bottom_depth : float
             The bottom of the box in current depth units.
-        text: Str
+        text : str
             The text to be displayed in the new box.
         """
         self.dispatch.InsertNewCommentBox(top_depth, bottom_depth, text)
@@ -1332,9 +1332,9 @@ class Log:
     def marker(self, index):
         """Gets the marker object of the specified index from the Marker Log.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index at which the marker object will be retrieved.
         """
         return self.dispatch.Marker(index)
@@ -1342,9 +1342,9 @@ class Log:
     def marker_by_name(self, name):
         """Gets the marker object of the specified name from the Marker Log.
 
-        Argument:
-        __________
-        name: Str
+        Parameters
+        ----------
+        name : str
             Text of the marker object to be retrieved.
         """
         return self.dispatch.MarkerByName(name)
@@ -1352,15 +1352,15 @@ class Log:
     def insert_new_marker(self, depth, name, comment, contact):
         """Sets a new marker at the specified depth into a Marker Log
 
-        Arguments:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth value in current depth units at which the marker will be added.
-        name: Str
+        name : str
             The name (or identifier) of the marker.
-        comment: Str
+        comment : str
             The optional comment for the marker.
-        contact: Str
+        contact : str
             Name of a contact style to be used and available in the contact dictionary of the Marker Log.
         """
         self.dispatch.InsertNewMarker(depth,name, comment, contact)
@@ -1368,9 +1368,9 @@ class Log:
     def removes_comment_box(self, index):
         """Removes a comment box from the Comment log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index at which the comment box will be removed.
         """
         self.dispatch.RemoveCommentBox(index)
@@ -1378,9 +1378,9 @@ class Log:
     def removes_comment_box_at_depth(self, depth):
         """Removes a comment box from the Comment log at the specified depth.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth value in current depth units at which the comment box will be removed.
         """
         self.dispatch.RemoveCommentBoxAtDepth(depth)
@@ -1388,9 +1388,9 @@ class Log:
     def remove_marker(self, index):
         """Removes the marker from a Marker Log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index at which the marker box will be removed.
         """
         self.dispatch.RemoveMarker(index)
@@ -1398,9 +1398,9 @@ class Log:
     def strata_column(self, index):
         """Gets a column from a Strata Log as Comment Log object.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index  of the column to be returned.
         """
         return self.dispatch.StrataColumn(index)
@@ -1408,9 +1408,9 @@ class Log:
     def remove_strata_column(self, index):
         """Removes the the specified column from a Strata Log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index of the column to be removed.
         """
         self.dispatch.RemoveStrataColumn(index)
@@ -1424,9 +1424,9 @@ class Log:
     def font(self, name):
         """Sets the font used in a Comment Log as Font Object.
 
-        Argument:
-        __________
-        name: Str
+        Parameters
+        ----------
+        name : str
             name of the font to be used.
         """
         self.dispatch.Font(name)
@@ -1434,13 +1434,13 @@ class Log:
 #Structure and Borehole
 
     def attach_attribute_dictionary(self, attribute, file):
-        """Attaches a new attribute library (*.TAD file) to a Structure / Breakout Log.
+        """Attaches a new attribute library (\*.TAD file) to a Structure / Breakout Log.
 
-        Argument:
-        __________
-        attribute: Str
+        Parameters
+        ----------
+        attribute : str
             Name of the classification column (see column_name).
-        file: Str
+        file : str
             Path and name of the TAD file to attach.
         """
         self.dispatch.AttachAttributeDictionary(attribute, file)
@@ -1453,11 +1453,11 @@ class Log:
     def set_attribute_name(self, index, name):
         """Sets the name of the attribute class (i.e. classification column) in a Breakout Log or a Structure Log.
 
-        Arguments:
-        __________
-        index: Str
+        Parameters
+        ----------
+        index : str
             Zero based index of the column.
-        name: Str
+        name : str
             New name of the classification column.
         """
         self.dispatch.AttributeName(index, name)
@@ -1465,9 +1465,9 @@ class Log:
     def structure(self, index):
         """Gets a Structure object from the Structure Log at the specified depth index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index  of the structure object to be retrieved.
         """
         return self.dispatch.Structure(index)
@@ -1475,9 +1475,9 @@ class Log:
     def structure_at_depth(self, depth):
         """Gets a Structure object from the Structure Log at the specified depth in current depth units.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth value in current depth units at which the structure object will be retrieved.
             Feature closest to specified depth will be returned.
         """
@@ -1486,9 +1486,9 @@ class Log:
     def breakout(self, index):
         """Gets a breakout from the Breakout Log at the specified depth index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index  of the breakout to be retrieved.
         """
         return self.dispatch.Breakout(index)
@@ -1496,9 +1496,9 @@ class Log:
     def breakout_at_depth(self, depth):
         """Gets a breakout from the Breakout Log at the specified depth in current depth units.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth value in current depth units at which the breakout will be retrieved.
         """
         return self.dispatch.BreakoutAtDepth(depth)
@@ -1506,17 +1506,17 @@ class Log:
     def insert_new_breakout_ex(self, depth, azimuth, tilt, length, opening):
         """Sets a new breakout in a Breakout Log.
 
-        Arguments:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth value in the current units of the breakout to be inserted.
-        azimuth: Float
+        azimuth : float
             The azimuth angle of the breakout measured in degrees.
-        tilt: Float
+        tilt : float
             The tilt angle of the breakout measured in degrees.
-        length: Float
+        length : float
             The length of the breakout in meters.
-        opening: Float
+        opening : float
             The opening angle of the breakout in degrees.
         """
         self.dispatch.InsertNewBreakoutEx(depth, azimuth, tilt, length, opening)
@@ -1524,15 +1524,15 @@ class Log:
     def insert_new_structure_ex(self, depth, azimuth, dip, aperture):
         """Sets a new structure in a Structure Log.
 
-        Arguments:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth value in the current units of the breakout to be inserted.
-        azimuth: Float
+        azimuth : float
             The azimuth angle of the structure measured in degrees.
-        dip: Float
+        dip : float
             The tilt angle of the structure measured in degrees.
-        aperture: Float
+        aperture : float
             The aperture of the structure in meters.
         """
         self.dispatch.InsertNewStructureEx(depth, azimuth, dip, aperture)
@@ -1540,9 +1540,9 @@ class Log:
     def remove_breakout(self, index):
         """Removes a breakout from the Breakout Log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index  of the breakout to be removed.
         """
         self.dispatch.RemoveBreakout(index)
@@ -1550,9 +1550,9 @@ class Log:
     def remove_breakout_at_depth(self, depth):
         """Removes a breakout from the Breakout Log at the specified depth in current depth units.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth value in current depth units at which the breakout will be removed.
         """
         self.dispatch.RemoveBreakoutAtDepth(depth)
@@ -1560,9 +1560,9 @@ class Log:
     def remove_structure(self, index):
         """Removes a structure from the Structure Log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index  of the structure to be removed.
         """
         self.dispatch.RemoveStructure(index)
@@ -1570,9 +1570,9 @@ class Log:
     def remove_structure_at_depth(self, depth):
         """Removes a structure from the Structure Log at the specified depth in current depth units.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth value in current depth units at which the structure will be removed.
         """
         self.dispatch.RemoveStructureAtDepth(depth)
@@ -1587,9 +1587,9 @@ class Log:
     def length_unit(self, code):
         """Sets the unit of the breakout length measured in the breakout log.
 
-        Arguments:
-        __________
-        code: Float
+        Parameters
+        ----------
+        code : float
             0.001 when measured in mm or 0.0254 when measured in inches.
         """
         self.dispatch.LengthUnit(code)
@@ -1604,9 +1604,9 @@ class Log:
     def caliper_unit(self, code):
         """Sets the unit of the caliper used in the structure log.
 
-        Arguments:
-        __________
-        code: Float
+        Parameters
+        ----------
+        code : float
             0.001 when measured in mm or 0.0254 when measured in inches.
         """
         self.dispatch.CaliperUnit(code)
@@ -1621,9 +1621,9 @@ class Log:
     def aperture_unit(self, code):
         """Sets the aperture value in a structure log.
 
-        Arguments:
-        __________
-        code: Float
+        Parameters
+        ----------
+        code : float
             0.001 when measured in mm or 0.0254 when measured in inches.
         """
         self.dispatch.ApertureUnit(code)
@@ -1633,13 +1633,13 @@ class Log:
     def insert_new_schmit_box(self, topdepth, bottomdepth, text):
         """Inserts a new box into a Polar & Rose Log.
 
-        Arguments:
-        __________
-        topdepth: Float
+        Parameters
+        ----------
+        topdepth : float
             The top depth value of the interval in the current depth units.
-        bottomdepth: Float
+        bottomdepth : float
             The bottom depth value of the interval in the current depth units.
-        text: String
+        text : string
             A text description which is only shown in the tabular editor display.
         """
         self.dispatch.InsertNewSchmitBox(topdepth, bottomdepth, text)
@@ -1647,9 +1647,9 @@ class Log:
     def schmit_box(self, index):
         """Gets a Schmidt Box object from the Polar & Rose Log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index  of the box to be returned.
         """
         return self.dispatch.SchmitBox(index)
@@ -1657,9 +1657,9 @@ class Log:
     def schmit_box_at_depth(self, depth):
         """Gets a Schmit Box object from the Polar & Rose Log at the specified depth in current depth units.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth of the box to be returned in current depth units.
         """
         self.dispatch.SchmitBoxAtDepth(depth)
@@ -1667,9 +1667,9 @@ class Log:
     def remove_schmidt_box(self, index):
         """Removes a Schmit Box object from the Polar & Rose Log at the index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index  of the box to be removed.
         """
         self.dispatch.RemoveSchmitBox(index)
@@ -1677,9 +1677,9 @@ class Log:
     def remove_schmit_box_at_depth(self, depth):
         """Removes a box from the Polar & Rose log at the specified depth in current depth units.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth of the box to be removed in current depth units.
         """
         self.dispatch.RemoveSchmitBoxAtDepth(depth)
@@ -1689,9 +1689,9 @@ class Log:
     def cross_box(self, index): # the example in the Automation module is wrong
         """Gets a Cross Box object from the Cross Section Log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index of the box to be retrieve.
         """
         return self.CrossBox(index)
@@ -1699,9 +1699,9 @@ class Log:
     def cross_box_at_depth(self, depth):
         """Gets a Cross Box object from the Cross Section Log at the specified depth in current depth units.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth of the box to be retrieved in current depth units.
         """
         return self.dispatch.CrossBoxAtDepth(depth)
@@ -1709,11 +1709,11 @@ class Log:
     def insert_new_cross_box(self, topdepth, bottomdepth):
         """Inserts a new box into the Cross Section Log.
 
-        Arguments:
-        __________
-        topdepth: Float
+        Parameters
+        ----------
+        topdepth : float
             The top depth value of the cross section box in current depth units.
-        bottomdepth: Float
+        bottomdepth : float
             The bottom depth value of the cross section box in current depth units.
         """
         self.dispatch.InsertNewCrossBox(topdepth, bottomdepth)
@@ -1721,9 +1721,9 @@ class Log:
     def remove_cross_box(self, index):
         """Removes a box from the Cross Section Log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index of the box to be removed.
         """
         self.dispatch.RemoveCrossBox(index)
@@ -1731,9 +1731,9 @@ class Log:
     def remove_cross_box_at_depth(self, depth):
         """Removes a box from the Cross Section Log at the specified depth.
 
-        Arguments:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth in current units at which the box will be removed.
         """
         self.dispatch.RemoveCrossBoxAtDepth(depth)
@@ -1743,15 +1743,15 @@ class Log:
     def insert_new_stack_item(self, topdepth, bottomdepth, topwidth, bottomwidth):
         """Inserts a new data interval into a Stacking Pattern Log.
 
-        Arguments:
-        __________
-        topdepth: Float
+        Parameters
+        ----------
+        topdepth : float
             The top depth value of the interval in the current depth units.
-        bottomdepth: Float
+        bottomdepth : float
             The bottom depth value of the interval in the current depth units.
-        topwidth: Float
+        topwidth : float
            Width value at the top of the new interval.
-        bottomwidth: Float
+        bottomwidth : float
             Width value at the bottom of the new interval.
         """
         self.dispatch.InsertNewStackItem(topdepth, bottomdepth, topwidth, bottomwidth)
@@ -1759,9 +1759,9 @@ class Log:
     def stack_item(self, index):
         """Gets a Stack Item object from the Stacking Pattern Log at the specified depth index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index of the item to be retrieve.
         """
         return self.dispatch.StackItem(index)
@@ -1769,9 +1769,9 @@ class Log:
     def stack_item_at_depth(self, depth):
         """Gets a Stack Item object from the Stacking Pattern Log at the specified depth in current depth units.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth of the item to be retrieved in current depth units.
         """
         return self.dispatch.StackItemAtDepth(depth)
@@ -1779,9 +1779,9 @@ class Log:
     def remove_stack_item(self, index):
         """Removes an item from the Stacking Pattern Log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index  of the stacking pattern box to be removed.
         """
         self.dispatch.RemoveStackItem(index)
@@ -1789,9 +1789,9 @@ class Log:
     def remove_stack_item_at_depth(self, depth):
         """Removes an item from the Stacking Pattern Log at the specified depth.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth of the stack item to be removed in current depth units.
         """
         self.dispatch.RemoveStackItemAtDepth(depth)
@@ -1808,15 +1808,15 @@ class Log:
     def insert_new_ole_box_from_file(self, file_name, allowpicture, topdepth, bottomdepth):
         """Inserts a new interval into an OLE Log.
 
-        Arguments:
-        __________
-        file_name: Str
+        Parameters
+        ----------
+        file_name : str
             Path and name of the file to export.
-        allowpicture: Bool
+        allowpicture : bool
             Set to True to allow graphic files to be displayed using an internal viewer.
-        topdepth: Float
+        topdepth : float
             Top depth of the interval in current depth units.
-        bottomdepth: Float
+        bottomdepth : float
             Bottom depth of the interval in current depth units.
         """
         self.dispatch.InsertNewOleBoxFromFile(file_name, allowpicture, topdepth, bottomdepth)
@@ -1826,9 +1826,9 @@ class Log:
     def drill_item(self, index):
         """Gets a Drill Item object from the Engineering Log at the specified index.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index at which the drill item will be retrieved.
         """
         return self.dispatch.DrillItem(index)
@@ -1836,9 +1836,9 @@ class Log:
     def drill_item_at_depth(self, depth):
         """Gets a Drill Item object from the Engineering Log at the specified depth.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth of the item to be retrieved in current depth units.
         """
         return self.dispatch.DrillItemAtDepth(depth)
@@ -1846,9 +1846,9 @@ class Log:
     def eqp_item(self, index):
         """Gets an Equipment Item object at the specified index from the Engineering Log.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index at which the item will be retrieved.
         """
         return self.dispatch.EqpItem(index)
@@ -1856,9 +1856,9 @@ class Log:
     def ground_depth(self, depth):
         """Sets the starting point (reference datum) of the borehole.
 
-        Argument:
-        __________
-        depth: Float
+        Parameters
+        ----------
+        depth : float
             The depth value in current unit corresponding to the starting point of the borehole.
         """
         self.dispatch.GroundDepth(depth)
@@ -1872,9 +1872,9 @@ class Log:
     def diameter_high(self, diameter):
         """Sets the maximum diameter scaling value (width of the log column) for an Engineering Log.
 
-        Arguments:
-        __________
-        diameter: Float
+        Parameters
+        ----------
+        diameter : float
             Width value of the log column.
         """
         self.dispatch.DiameterHigh(diameter)
@@ -1882,9 +1882,9 @@ class Log:
     def insert_new_drill_item(self, depth, diameter):
         """Inserts a new drill item into the Engineering Log.
 
-        Argument:
-        __________
-        bottom depth: float
+        Parameters
+        ----------
+        bottom depth : float
             The bottom depth of the borehole in current depth units.
             (The top depth is either the ground_depth or the former bottom depth).
         """
@@ -1893,15 +1893,15 @@ class Log:
     def insert_new_eqp_item(self, topdepth, bottomdepth, name):
         """Inserts a new equipment item of the specified name and depth interval into the Engineering Log.
 
-        Argument:
-        __________
-        topdepth: Float
+        Parameters
+        ----------
+        topdepth : float
             The top depth of the equipment item interval in current units.
-        bottomdepth: Float
+        bottomdepth : float
             The bottom depth of the equipment item interval in current units.
-        name: Str
+        name : str
             The name (code) of the equipment item to be inserted.
-            Possible item are:
+            Possible item are :
             -PlainCasing
             -WireWoundCasing
             -SlottedCasing
@@ -1934,9 +1934,9 @@ class Log:
     def remove_drill_item(self, index):
         """Removes the drill item at the specified index from an Engineering Log.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index at which the item will be removed.
         """
         self.dispatch.RemoveDrillItem(index)
@@ -1944,9 +1944,9 @@ class Log:
     def remove_eqp_item(self, index):
         """Removes an equipment item at the specified depth index from an Engineering Log.
 
-        Argument:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index at which the item will be removed.
         """
         self.dispatch.RemoveEqpItem(index)
@@ -1960,9 +1960,9 @@ class Log:
     def background_color_int(self, value):
         """Sets the color used in the background of the Engineering Log as an RGB integer value.
 
-        Argument:
-        __________
-        value: Int
+        Parameters
+        ----------
+        value : int
             RGB tuple value.
         """
         self.dispatch.BackgroundColor = value
@@ -1970,15 +1970,15 @@ class Log:
     def background_color_rgb(self, r, g, b):
         """Sets the Engineering Log background color as an RGB tuple.
 
-            Arguments:
-            __________
-            r: Int
-                Value between 0 and 255.
-            g: Int
-                Value between 0 and 255.
-            b: Int
-                Value between 0 and 255.
-            """
+        Parameters
+        ----------
+        r : int
+            Value between 0 and 255.
+        g : int
+            Value between 0 and 255.
+        b : int
+            Value between 0 and 255.
+        """
         colorInt = r + (g * 256) + (b * 256 * 256)
         self.dispatch.BackgroundColor = colorInt
 
@@ -1991,9 +1991,9 @@ class Log:
     def background_hatch_style(self, code):
         """Sets the background hatch style for the Engineering Log.
 
-        Arguments:
-        __________
-        code: Int
+        Parameters
+        ----------
+        code : int
             horizontal = 0
             vertical = 1
             forward diagonal = 2
@@ -2012,9 +2012,9 @@ class Log:
     def background_style(self, code):
         """Sets the background style for the Engineering Log.
 
-        Arguments:
-        __________
-        code: Int
+        Parameters
+        ----------
+        code : int
             none = 0
             solid = 1
             hatch = 2
@@ -2027,29 +2027,29 @@ class Log:
 
     def allow_export_attribute_dictionary(self, index, export, password):
         """When dealing with a protected document you can use this method to enable/disable the option
-        to export the tadpole dictionary (*.TAD) from a specific classification column of a Structure or
+        to export the tadpole dictionary (\*.TAD) from a specific classification column of a Structure or
         Breakout Log. This assumes you are in possession of the password.
 
-        Arguments:
-        __________
-        index: Int
+        Parameters
+        ----------
+        index : int
             Zero based index of the classification column for which the protection level should eb changed.
-        export: Bool
-            Set this boolean to True to allow an export as *.tad file. Set it to False to protect the dictionary.
-        password: Str
+        export : bool
+            Set this boolean to True to allow an export as \*.tad file. Set it to False to protect the dictionary.
+        password : str
             the password needed to make changes to the protection level.
         """
         self.dispatch.AllowExportAttributeDictionary(index, export, password)
 
     def allow_export_litho_dictionary(self, export, password):
         """When dealing with a protected document you can use this method to enable / disable the option
-         to export the symbol dictionary (*.LTH) of a log. This assumes you are in possession of the password.
+         to export the symbol dictionary (\*.LTH) of a log. This assumes you are in possession of the password.
 
-        Arguments:
-        __________
-        export: Bool
+        Parameters
+        ----------
+        export : bool
             Set this boolean to True to allow the dictionary export. Set it to False to protect the dictionary.
-        password: Str
+        password : str
             the password needed to make changes to the protection level.
         """
         self.dispatch.AllowExportLithoDictionary(export, password)
@@ -2058,11 +2058,11 @@ class Log:
         """When dealing with a protected document you can use this method to enable / disable the option
          to edit the data of a log. This assumes you are in possession of the password.
 
-        Arguments:
-        __________
-        export: Bool
+        Parameters
+        ----------
+        export : bool
             Set this boolean to True to allow the modification of log data. Set it to False to protect the data.
-        password: Str
+        password : str
             the password needed to make changes to the protection level.
         """
         self.dispatch.AllowModifyLogData(export, password)
@@ -2071,11 +2071,11 @@ class Log:
         """When dealing with a protected document you can use this method to enable / disable the option
         to change the settings of a log. This assumes you are in possession of the password.
 
-        Arguments:
-        __________
-        export: Bool
+        Parameters
+        ----------
+        export : bool
             Set this boolean to True to allow access to the log settings. Set it to False to protect the log settings.
-        password: Str
+        password : str
             the password needed to make changes to the protection level.
         """
         self.dispatch.AllowModifyLogSettings(export, password)
@@ -2084,11 +2084,11 @@ class Log:
         """When dealing with a protected document you can use this method to enable / disable the option
         to access and use the formula in a Formula Log. This assumes you are in possession of the password.
 
-        Arguments:
-        __________
-        export: Bool
+        Parameters
+        ----------
+        export : bool
             Set this boolean to True to allow access the formula. Set it to False to protect the formula.
-        password: Str
+        password : str
             the password needed to make changes to the protection level.
         """
         self.dispatch.AllowUseFormula(export, password)
@@ -2097,11 +2097,11 @@ class Log:
         """When dealing with a protected document you can use this method to enable / disable the option
         to see the formula used in a Formula Log. This assumes you are in possession of the password.
 
-        Arguments:
-        __________
-        export: Bool
+        Parameters
+        ----------
+        export : bool
             Set this boolean to True to see the formula. Set it to False to protect the formula.
-        password: Str
+        password : str
             the password needed to make changes to the protection level.
         """
         self.dispatch.AllowViewFormula(export, password)
@@ -2110,11 +2110,11 @@ class Log:
         """When dealing with a protected document you can use this method to enable / disable the option
          to view the log history. This assumes you are in possession of the password.
 
-        Arguments:
-        __________
-        export: Bool
+        Parameters
+        ----------
+        export : bool
             Set this boolean to True to access the log history. Set it to False to protect the log history.
-        password: Str
+        password : str
             the password needed to make changes to the protection level.
         """
         self.dispatch.AllowViewLogHistory(export, password)
