@@ -5,7 +5,7 @@ pywellcad is a Python library that provides a Pythonic interface to the automati
 
 .. toctree::
    :maxdepth: 2
-   :caption: API documentation
+   :caption: COM API
 
    application
    log

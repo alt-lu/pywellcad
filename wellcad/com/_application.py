@@ -1,5 +1,5 @@
 from win32com.client import Dispatch
-from .borehole import Borehole
+from ._borehole import Borehole
 
 class Application:
 

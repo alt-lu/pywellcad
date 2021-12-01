@@ -1,10 +1,10 @@
-from .log import Log
-from .depth import Depth
-from .header import Header
-from .title import Title
-from .page import Page
-from .workspace import Workspace
-from .odbc import Odbc
+from ._log import Log
+from ._depth import Depth
+from ._header import Header
+from ._title import Title
+from ._page import Page
+from ._workspace import Workspace
+from ._odbc import Odbc
 
 
 class Borehole:
