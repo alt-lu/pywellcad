@@ -15,7 +15,8 @@ class Application:
 
     def show_window(self):
         """Displays the WellCAD workspace on screen."""
-        self.dispatch.ShowWindow()
+        self.dispatch._FlagAsMethod("ShowWindow")
+        return self.dispatch.ShowWindow()
         
 
     def minimize_window(self):

@@ -12,7 +12,7 @@ class TestApplication(unittest.TestCase):
         self.app.quit(False)
     
     def test_show_window(self):
-        self.app.show_window()
+        self.assertTrue(self.app.show_window())
     
     def test_minimize_window(self):
         self.app.minimize_window()
