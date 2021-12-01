@@ -7,6 +7,9 @@ class Depth:
         Depth object.
         """
 
+        if not depth_dispatch:
+            raise TypeError("No depth COM object supplied.")
+
         self.dispatch = depth_dispatch
     
 

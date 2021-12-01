@@ -6,6 +6,9 @@ class Header:
         Use the get_header method in the borehole object to retrieve
         the entire borehole document header.
         """
+
+        if not header_dispatch:
+            raise TypeError("No header COM object supplied.")
         
         self.dispatch = header_dispatch
 

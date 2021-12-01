@@ -6,6 +6,9 @@ class Page:
         Use the get_page method in the borehole object to retrieve
         an object for the document page.
         """
+
+        if not page_dispatch:
+            raise TypeError("No page COM object supplied.")
         
         self.dispatch = page_dispatch
 

@@ -6,6 +6,9 @@ class Odbc:
         Use the get_odbc method in the borehole object to retrieve
         an object for the ODBC module.
         """
+
+        if not odbc_dispatch:
+            raise TypeError("No ODBC COM object supplied.")
         
         self.dispatch = odbc_dispatch
 

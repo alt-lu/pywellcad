@@ -16,6 +16,9 @@ class Borehole:
         of the wellcad object to retrieve a borehole.
         """
 
+        if not borehole_dispatch:
+            raise TypeError("No borehole COM object supplied.")
+        
         self.dispatch = borehole_dispatch
 
 

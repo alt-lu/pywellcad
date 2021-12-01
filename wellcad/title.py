@@ -6,6 +6,9 @@ class Title:
         Use the get_title method in the borehole object to retrieve
         an object for the log title.
         """
+
+        if not title_dispatch:
+            raise TypeError("No title COM object supplied.")
         
         self.dispatch = title_dispatch
 

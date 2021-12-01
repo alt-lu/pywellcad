@@ -6,6 +6,10 @@ class Log:
         Use the insert_new_log, convert_log_to and add_log methods
         from the Borehole object to retrieve a log.
         """
+
+        if not log_dispatch:
+            raise TypeError("No log COM object supplied.")
+        
         self.dispatch = log_dispatch
 
 # log general

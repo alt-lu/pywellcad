@@ -6,6 +6,9 @@ class Workspace:
         Use the get_workspace method in the borehole object to retrieve
         an object for the workspace.
         """
+
+        if not workspace_dispatch:
+            raise TypeError("No workspace COM object supplied.")
         
         self.dispatch = workspace_dispatch
 
