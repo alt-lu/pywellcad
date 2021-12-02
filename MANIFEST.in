@@ -1,1 +1,2 @@
 recursive-exclude test *
+recursive-exclude doc *
