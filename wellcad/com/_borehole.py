@@ -1,3 +1,4 @@
+from ._noneable_wrapper import NoneableWrapper
 from ._log import Log
 from ._depth import Depth
 from ._header import Header
@@ -7,27 +8,11 @@ from ._workspace import Workspace
 from ._odbc import Odbc
 
 
-class Borehole:
-    
-    def __init__(self, borehole_dispatch):
-        """Creates the borehole object.
-        
-        Use the NewBorehole, OpenBorehole or FileImport methods
-        of the wellcad object to retrieve a borehole.
-        """
-
-        if not borehole_dispatch:
-            raise TypeError("No borehole COM object supplied.")
-        
-        self.dispatch = borehole_dispatch
-
-
-# Methods for general document handling
-
+class Borehole(NoneableWrapper):
     @property
     def name(self):
         """Returns the title of a borehole document."""
-        return self.dispatch.Name
+        return self._dispatch.Name
 
 
     @name.setter	
@@ -38,31 +23,31 @@ class Borehole:
             name -- String specifying the new name of the document.
         """
 
-        self.dispatch.Name = name
+        self._dispatch.Name = name
 
 
     @property
     def version_major(self):
         """Returns the major version number of WellCAD."""
-        return self.dispatch.VersionMajor		
+        return self._dispatch.VersionMajor		
 
 
     @property
     def version_minor(self):
         """Returns the major version number of WellCAD."""
-        return self.dispatch.VersionMinor		
+        return self._dispatch.VersionMinor		
 
 
     @property
     def version_build(self):
         """Returns the build number of WellCAD."""
-        return self.dispatch.VersionBuild
+        return self._dispatch.VersionBuild
 
 
     @property
     def auto_update(self):
         """Returns True if the auto update of the document is enabled."""
-        return self.dispatch.AutoUpdate
+        return self._dispatch.AutoUpdate
 
 
     @auto_update.setter	
@@ -75,12 +60,12 @@ class Borehole:
 
         """
 
-        self.dispatch.AutoUpdate = flag
+        self._dispatch.AutoUpdate = flag
 
 
     def refresh_window(self):
         """Performs a one time refresh of the borehole view"""
-        self.dispatch.RefreshWindow()
+        self._dispatch.RefreshWindow()
 
 
     def set_draft_mode(self, display_mode = 0):
@@ -95,7 +80,7 @@ class Borehole:
             display_mode -- Integer specifying the document viewing mode
         """
 
-        self.dispatch.SetDraftMode(display_mode)
+        self._dispatch.SetDraftMode(display_mode)
 
 
     def minimize_document_window(self):
@@ -104,7 +89,7 @@ class Borehole:
         Works only if document windows are not tabbed.
         """
 
-        self.dispatch.MinimizeWindow()
+        self._dispatch.MinimizeWindow()
 
     
     def maximize_document_window(self):
@@ -113,17 +98,17 @@ class Borehole:
         Works only if document windows are not tabbed.
         """
 
-        self.dispatch.MaximizeWindow()
+        self._dispatch.MaximizeWindow()
         
     @property
     def bottom_depth(self):
         """Returns the bottom of the document in actual depth units."""
-        return self.dispatch.BottomDepth
+        return self._dispatch.BottomDepth
 
     @property
     def top_depth(self):
         """Returns the top of the document in actual depth units."""
-        return self.dispatch.TopDepth
+        return self._dispatch.TopDepth
 
 
     def set_visible_depth_range(self, top_depth, bottom_depth):	
@@ -134,24 +119,24 @@ class Borehole:
             bottom_depth -- Depth at which the data display terminates.
         """
 
-        self.dispatch.SetVisibleDepthRange(top_depth, bottom_depth)
+        self._dispatch.SetVisibleDepthRange(top_depth, bottom_depth)
 
 
     def get_depth(self):
         """Returns a depth object for the master depth axis."""
-        obdepth = self.dispatch.Depth
+        obdepth = self._dispatch.Depth
         return Depth(obdepth)
         
         
     def get_header(self):
         """Header object for the entire borehole document header."""
-        obheader = self.dispatch.Header
+        obheader = self._dispatch.Header
         return Header(obheader)
 
 
     def get_page(self):
         """Returns a page object for the borehole document."""
-        obpage = self.dispatch.Page
+        obpage = self._dispatch.Page
         return Page(obpage)
 
 
@@ -170,8 +155,8 @@ class Borehole:
                       workspace initialization parameters.
         """
 
-        self.dispatch._FlagAsMethod("CreateNewWorkspace")
-        obworkspace = self.dispatch.CreateNewWorkspace(workspace_type, config)
+        self._dispatch._FlagAsMethod("CreateNewWorkspace")
+        obworkspace = self._dispatch.CreateNewWorkspace(workspace_type, config)
         return Workspace(obworkspace)
 
 
@@ -183,14 +168,14 @@ class Borehole:
                              present in the borehole document.
         """
 
-        self.dispatch._FlagAsMethod("CreateNewWorkspace")
-        obworkspace = self.dispatch.Workspace(workspace_id)
+        self._dispatch._FlagAsMethod("CreateNewWorkspace")
+        obworkspace = self._dispatch.Workspace(workspace_id)
         return Workspace(obworkspace)
 
 
     def get_odbc(self):
         """Returns an object to access the ODBC module."""
-        obj_odbc = self.dispatch.ODBC
+        obj_odbc = self._dispatch.ODBC
         return Odbc(obj_odbc) 
 
 
@@ -204,7 +189,7 @@ class Borehole:
         
         """
 
-        self.dispatch.ConnectTo (server_name, server_address, port_number)
+        self._dispatch.ConnectTo (server_name, server_address, port_number)
 
 
     def disconnect_from(self, server_name, server_address):
@@ -215,7 +200,7 @@ class Borehole:
             server_address -- IP address of the computer to connect to.
         """
 
-        self.dispatch.DisconnectFrom (server_name, server_address)
+        self._dispatch.DisconnectFrom (server_name, server_address)
         
 
     def save_as(self, file_name):
@@ -228,7 +213,7 @@ class Borehole:
             True if the saving process was successfull. 
         """
 
-        return self.dispatch.SaveAs(file_name)
+        return self._dispatch.SaveAs(file_name)
 
 
     def file_export(self, 
@@ -252,7 +237,7 @@ class Borehole:
             logfile -- Path and name of the file to log error messages.
             
         """
-        self.dispatch.FileExport(file_name,
+        self._dispatch.FileExport(file_name,
                                  prompt_user,
                                  config,
                                  logfile)
@@ -275,7 +260,7 @@ class Borehole:
             nb_of_copies -- Defines the number of copies to be printed.
         """
 
-        self.dispatch.DoPrint(self,
+        self._dispatch.DoPrint(self,
                              enable_dialog,
                              top_depth,
                              bottom_depth,
@@ -287,7 +272,7 @@ class Borehole:
     @property
     def nb_of_logs(self):
         """Number of logs present in the borehole document."""
-        return self.dispatch.NbOfLogs
+        return self._dispatch.NbOfLogs
 
     
     def get_log(self, log):
@@ -301,8 +286,8 @@ class Borehole:
             A log object.
         """
 
-        self.dispatch._FlagAsMethod("Log")
-        obLog = self.dispatch.Log(log)
+        self._dispatch._FlagAsMethod("Log")
+        obLog = self._dispatch.Log(log)
         return Log(obLog)
 
 
@@ -314,8 +299,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("Title")
-        obTitle = self.dispatch.Title(log_name)
+        self._dispatch._FlagAsMethod("Title")
+        obTitle = self._dispatch.Title(log_name)
         return Title(obTitle)
 
 
@@ -356,7 +341,7 @@ class Borehole:
             A log object.
         """
 
-        obLog = self.dispatch.InsertNewLog(log_type)
+        obLog = self._dispatch.InsertNewLog(log_type)
         return Log(obLog)
 
 
@@ -389,8 +374,8 @@ class Borehole:
             The object of the new log.
         """
         
-        self.dispatch._FlagAsMethod("ConvertLogTo")
-        obLog = self.dispatch.ConvertLogTo(log, log_type, prompt_user, config)
+        self._dispatch._FlagAsMethod("ConvertLogTo")
+        obLog = self._dispatch.ConvertLogTo(log, log_type, prompt_user, config)
         return Log(obLog)
 
 
@@ -406,8 +391,8 @@ class Borehole:
             An object of the copied log.
         """
 
-        self.dispatch._FlagAsMethod("AddLog")
-        oblog_copy = self.dispatch.AddLog(oblog.dispatch)
+        self._dispatch._FlagAsMethod("AddLog")
+        oblog_copy = self._dispatch.AddLog(oblog.dispatch)
         return Log(oblog_copy)
 
 
@@ -419,7 +404,7 @@ class Borehole:
                    of the log to delete.
         """
 
-        self.dispatch.RemoveLog(log)
+        self._dispatch.RemoveLog(log)
 
 
     def clear_log_contents(self, log):
@@ -429,7 +414,7 @@ class Borehole:
             log -- Zero based index (integer) or title (string).
         """
 
-        self.dispatch.ClearLogContents(log)
+        self._dispatch.ClearLogContents(log)
 
 
     def apply_template(self,
@@ -471,7 +456,7 @@ class Borehole:
                       or parameter string.
         """
 
-        self.dispatch.ApplyTemplate(path,
+        self._dispatch.ApplyTemplate(path,
                                     prompt_if_not_found,
                                     create_new_logs,
                                     create_new_layers,
@@ -506,7 +491,7 @@ class Borehole:
                              remain in the document.
         """
 
-        self.dispatch.SliceLog(log,
+        self._dispatch.SliceLog(log,
                                slice_depth,
                                create_top,
                                create_bottom,
@@ -530,7 +515,7 @@ class Borehole:
                           into log_a.
         """
 
-        self.dispatch.MergeLogs(log_a, log_b, ave_overlap, create_new)
+        self._dispatch.MergeLogs(log_a, log_b, ave_overlap, create_new)
 
 
     def merge_same_log_items(self, log):
@@ -541,7 +526,7 @@ class Borehole:
                    the Litho log.
         """
 
-        self.dispatch.MergeSameLogItems(log)
+        self._dispatch.MergeSameLogItems(log)
 
 
     def extend_log(self, log, top_depth, bottom_depth):
@@ -557,7 +542,7 @@ class Borehole:
             bottom_depth -- Base of the final depth range.
         """
 
-        self.dispatch.ExtendLog(log, top_depth, bottom_depth)
+        self._dispatch.ExtendLog(log, top_depth, bottom_depth)
 
 
     def depth_shift_log(self,
@@ -579,7 +564,7 @@ class Borehole:
             bottom_depth -- Lower depth limit of the shifted interval.
         """
 
-        self.dispatch.DepthShiftLog(log,
+        self._dispatch.DepthShiftLog(log,
                                     shift,
                                     top_depth,
                                     bottom_depth)
@@ -601,7 +586,7 @@ class Borehole:
         
         """
         
-        self.dispatch.DepthMatchLog(log, depth_log)
+        self._dispatch.DepthMatchLog(log, depth_log)
 
 
     def fill_log(self,
@@ -630,7 +615,7 @@ class Borehole:
                             reference intervals.
         """
 
-        self.dispatch.FillLog(log,
+        self._dispatch.FillLog(log,
                               top_depth,
                               bottom_depth,
                               step,
@@ -660,8 +645,8 @@ class Borehole:
             An object of the filtered log.
         """
 
-        self.dispatch._FlagAsMethod("FilterLog")
-        oblog = self.dispatch.FilterLog(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("FilterLog")
+        oblog = self._dispatch.FilterLog(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -689,8 +674,8 @@ class Borehole:
                   +",CircularData="+circular_data_flag\
                   +",DataUnit="+data_unit
         # call method
-        self.dispatch._FlagAsMethod("FilterLog")
-        oblog = self.dispatch.FilterLog(log, False, config)
+        self._dispatch._FlagAsMethod("FilterLog")
+        oblog = self._dispatch.FilterLog(log, False, config)
         return Log(oblog)
 
 
@@ -720,8 +705,8 @@ class Borehole:
                   +",CircularData="+circular_data_flag\
                   +",DataUnit="+data_unit
         # call method
-        self.dispatch._FlagAsMethod("FilterLog")
-        oblog = self.dispatch.FilterLog(log, False, config)
+        self._dispatch._FlagAsMethod("FilterLog")
+        oblog = self._dispatch.FilterLog(log, False, config)
         return Log(oblog)
 
 
@@ -751,8 +736,8 @@ class Borehole:
                   +",CircularData="+circular_data_flag\
                   +",DataUnit="+data_unit
         # call method
-        self.dispatch._FlagAsMethod("FilterLog")
-        oblog = self.dispatch.FilterLog(log, False, config)
+        self._dispatch._FlagAsMethod("FilterLog")
+        oblog = self._dispatch.FilterLog(log, False, config)
         return Log(oblog)
 
 
@@ -772,7 +757,7 @@ class Borehole:
                       a parameter string.
 
         """
-        self.dispatch.BlockLog(log, prompt_user, config)
+        self._dispatch.BlockLog(log, prompt_user, config)
 
 
     def multi_log_statistics(self, logs, prompt_user=True, config=""):
@@ -793,7 +778,7 @@ class Borehole:
                       a parameter string.
         """
 
-        self.dispatch.ExtractWellLogStatistics(logs, prompt_user, config)
+        self._dispatch.ExtractWellLogStatistics(logs, prompt_user, config)
 
 
     def normalize_perc_log(self, log, prompt_user=True, config=""):
@@ -812,7 +797,7 @@ class Borehole:
         
         """
 
-        self.dispatch.Normalize(log, prompt_user, config)
+        self._dispatch.Normalize(log, prompt_user, config)
 
 
     def resample_log(self, log, prompt_user=True, config=""):
@@ -832,8 +817,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("ResampleLog")
-        oblog = self.dispatch.ResampleLog(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("ResampleLog")
+        oblog = self._dispatch.ResampleLog(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -856,8 +841,8 @@ class Borehole:
             An object of the interpolated log.
         """
 
-        self.dispatch._FlagAsMethod("InterpolateLog")
-        oblog = self.dispatch.InterpolateLog(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("InterpolateLog")
+        oblog = self._dispatch.InterpolateLog(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -880,7 +865,7 @@ class Borehole:
 
         """
         
-        self.dispatch.CalculateBoreholeDeviation(prompt_user, config)
+        self._dispatch.CalculateBoreholeDeviation(prompt_user, config)
 
 
     def borehole_coordinates(self, prompt_user=True, config=""):
@@ -901,7 +886,7 @@ class Borehole:
 
         """
 
-        self.dispatch.CalculateBoreholeCoordinates(prompt_user, config)
+        self._dispatch.CalculateBoreholeCoordinates(prompt_user, config)
 
 
     def borehole_closure(self, prompt_user=True, config=""):
@@ -923,7 +908,7 @@ class Borehole:
 
         """
 
-        self.dispatch.CalculateBoreholeClosure(prompt_user, config)
+        self._dispatch.CalculateBoreholeClosure(prompt_user, config)
 
 
     def elog_correction(self, prompt_user=True, config=""):
@@ -943,8 +928,8 @@ class Borehole:
             An object of the last corrected log.
         """
 
-        self.dispatch._FlagAsMethod("ElogCorrection")
-        oblog = self.dispatch.ElogCorrection(prompt_user, config)
+        self._dispatch._FlagAsMethod("ElogCorrection")
+        oblog = self._dispatch.ElogCorrection(prompt_user, config)
         return Log(oblog)
 
 
@@ -959,7 +944,7 @@ class Borehole:
 
         """
 
-        self.dispatch.CorrectBadTraces(log)
+        self._dispatch.CorrectBadTraces(log)
 
     
     def conditional_testing(self, log_if, log_then, prompt_user=True, config=""):
@@ -980,8 +965,8 @@ class Borehole:
                       a parameter string.
 
         """
-        self.dispatch._FlagAsMethod("ApplyConditionalTesting")
-        oblog = self.dispatch.ApplyConditionalTesting(log_if, log_then, prompt_user, config)
+        self._dispatch._FlagAsMethod("ApplyConditionalTesting")
+        oblog = self._dispatch.ApplyConditionalTesting(log_if, log_then, prompt_user, config)
         return Log(oblog)
 
 
@@ -1004,8 +989,8 @@ class Borehole:
             An object of the filtered image log.
 
         """
-        self.dispatch._FlagAsMethod("FilterImageLog")
-        oblog = self.dispatch.FilterImageLog(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("FilterImageLog")
+        oblog = self._dispatch.FilterImageLog(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1022,8 +1007,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("MirrorImage")
-        self.dispatch.MirrorImage(log)
+        self._dispatch._FlagAsMethod("MirrorImage")
+        self._dispatch.MirrorImage(log)
 
 
     def rotate_image(self, log, prompt_user=True, config=""):
@@ -1043,7 +1028,7 @@ class Borehole:
         
         """
 
-        self.dispatch.RotateImage(log, prompt_user, config)
+        self._dispatch.RotateImage(log, prompt_user, config)
 
 
     def orient_image_highside(self, log, prompt_user=True, config=""):
@@ -1062,7 +1047,7 @@ class Borehole:
                       a parameter string.
 
         """
-        self.dispatch.OrientImageToHighside(log, prompt_user, config)
+        self._dispatch.OrientImageToHighside(log, prompt_user, config)
 
 
     def orient_image_north(self, log, prompt_user=True, config=""):
@@ -1082,7 +1067,7 @@ class Borehole:
 
         """
 
-        self.dispatch.OrientImageToNorth(log, prompt_user, config)
+        self._dispatch.OrientImageToNorth(log, prompt_user, config)
 
 
     def image_statistics(self, log, prompt_user=True, config=""):
@@ -1101,7 +1086,7 @@ class Borehole:
                       a parameter string.
 
         """
-        self.dispatch.ExtractImageLogStatistics(log, prompt_user, config)
+        self._dispatch.ExtractImageLogStatistics(log, prompt_user, config)
 
     
     def normalize_image(self, log, prompt_user=True, config=""):
@@ -1124,12 +1109,12 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("NormalizeImage")
-        oblog = self.dispatch.NormalizeImage(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("NormalizeImage")
+        oblog = self._dispatch.NormalizeImage(log, prompt_user, config)
         return Log(oblog)
 
 
-    def image_complexity_map(self, log, prompt_user=True, config=""):
+    def image_dispatchplexity_map(self, log, prompt_user=True, config=""):
         """Computes the complexity map from an RGB or image log
   
         A full description of the method and its parameters is given
@@ -1149,8 +1134,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("ImageComplexityMap")
-        oblog = self.dispatch.ImageComplexityMap(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("ImageComplexityMap")
+        oblog = self._dispatch.ImageComplexityMap(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1173,8 +1158,8 @@ class Borehole:
             A log object of the velocity log.
 
         """
-        self.dispatch._FlagAsMethod("CalculateFluidVelocity")
-        oblog = self.dispatch.CalculateFluidVelocity(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("CalculateFluidVelocity")
+        oblog = self._dispatch.CalculateFluidVelocity(log, prompt_user, config)
         return Log(oblog)
 
     
@@ -1195,7 +1180,7 @@ class Borehole:
 
         """
 
-        self.dispatch.CalculateAcousticCaliper(log, prompt_user=True, config="")
+        self._dispatch.CalculateAcousticCaliper(log, prompt_user=True, config="")
 
 
     def apparent_to_true(self, log, prompt_user=True, config=""):
@@ -1214,8 +1199,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("ApplyStructureApparentToTrueCorrection")
-        oblog = self.dispatch.ApplyStructureApparentToTrueCorrection(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("ApplyStructureApparentToTrueCorrection")
+        oblog = self._dispatch.ApplyStructureApparentToTrueCorrection(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1239,8 +1224,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("ApplyStructureTrueToApparentCorrection")
-        oblog = self.dispatch.ApplyStructureTrueToApparentCorrection(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("ApplyStructureTrueToApparentCorrection")
+        oblog = self._dispatch.ApplyStructureTrueToApparentCorrection(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1261,7 +1246,7 @@ class Borehole:
 
         """
 
-        self.dispatch.RecalculateStructureAzimuth(log, prompt_user, config)
+        self._dispatch.RecalculateStructureAzimuth(log, prompt_user, config)
 
 
     def recalculate_structure_dip(self, log, prompt_user=True, config=""):
@@ -1281,7 +1266,7 @@ class Borehole:
 
         """
         
-        self.dispatch.RecalculateStructureDip(log, prompt_user, config)
+        self._dispatch.RecalculateStructureDip(log, prompt_user, config)
 
 
     def remove_structure_dip(self,log, prompt_user=True, config=""):
@@ -1307,12 +1292,12 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("RemoveStructuralDip")
-        oblog = self.dispatch.RemoveStructuralDip(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("RemoveStructuralDip")
+        oblog = self._dispatch.RemoveStructuralDip(log, prompt_user, config)
         return Log(oblog)
 
 
-    def color_components(self, log, method=0, model=0, prompt_user=False):
+    def color_dispatchponents(self, log, method=0, model=0, prompt_user=False):
         """Extracts color data like red, green and blue intensities
 
         A full description of the method and its parameters is given
@@ -1331,7 +1316,7 @@ class Borehole:
 
         """
 
-        self.dispatch.ExtractColorComponents(log, method, model, prompt_user)
+        self._dispatch.ExtractColorComponents(log, method, model, prompt_user)
 
 
     def color_classification(self, log, prompt_user=True, config=""):
@@ -1354,8 +1339,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("ColorClassification")
-        oblog = self.dispatch.ColorClassification (log, prompt_user, config)
+        self._dispatch._FlagAsMethod("ColorClassification")
+        oblog = self._dispatch.ColorClassification (log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1373,7 +1358,7 @@ class Borehole:
 
         """
 
-        self.dispatch.AdjustImageBrightnessAndContrast(log, prompt_user)
+        self._dispatch.AdjustImageBrightnessAndContrast(log, prompt_user)
 
     
     def structure_statistics(self, log, prompt_user=True, config=""):
@@ -1393,8 +1378,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("ExtractStructureIntervalStatistic")
-        oblog = self.dispatch.ExtractStructureIntervalStatistic(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("ExtractStructureIntervalStatistic")
+        oblog = self._dispatch.ExtractStructureIntervalStatistic(log, prompt_user, config)
         return Log(oblog)
     
 
@@ -1415,8 +1400,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("RQD")
-        oblog = self.dispatch.RQD(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("RQD")
+        oblog = self._dispatch.RQD(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1437,8 +1422,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("RepresentativePicks")
-        oblog = self.dispatch.RepresentativePicks(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("RepresentativePicks")
+        oblog = self._dispatch.RepresentativePicks(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1460,7 +1445,7 @@ class Borehole:
                       a parameter string.
 
         """
-        self.dispatch.CorrectDeadSensor(log, prompt_user, config)
+        self._dispatch.CorrectDeadSensor(log, prompt_user, config)
 
     
     def shift_correction(self, log, prompt_user=True, config=""):
@@ -1479,8 +1464,8 @@ class Borehole:
                       a parameter string.
 
         """
-        self.dispatch._FlagAsMethod("ShiftCorrection")
-        oblog = self.dispatch.ShiftCorrection(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("ShiftCorrection")
+        oblog = self._dispatch.ShiftCorrection(log, prompt_user, config)
         return Log(oblog)
 
     
@@ -1500,8 +1485,8 @@ class Borehole:
                       a parameter string.
 
         """
-        self.dispatch._FlagAsMethod("CalculateFluidVelocity")
-        oblog = self.dispatch.CalculateFluidVelocity(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("CalculateFluidVelocity")
+        oblog = self._dispatch.CalculateFluidVelocity(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1521,8 +1506,8 @@ class Borehole:
                       a parameter string.
 
         """
-        self.dispatch._FlagAsMethod("Centralize")
-        oblog = self.dispatch.Centralize(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("Centralize")
+        oblog = self._dispatch.Centralize(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1543,7 +1528,7 @@ class Borehole:
 
         """
 
-        self.dispatch.CalculateAcousticCaliper(log, prompt_user, config)
+        self._dispatch.CalculateAcousticCaliper(log, prompt_user, config)
 
     
     def casing_thickness(self, log, prompt_user=True, config=""):
@@ -1562,7 +1547,7 @@ class Borehole:
                       a parameter string.
         
         """
-        self.dispatch.CalculateCasingThickness(log, prompt_user, config)
+        self._dispatch.CalculateCasingThickness(log, prompt_user, config)
 
 
     def metal_loss(self, log, prompt_user=True, config=""):
@@ -1582,8 +1567,8 @@ class Borehole:
         
         """
 
-        self.dispatch._FlagAsMethod("CalculateApparentMetalLoss")
-        oblog = self.dispatch.CalculateApparentMetalLoss(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("CalculateApparentMetalLoss")
+        oblog = self._dispatch.CalculateApparentMetalLoss(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1604,8 +1589,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("RadiusToFromDiameter")
-        oblog = self.dispatch.RadiusToFromDiameter(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("RadiusToFromDiameter")
+        oblog = self._dispatch.RadiusToFromDiameter(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1619,8 +1604,8 @@ class Borehole:
         """
         prompt_user=False
         config="Method=TwoTimesRadius"
-        self.dispatch._FlagAsMethod("RadiusToFromDiameter")
-        oblog = self.dispatch.RadiusToFromDiameter(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("RadiusToFromDiameter")
+        oblog = self._dispatch.RadiusToFromDiameter(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1638,8 +1623,8 @@ class Borehole:
         """
         prompt_user=False
         config="Method=HalfDiameter"
-        self.dispatch._FlagAsMethod("RadiusToFromDiameter")
-        oblog = self.dispatch.RadiusToFromDiameter(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("RadiusToFromDiameter")
+        oblog = self._dispatch.RadiusToFromDiameter(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1659,8 +1644,8 @@ class Borehole:
                       a parameter string.
 
         """
-        self.dispatch._FlagAsMethod("OuterInnerRadiusDiameter")
-        oblog = self.dispatch.OuterInnerRadiusDiameter(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("OuterInnerRadiusDiameter")
+        oblog = self._dispatch.OuterInnerRadiusDiameter(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1681,8 +1666,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("CasedHoleNormalization")
-        oblog = self.dispatch.CasedHoleNormalization(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("CasedHoleNormalization")
+        oblog = self._dispatch.CasedHoleNormalization(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1697,7 +1682,7 @@ class Borehole:
 
         """
 
-        self.dispatch.CorrectBadTraces(log)
+        self._dispatch.CorrectBadTraces(log)
 
 
     def stack_fws_traces(self, log, prompt_user=True, config=""):
@@ -1717,8 +1702,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("StackTraces")
-        oblog = self.dispatch.StackTraces(False, log, prompt_user, config)
+        self._dispatch._FlagAsMethod("StackTraces")
+        oblog = self._dispatch.StackTraces(False, log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1731,7 +1716,7 @@ class Borehole:
 
         """
 
-        self.dispatch.ReverseAmplitude(log)
+        self._dispatch.ReverseAmplitude(log)
 
 
     def filter_fws(self, log, prompt_user=True, config=""):
@@ -1754,8 +1739,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("FilterFWSLog")
-        oblog = self.dispatch.FilterFWSLog(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("FilterFWSLog")
+        oblog = self._dispatch.FilterFWSLog(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1773,8 +1758,8 @@ class Borehole:
         """
 
         config = "FilterType=MovingAverage, FilterWidth="+str(max(1,filter_width))
-        self.dispatch._FlagAsMethod("FilterFWSLog")
-        oblog = self.dispatch.FilterFWSLog(log, False, config)
+        self._dispatch._FlagAsMethod("FilterFWSLog")
+        oblog = self._dispatch.FilterFWSLog(log, False, config)
         return Log(oblog)
 
 
@@ -1792,8 +1777,8 @@ class Borehole:
         """
 
         config = "FilterType=WeightedAverage , FilterWidth="+str(max(1,filter_width))
-        self.dispatch._FlagAsMethod("FilterFWSLog")
-        oblog = self.dispatch.FilterFWSLog(log, False, config)
+        self._dispatch._FlagAsMethod("FilterFWSLog")
+        oblog = self._dispatch.FilterFWSLog(log, False, config)
         return Log(oblog)	
 
 
@@ -1818,8 +1803,8 @@ class Borehole:
                  + ",LowPass="+str(max(low_cut,low_pass))\
                  + ",HighPass="+str(min(high_cut,high_pass))\
                  + ",HighCut="+str(max(high_cut,high_pass))	 
-        self.dispatch._FlagAsMethod("FilterFWSLog")
-        oblog = self.dispatch.FilterFWSLog(log, False, config)
+        self._dispatch._FlagAsMethod("FilterFWSLog")
+        oblog = self._dispatch.FilterFWSLog(log, False, config)
         return Log(oblog)
 
 
@@ -1843,8 +1828,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("ApplyStandOffCorrection")
-        oblog = self.dispatch.ApplyStandOffCorrection(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("ApplyStandOffCorrection")
+        oblog = self._dispatch.ApplyStandOffCorrection(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1865,8 +1850,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("CompensatedVelocity")
-        oblog = self.dispatch.CompensatedVelocity(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("CompensatedVelocity")
+        oblog = self._dispatch.CompensatedVelocity(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1888,8 +1873,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("ApplySemblanceProcessing")
-        oblog = self.dispatch.ApplySemblanceProcessing(prompt_user, config)
+        self._dispatch._FlagAsMethod("ApplySemblanceProcessing")
+        oblog = self._dispatch.ApplySemblanceProcessing(prompt_user, config)
         return Log(oblog)
 
 
@@ -1912,8 +1897,8 @@ class Borehole:
             Object of the log containing the cumulative energy.
 
         """
-        self.dispatch._FlagAsMethod("ProcessReflectedTubeWave")
-        oblog = self.dispatch.ProcessReflectedTubeWave(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("ProcessReflectedTubeWave")
+        oblog = self._dispatch.ProcessReflectedTubeWave(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1937,8 +1922,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("PickFirstArrival")
-        oblog = self.dispatch.PickFirstArrival(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("PickFirstArrival")
+        oblog = self._dispatch.PickFirstArrival(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -1959,7 +1944,7 @@ class Borehole:
 
         """
 
-        self.dispatch.CementBond(log, prompt_user, config)
+        self._dispatch.CementBond(log, prompt_user, config)
     
 
     def e1_arrival(self, log, prompt_user=True, config=""):
@@ -1982,8 +1967,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("PickE1Arrival")
-        oblog = self.dispatch.PickE1Arrival(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("PickE1Arrival")
+        oblog = self._dispatch.PickE1Arrival(log, prompt_user, config)
         return Log(oblog)
 
     
@@ -2005,8 +1990,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("ExtractE1Amplitude")
-        oblog = self.dispatch.ExtractE1Amplitude(fws_log, arrival_log, prompt_user)
+        self._dispatch._FlagAsMethod("ExtractE1Amplitude")
+        oblog = self._dispatch.ExtractE1Amplitude(fws_log, arrival_log, prompt_user)
         return Log(oblog)
 
 
@@ -2032,8 +2017,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("AdjustPickToExtremum")
-        oblog = self.dispatch.AdjustPickToExtremum (fws_log,
+        self._dispatch._FlagAsMethod("AdjustPickToExtremum")
+        oblog = self._dispatch.AdjustPickToExtremum (fws_log,
                                                     arrival_log,
                                                     prompt_user,
                                                     config)
@@ -2059,8 +2044,8 @@ class Borehole:
             Object of the amplitude log.
 
         """
-        self.dispatch._FlagAsMethod("ExtractWindowPeakAmplitude")
-        oblog = self.dispatch.ExtractWindowPeakAmplitude (log, prompt_user, config)
+        self._dispatch._FlagAsMethod("ExtractWindowPeakAmplitude")
+        oblog = self._dispatch.ExtractWindowPeakAmplitude (log, prompt_user, config)
         return Log(oblog)
 
 
@@ -2081,7 +2066,7 @@ class Borehole:
 
         """
 
-        self.dispatch.CalculateMechanicalProperties (p_slowness, s_slowness, density)
+        self._dispatch.CalculateMechanicalProperties (p_slowness, s_slowness, density)
         
 
     def integrated_traveltime(self, log, prompt_user=True, config=""):
@@ -2104,8 +2089,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("IntegratedTravelTime")
-        oblog = self.dispatch.IntegratedTravelTime(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("IntegratedTravelTime")
+        oblog = self._dispatch.IntegratedTravelTime(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -2131,8 +2116,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("StackTraces")
-        oblog = self.dispatch.StackTraces(True, log, prompt_user, config)
+        self._dispatch._FlagAsMethod("StackTraces")
+        oblog = self._dispatch.StackTraces(True, log, prompt_user, config)
         return Log(oblog)
 
 
@@ -2156,8 +2141,8 @@ class Borehole:
             
         """
 
-        self.dispatch._FlagAsMethod("ApplyNaturalGammaBoreholeCorrection ")
-        oblog = self.dispatch.ApplyNaturalGammaBoreholeCorrection (log, prompt_user, config)
+        self._dispatch._FlagAsMethod("ApplyNaturalGammaBoreholeCorrection ")
+        oblog = self._dispatch.ApplyNaturalGammaBoreholeCorrection (log, prompt_user, config)
         return Log(oblog)
 
 
@@ -2178,7 +2163,7 @@ class Borehole:
                 
         """
         config = "K-Factor="+str(k_factor)
-        self.dispatch.ApplyTotalGammaCalibration(log, prompt_user, config)
+        self._dispatch.ApplyTotalGammaCalibration(log, prompt_user, config)
 
 
     def spectrum_statistics(self, log, prompt_user=True, config=""):
@@ -2198,7 +2183,7 @@ class Borehole:
 
         """
 
-        self.dispatch.CalculateSpectrumTotalCount(log, prompt_user, config)	
+        self._dispatch.CalculateSpectrumTotalCount(log, prompt_user, config)	
 
 
     def spectrometric_ratios(self, log_a, log_b, log_c, prompt_user=True, config=""):
@@ -2225,7 +2210,7 @@ class Borehole:
 
         """
 
-        self.dispatch.SpectrometricRatios(log_a, log_b, log_c, prompt_user, config)
+        self._dispatch.SpectrometricRatios(log_a, log_b, log_c, prompt_user, config)
 
 
     def full_spectrum_analysis(self, log_spectrum, log_time, prompt_user=True, config=""):
@@ -2247,7 +2232,7 @@ class Borehole:
 
         """
 
-        self.dispatch.ProcessMedusaSpectrumData(log_spectrum, log_time, prompt_user, config)
+        self._dispatch.ProcessMedusaSpectrumData(log_spectrum, log_time, prompt_user, config)
 
 
     def process_spectrum(self, log, prompt_user=True, config=""):
@@ -2267,7 +2252,7 @@ class Borehole:
         
         """
 
-        self.dispatch.ProcessSpectrumData(log, prompt_user, config)	
+        self._dispatch.ProcessSpectrumData(log, prompt_user, config)	
 
 
     def compute_gr(self, log_k, log_u, log_th, prompt_user=True, config=""):
@@ -2290,8 +2275,8 @@ class Borehole:
                       a parameter string. 
 
         """
-        self.dispatch._FlagAsMethod("ComputeGR")
-        oblog = self.dispatch.ComputeGR(log_k, log_u, log_th, prompt_user, config)
+        self._dispatch._FlagAsMethod("ComputeGR")
+        oblog = self._dispatch.ComputeGR(log_k, log_u, log_th, prompt_user, config)
         return Log(oblog)
 
 
@@ -2314,7 +2299,7 @@ class Borehole:
 
         """
 
-        self.dispatch.ProcessNMRSAData(log, prompt_user, config)	
+        self._dispatch.ProcessNMRSAData(log, prompt_user, config)	
 
 
 # Groundwater processes
@@ -2341,8 +2326,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("WaterSalinity")
-        oblog = self.dispatch.WaterSalinity(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("WaterSalinity")
+        oblog = self._dispatch.WaterSalinity(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -2363,7 +2348,7 @@ class Borehole:
 
         """
 
-        self.dispatch.WaterResistivity(log, prompt_user, config)	
+        self._dispatch.WaterResistivity(log, prompt_user, config)	
 
 
     def shale_volume(self, log, prompt_user=True, config=""):
@@ -2386,8 +2371,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("ShaleVolume")
-        oblog = self.dispatch.ShaleVolume(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("ShaleVolume")
+        oblog = self._dispatch.ShaleVolume(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -2411,8 +2396,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("PorositySonic")
-        oblog = self.dispatch.PorositySonic(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("PorositySonic")
+        oblog = self._dispatch.PorositySonic(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -2436,8 +2421,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("PorosityArchie")
-        oblog = self.dispatch.PorosityArchie(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("PorosityArchie")
+        oblog = self._dispatch.PorosityArchie(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -2461,8 +2446,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("PorosityDensity")
-        oblog = self.dispatch.PorosityDensity(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("PorosityDensity")
+        oblog = self._dispatch.PorosityDensity(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -2486,8 +2471,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("PorosityNeutron")
-        oblog = self.dispatch.PorosityNeutron (log, prompt_user, config)
+        self._dispatch._FlagAsMethod("PorosityNeutron")
+        oblog = self._dispatch.PorosityNeutron (log, prompt_user, config)
         return Log(oblog)
 
 
@@ -2512,8 +2497,8 @@ class Borehole:
 
         """
         
-        self.dispatch._FlagAsMethod("Permeability")
-        oblog = self.dispatch.Permeability(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("Permeability")
+        oblog = self._dispatch.Permeability(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -2537,8 +2522,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("HydraulicConductivity")
-        oblog = self.dispatch.HydraulicConductivity(log, prompt_user, config)
+        self._dispatch._FlagAsMethod("HydraulicConductivity")
+        oblog = self._dispatch.HydraulicConductivity(log, prompt_user, config)
         return Log(oblog)
 
 
@@ -2561,7 +2546,7 @@ class Borehole:
 
         """
 
-        self.dispatch.ExtractGrainSizeStatistics(log,
+        self._dispatch.ExtractGrainSizeStatistics(log,
                                                  prompt_user,
                                                  config)
 
@@ -2592,8 +2577,8 @@ class Borehole:
 
         """
 
-        self.dispatch._FlagAsMethod("GrainSizeSorting")
-        oblog = self.dispatch.GrainSizeSorting(log_min,
+        self._dispatch._FlagAsMethod("GrainSizeSorting")
+        oblog = self._dispatch.GrainSizeSorting(log_min,
                                                log_max,
                                                prompt_user,
                                                config)
@@ -2612,7 +2597,7 @@ class Borehole:
 
         """
 
-        self.dispatch.EnableProtection(enable, password)
+        self._dispatch.EnableProtection(enable, password)
 
 
     def enable_protection(self, password):
@@ -2624,7 +2609,7 @@ class Borehole:
 
         """
 
-        self.dispatch.EnableProtection(True, password)	
+        self._dispatch.EnableProtection(True, password)	
 
 
     def disable_protection(self, password):
@@ -2636,7 +2621,7 @@ class Borehole:
 
         """
 
-        self.dispatch.EnableProtection(False, password)	
+        self._dispatch.EnableProtection(False, password)	
 
 
     def allow_insert_log(self, enable, password):
@@ -2650,7 +2635,7 @@ class Borehole:
 
         """
 
-        self.dispatch.AllowInsertLog(enable, password)
+        self._dispatch.AllowInsertLog(enable, password)
 
     
     def allow_save_template(self, enable, password):
@@ -2664,7 +2649,7 @@ class Borehole:
 
         """
 
-        self.dispatch.AllowSaveTemplate(enable, password)
+        self._dispatch.AllowSaveTemplate(enable, password)
 
 
     def allow_file_export(self, enable, password):
@@ -2678,7 +2663,7 @@ class Borehole:
 
         """
 
-        self.dispatch.AllowExportFile(enable, password)
+        self._dispatch.AllowExportFile(enable, password)
 
 
     def allow_modify_annotation(self, enable, password):
@@ -2692,7 +2677,7 @@ class Borehole:
 
         """
 
-        self.dispatch.AllowModifyAnnotation(enable, password)
+        self._dispatch.AllowModifyAnnotation(enable, password)
     
 
     def allow_insert_annotation(self, enable, password):
@@ -2706,7 +2691,7 @@ class Borehole:
 
         """
 
-        self.dispatch.AllowInsertAnnotation(enable, password)
+        self._dispatch.AllowInsertAnnotation(enable, password)
 
 
     def allow_modify_header(self, enable, password):
@@ -2720,4 +2705,4 @@ class Borehole:
 
         """
 
-        self.dispatch.AllowModifyHeadersContent (enable, password)	
+        self._dispatch.AllowModifyHeadersContent (enable, password)	

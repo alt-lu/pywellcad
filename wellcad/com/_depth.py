@@ -1,22 +1,10 @@
-class Depth:
+from ._noneable_wrapper import NoneableWrapper
 
-    def __init__(self, depth_dispatch):
-        """Returns a Depth object.
-        
-        Use the get_depth method of the bore hobject to retrieve the
-        Depth object.
-        """
-
-        if not depth_dispatch:
-            raise TypeError("No depth COM object supplied.")
-
-        self.dispatch = depth_dispatch
-    
-
+class Depth(NoneableWrapper):
     @property
     def unit(self):
         """Returns 0 = meter or 1 = feet."""
-        return self.dispatch.Unit
+        return self._dispatch.Unit
 
 
     @unit.setter
@@ -27,7 +15,7 @@ class Depth:
             unit -- Set 0 for meter or 1 for feet.
         """
 
-        self.dispatch.Unit = unit
+        self._dispatch.Unit = unit
 
 
     @property
@@ -38,7 +26,7 @@ class Depth:
             True if the master depth axis is the current reference scale.
         """
 
-        return self.dispatch.UsedAsDepthScale
+        return self._dispatch.UsedAsDepthScale
 
     
     @depth_reference.setter
@@ -50,13 +38,13 @@ class Depth:
                       reference axis of the document.
         """
 
-        self.dispatch.UsedAsDepthScale = enable
+        self._dispatch.UsedAsDepthScale = enable
 
 
     @property
     def scale(self):
         """Returns 100 for a 1:100 depth scale."""
-        return self.dispatch.Scale
+        return self._dispatch.Scale
 
 
     @scale.setter
@@ -67,13 +55,13 @@ class Depth:
             scale -- Set 100 for a scale of 1:100.
         """
 
-        self.dispatch.Scale = scale
+        self._dispatch.Scale = scale
 
 
     @property
     def decimals(self):
         """Returns the number of decimals displayed for the depth."""
-        return self.dispatch.Decimals
+        return self._dispatch.Decimals
 
 
     @decimals.setter
@@ -84,7 +72,7 @@ class Depth:
             decimals -- Set 1 for 0.1, 2 for 0.01, 3 for 0.001 etc..
         """
 
-        self.dispatch.Decimals = decimals
+        self._dispatch.Decimals = decimals
     
 
     @property
@@ -97,7 +85,7 @@ class Depth:
             2 - Major & Minor grid
         """
 
-        return self.dispatch.HorizontalGrid
+        return self._dispatch.HorizontalGrid
 
 
     @horizontal_grid_type.setter
@@ -108,13 +96,13 @@ class Depth:
             grid_type -- 0 = None, 1 = Major, 2 = Major & Minor.
         """
 
-        self.dispatch.HorizontalGrid = grid_type
+        self._dispatch.HorizontalGrid = grid_type
 
     
     @property
     def horizontal_grid_spacing(self):
         """Returns the spacing of horizontal grid lines."""
-        return self.dispatch.HorizontalGridSpacing
+        return self._dispatch.HorizontalGridSpacing
 
 
     @horizontal_grid_spacing.setter
@@ -125,7 +113,7 @@ class Depth:
             grid_spacing -- E.g. 1 = every meter or ft.
         """
 
-        self.dispatch.HorizontalGridSpacing = grid_spacing
+        self._dispatch.HorizontalGridSpacing = grid_spacing
 
     
     def set_position(self, left_pos, right_pos):
@@ -135,13 +123,13 @@ class Depth:
             left_pos -- Value between 0 and 1 (= 100% document width).
             right_pos -- Value between 0 and 1 (= 100% document width).
         """
-        self.dispatch.SetPosition(left_pos, right_pos)
+        self._dispatch.SetPosition(left_pos, right_pos)
         
         
     @property
     def left_position(self):
         """Returns the left border of the depth axis column."""
-        return self.dispatch.LeftPosition
+        return self._dispatch.LeftPosition
 
 
     @left_position.setter
@@ -151,13 +139,13 @@ class Depth:
         Arguments:
             left_pos -- Value between 0 and 1 (= 100% document width).
         """
-        self.dispatch.LeftPosition = left_pos
+        self._dispatch.LeftPosition = left_pos
 
 
     @property
     def right_position(self):
         """Returns the right border of the depth axis column."""
-        return self.dispatch.RightPosition
+        return self._dispatch.RightPosition
 
 
     @right_position.setter
@@ -167,4 +155,4 @@ class Depth:
         Arguments:
             right_pos -- Value between 0 and 1 (= 100% document width).
         """
-        self.dispatch.RightPosition = right_pos
+        self._dispatch.RightPosition = right_pos

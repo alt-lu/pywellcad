@@ -1,28 +1,16 @@
-class Page:
+from ._noneable_wrapper import NoneableWrapper
 
-    def __init__(self, page_dispatch):
-        """Creates the page object.
-        
-        Use the get_page method in the borehole object to retrieve
-        an object for the document page.
-        """
-
-        if not page_dispatch:
-            raise TypeError("No page COM object supplied.")
-        
-        self.dispatch = page_dispatch
-
-
+class Page(NoneableWrapper):
     @property
     def length(self):
         """Returns the document height in mm."""
-        return self.dispatch.DocumentHeight
+        return self._dispatch.DocumentHeight
     
 
     @property
     def width(self):
         """Returns the document width in mm."""
-        return self.dispatch.DocumentHeight
+        return self._dispatch.DocumentHeight
 
 
     @width.setter
@@ -34,19 +22,19 @@ class Page:
 
         """
 
-        self.dispatch.DocumentWidth = value
+        self._dispatch.DocumentWidth = value
 
 
     @property
     def nb_depth_ranges(self):
         """Returns the number of defined depth ranges defined."""
-        return self.dispatch.NbOfDepthRanges
+        return self._dispatch.NbOfDepthRanges
 
 
     @property
     def depth_range_mode(self):
         """Returns 0 for max range and 1 for custom range."""
-        return self.dispatch.DepthRange 
+        return self._dispatch.DepthRange 
 
 
     @depth_range_mode.setter
@@ -59,7 +47,7 @@ class Page:
 
         """
 
-        self.dispatch.DepthRange = mode
+        self._dispatch.DepthRange = mode
 
 
     def add_depth_range(self, top, base):
@@ -73,7 +61,7 @@ class Page:
 
         """
 
-        return self.dispatch.DepthRange(top, base)
+        return self._dispatch.DepthRange(top, base)
 
 
     def remove_depth_range(self, index):
@@ -84,13 +72,13 @@ class Page:
 
         """
 
-        return self.dispatch.RemoveDepthRange (index)
+        return self._dispatch.RemoveDepthRange (index)
 
 
     @property	
     def paper_mode(self):
         """Returns 0 for page-by-page and 1 for fanfold."""
-        return self.dispatch.PaperMode  
+        return self._dispatch.PaperMode  
 
 
     @paper_mode.setter
@@ -103,13 +91,13 @@ class Page:
 
         """
 
-        self.dispatch.PaperMode = mode
+        self._dispatch.PaperMode = mode
 
 
     @property	
     def numbering_mode(self):
         """0 = none, 1 = left, 2 = right, 3 = center, 4 = alternating."""
-        return self.dispatch.Numbering  
+        return self._dispatch.Numbering  
 
 
     @numbering_mode.setter
@@ -122,13 +110,13 @@ class Page:
 
         """
 
-        self.dispatch.Numbering = mode
+        self._dispatch.Numbering = mode
 
 
     @property	
     def left_margin(self):
         """Get the left margin of the page to print in mm."""
-        return self.dispatch.LeftMargin   
+        return self._dispatch.LeftMargin   
 
 
     @left_margin.setter
@@ -140,13 +128,13 @@ class Page:
 
         """
 
-        self.dispatch.LeftMargin = value
+        self._dispatch.LeftMargin = value
 
 
     @property	
     def right_margin(self):
         """Get the right margin of the page to print in mm."""
-        return self.dispatch.RightMargin   
+        return self._dispatch.RightMargin   
 
 
     @right_margin.setter
@@ -158,13 +146,13 @@ class Page:
 
         """
 
-        self.dispatch.RightMargin = value
+        self._dispatch.RightMargin = value
 
 
     @property	
     def top_margin(self):
         """Get the top margin of the page to print in mm."""
-        return self.dispatch.TopMargin   
+        return self._dispatch.TopMargin   
 
 
     @top_margin.setter
@@ -176,14 +164,14 @@ class Page:
 
         """
 
-        self.dispatch.TopMargin = value
+        self._dispatch.TopMargin = value
 
 
 
     @property	
     def bottom_margin(self):
         """Get the bottom margin of the page to print in mm."""
-        return self.dispatch.BottomMargin   
+        return self._dispatch.BottomMargin   
 
 
     @bottom_margin.setter
@@ -195,13 +183,13 @@ class Page:
 
         """
 
-        self.dispatch.BottomMargin = value
+        self._dispatch.BottomMargin = value
 
 
     @property	
     def print_header(self):
         """Returns True if the header is going to be printed."""
-        return self.dispatch.PrintHeader   
+        return self._dispatch.PrintHeader   
 
 
     @print_header.setter
@@ -214,14 +202,14 @@ class Page:
 
         """
 
-        self.dispatch.PrintHeader = flag
+        self._dispatch.PrintHeader = flag
 
 
 
     @property	
     def print_bottom_titles(self):
         """Returns True if the log titles are printed at the bottom."""
-        return self.dispatch.PrintTitlesOnBottom    
+        return self._dispatch.PrintTitlesOnBottom    
 
 
     @print_bottom_titles.setter
@@ -234,14 +222,14 @@ class Page:
 
         """
 
-        self.dispatch.PrintTitlesOnBottom  = flag
+        self._dispatch.PrintTitlesOnBottom  = flag
 
 
 
     @property	
     def print_top_titles(self):
         """Returns True if the log titles are printed at the top."""
-        return self.dispatch.PrintTitlesOnTop    
+        return self._dispatch.PrintTitlesOnTop    
 
 
     @print_top_titles.setter
@@ -254,14 +242,14 @@ class Page:
 
         """
 
-        self.dispatch.PrintTitlesOnTop  = flag
+        self._dispatch.PrintTitlesOnTop  = flag
 
 
 
     @property	
     def repeat_top_titles(self):
         """Returns True if titles are repeated at the top of each page."""
-        return self.dispatch.PrintTitlesOnTopOnEachPage    
+        return self._dispatch.PrintTitlesOnTopOnEachPage    
 
 
     @repeat_top_titles.setter
@@ -274,14 +262,14 @@ class Page:
 
         """
 
-        self.dispatch.PrintTitlesOnTopOnEachPage  = flag
+        self._dispatch.PrintTitlesOnTopOnEachPage  = flag
 
 
 
     @property	
     def repeat_bottom_titles(self):
         """Returns True if titles are repeated at each page bottom."""
-        return self.dispatch.PrintTitlesOnBottomOnEachPage    
+        return self._dispatch.PrintTitlesOnBottomOnEachPage    
 
 
     @repeat_bottom_titles.setter
@@ -294,4 +282,4 @@ class Page:
 
         """
 
-        self.dispatch.PrintTitlesOnBottomOnEachPage  = flag
+        self._dispatch.PrintTitlesOnBottomOnEachPage  = flag

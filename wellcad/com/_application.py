@@ -10,38 +10,44 @@ class Application:
         administrator in order to register it in the computer registry.
         """
 
-        self.dispatch = Dispatch("WellCAD.Application")
+        self._dispatch = Dispatch("WellCAD.Application")
         
 
     def show_window(self):
-        """Displays the WellCAD workspace on screen."""
-        self.dispatch._FlagAsMethod("ShowWindow")
-        return self.dispatch.ShowWindow()
+        """Attempts to display the WellCAD workspace on screen.
+        
+        Returns
+        =======
+        bool
+            Whether the window was successfully shown.
+        """
+        self._dispatch._FlagAsMethod("ShowWindow")
+        return self._dispatch.ShowWindow()
         
 
     def minimize_window(self):
         """Collapses the application window to an icon."""
-        self.dispatch.MinimizeWindow()
+        self._dispatch.MinimizeWindow()
         
         
     def maximize_window(self):
         """Extends the application window to full screen."""
-        self.dispatch.MaximizeWindow()
+        self._dispatch.MaximizeWindow()
         
         
     def cascade(self):
         """Cascades all borehole document windows (unless tabbed)."""
-        self.dispatch.Cascade()
+        self._dispatch.Cascade()
         
 
     def tile_horizontally(self):
         """Arranges document windows horizontally (unless tabbed)."""
-        self.dispatch.TileHorizontally()
+        self._dispatch.TileHorizontally()
         
     
     def tile_vertically(self):
         """Arranges document windows vertically (unless tabbed)."""
-        self.dispatch.TileVertically()
+        self._dispatch.TileVertically()
         
 
     def new_borehole(self, template = ""):
@@ -63,8 +69,8 @@ class Application:
             The new borehole document.
         """
 
-        self.dispatch._FlagAsMethod("NewBorehole")
-        obBhole = self.dispatch.NewBorehole(template)
+        self._dispatch._FlagAsMethod("NewBorehole")
+        obBhole = self._dispatch.NewBorehole(template)
         return Borehole(obBhole)
 
         
@@ -84,8 +90,8 @@ class Application:
             The opened borehole document.
         """
 
-        self.dispatch._FlagAsMethod("OpenBorehole")
-        obBhole = self.dispatch.OpenBorehole(path)
+        self._dispatch._FlagAsMethod("OpenBorehole")
+        obBhole = self._dispatch.OpenBorehole(path)
         return Borehole(obBhole)
         
 
@@ -108,9 +114,9 @@ class Application:
         """
 
         if index == -1:
-            index = self.dispatch.NbOfDocuments - 1
-        self.dispatch._FlagAsMethod("GetBorehole")
-        obBhole = self.dispatch.GetBorehole(index)
+            index = self._dispatch.NbOfDocuments - 1
+        self._dispatch._FlagAsMethod("GetBorehole")
+        obBhole = self._dispatch.GetBorehole(index)
         return Borehole(obBhole)
         
         
@@ -123,7 +129,7 @@ class Application:
             The active borehole document object
         """
 
-        obBhole = self.dispatch.GetActiveBorehole
+        obBhole = self._dispatch.GetActiveBorehole
         return Borehole(obBhole)
         
         
@@ -144,14 +150,14 @@ class Application:
         """
 
         if index == -1:
-            index = self.dispatch.NbOfDocuments - 1
-        self.dispatch.CloseBorehole(prompt_for_saving, index)
+            index = self._dispatch.NbOfDocuments - 1
+        self._dispatch.CloseBorehole(prompt_for_saving, index)
         
         
     @property
     def borehole_count(self):
         """Returns the number of borehole documents open in WellCAD."""
-        return self.dispatch.NbOfDocuments
+        return self._dispatch.NbOfDocuments
         
     
     def file_import(self,
@@ -185,8 +191,8 @@ class Application:
             A new borehole document containing the imported data.
         """
 
-        self.dispatch._FlagAsMethod("FileImport")
-        obBhole = self.dispatch.FileImport(file_name,
+        self._dispatch._FlagAsMethod("FileImport")
+        obBhole = self._dispatch.FileImport(file_name,
                                            prompt_user,
                                            config_file,
                                            log_file)
@@ -224,8 +230,8 @@ class Application:
             imported files.
         """
 
-        self.dispatch._FlagAsMethod("MultiFileImport")
-        obBhole = self.dispatch.MultiFileImport(file_name,
+        self._dispatch._FlagAsMethod("MultiFileImport")
+        obBhole = self._dispatch.MultiFileImport(file_name,
                                                 prompt_user,
                                                 config_file,
                                                 log_file)
@@ -241,4 +247,4 @@ class Application:
             Whether to display the Save As dialog box for unsaved documents.
         """
 
-        self.dispatch.Quit(prompt_for_saving)
+        self._dispatch.Quit(prompt_for_saving)

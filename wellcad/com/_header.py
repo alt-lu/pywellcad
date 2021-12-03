@@ -1,21 +1,10 @@
-class Header:
+from ._noneable_wrapper import NoneableWrapper
 
-    def __init__(self, header_dispatch):
-        """Creates the header object.
-        
-        Use the get_header method in the borehole object to retrieve
-        the entire borehole document header.
-        """
-
-        if not header_dispatch:
-            raise TypeError("No header COM object supplied.")
-        
-        self.dispatch = header_dispatch
-
+class Header(NoneableWrapper):
     @property
     def nb_of_items(self):
         """Number of dynamic text fields in the entire header."""
-        return self.dispatch.NbOfItems
+        return self._dispatch.NbOfItems
     
 
     def get_item_text(self, item_name):
@@ -28,7 +17,7 @@ class Header:
             The text contained in the dynamic text field.
         """
 
-        return self.dispatch.ItemText(item_name)
+        return self._dispatch.ItemText(item_name)
     
 
     def set_item_text(self, item_name, item_text):
@@ -39,7 +28,7 @@ class Header:
             item_text -- Text to add into the dynamic text field.
         """
 
-        self.dispatch.ItemText(item_name, item_text)
+        self._dispatch.ItemText(item_name, item_text)
 
 
     def get_item_name(self, item_index):
@@ -56,7 +45,7 @@ class Header:
             The ID of the dynamic text field.
         """
         
-        return self.dispatch.ItemName(item_index)
+        return self._dispatch.ItemName(item_index)
 
 
     def allow_export_header(self, enable, password):
@@ -69,7 +58,7 @@ class Header:
                             the header.
         """
 
-        self.dispatch.AllowExportHeader(enable, password)
+        self._dispatch.AllowExportHeader(enable, password)
 
 
     def allow_export_trailer(self, enable, password):
@@ -82,4 +71,4 @@ class Header:
                             the header.
         """
 
-        self.dispatch.AllowExportTrailer(enable, password)
+        self._dispatch.AllowExportTrailer(enable, password)

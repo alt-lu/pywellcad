@@ -1,17 +1,6 @@
-class Odbc:
+from ._noneable_wrapper import NoneableWrapper
 
-    def __init__(self, odbc_dispatch):
-        """Creates the odbc object.
-        
-        Use the get_odbc method in the borehole object to retrieve
-        an object for the ODBC module.
-        """
-
-        if not odbc_dispatch:
-            raise TypeError("No ODBC COM object supplied.")
-        
-        self.dispatch = odbc_dispatch
-
+class Odbc(NoneableWrapper):
     def interpret_sql(self, sql_statement):
         """Executes the sql statement provided as argument.
 
@@ -24,4 +13,4 @@ class Odbc:
 
         """
 
-        self.dispatch.InterpretSQLStatement(sql_statement)
+        self._dispatch.InterpretSQLStatement(sql_statement)

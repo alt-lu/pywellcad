@@ -26,8 +26,7 @@ class TestApplication(unittest.TestCase):
         self.app.new_borehole(str(self.fixture_path / "Well1.wdt"))
     
     def test_new_borehole_with_bogus_template(self):
-        with self.assertRaises(Exception):
-            self.app.new_borehole("NonExistentFile.wdt")
+        self.assertIsNone(self.app.new_borehole("NonExistentFile.wdt"))
     
     def test_close_borehole_without_saving(self):
         self.app.new_borehole()
@@ -37,8 +36,7 @@ class TestApplication(unittest.TestCase):
         self.app.open_borehole(str(self.fixture_path / "Well1.wcl"))
     
     def test_open_bogus_borehole(self):
-        with self.assertRaises(Exception):
-            self.app.open_borehole("NonExistentFile.wcl")
+        self.assertIsNone(self.app.open_borehole("NonExistentFile.wcl"))
     
     def test_open_borehole_count(self):
         self.assertGreaterEqual(self.app.borehole_count, 0)
@@ -52,9 +50,7 @@ class TestApplication(unittest.TestCase):
         self.assertIsInstance(self.app.get_borehole(0), wellcad.com.Borehole)
     
     def test_get_out_of_range_borehole(self):
-        self.app.new_borehole()
-        with self.assertRaises(Exception):
-            self.app.get_borehole(1000)
+        self.assertIsNone(self.app.get_borehole(1000))
     
     def test_file_import(self):
         borehole = self.app.file_import(str(self.fixture_path / "Well1.las"), False)
@@ -62,8 +58,7 @@ class TestApplication(unittest.TestCase):
         self.app.close_borehole(False)
     
     def test_bogus_file_import(self):
-        with self.assertRaises(Exception):
-            self.app.file_import("NotAFile.las", False)
+        self.assertIsNone(self.app.file_import("NotAFile.las", False))
     
     def test_multi_file_import(self):
         files = ','.join(str(self.fixture_path / "Well1_Strata.waq") for _ in range(2))
@@ -72,8 +67,7 @@ class TestApplication(unittest.TestCase):
         self.app.close_borehole(False)
     
     def test_bogus_multi_file_import(self):
-        with self.assertRaises(Exception):
-            self.app.multi_file_import("NotAFile.waq,AnotherFakeFile.waq", False)
+        self.assertIsNone(self.app.multi_file_import("NotAFile.waq,AnotherFakeFile.waq", False))
 
 
 if __name__ == '__main__':

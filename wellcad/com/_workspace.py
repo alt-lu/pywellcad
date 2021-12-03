@@ -1,18 +1,6 @@
-class Workspace:
+from ._noneable_wrapper import NoneableWrapper
 
-    def __init__(self, workspace_dispatch):
-        """Creates the workspace object.
-        
-        Use the get_workspace method in the borehole object to retrieve
-        an object for the workspace.
-        """
-
-        if not workspace_dispatch:
-            raise TypeError("No workspace COM object supplied.")
-        
-        self.dispatch = workspace_dispatch
-
-
+class Workspace(NoneableWrapper):
     def apply_template(self, template, prompt_user=True, config=""):
         """Applies a workspace template
         
@@ -31,7 +19,7 @@ class Workspace:
 
         """
 
-        self.dispatch.ApplyTemplate(template, prompt_user, config)
+        self._dispatch.ApplyTemplate(template, prompt_user, config)
 
 
 # Image and Structure Interpretation (ISI) workspace
@@ -45,7 +33,7 @@ class Workspace:
 
         """
 
-        self.dispatch.AutoDetectZones()
+        self._dispatch.AutoDetectZones()
 
 
     def auto_picking(self, config):
@@ -61,7 +49,7 @@ class Workspace:
 
         """
 
-        self.dispatch.AutomaticPicking(config)
+        self._dispatch.AutomaticPicking(config)
 
 
     def pick_similar_features(self, config):
@@ -77,7 +65,7 @@ class Workspace:
 
         """
 
-        self.dispatch.PickSimilarFeatures(config)
+        self._dispatch.PickSimilarFeatures(config)
 
 
     def pick_similar_features(self, config):
@@ -93,7 +81,7 @@ class Workspace:
 
         """
 
-        self.dispatch.QuickPick(config)
+        self._dispatch.QuickPick(config)
 
 
     def representative_picks(self, config):
@@ -109,7 +97,7 @@ class Workspace:
 
         """
 
-        self.dispatch.RepresentativePicks(config)
+        self._dispatch.RepresentativePicks(config)
 
 
 # Casing integrity workspace
@@ -127,7 +115,7 @@ class Workspace:
 
         """
 
-        self.dispatch.AutoJointDetection(config)
+        self._dispatch.AutoJointDetection(config)
 
 
     def export_driller_engineering_log(self):
@@ -139,7 +127,7 @@ class Workspace:
 
         """
 
-        self.dispatch.AddEnginLogFromDrillerCasingTableToBHole()
+        self._dispatch.AddEnginLogFromDrillerCasingTableToBHole()
 
 
     def export_logger_engineering_log(self):
@@ -151,7 +139,7 @@ class Workspace:
 
         """
 
-        self.dispatch.AddEnginLogFromLoggerCasingTableToBHole()
+        self._dispatch.AddEnginLogFromLoggerCasingTableToBHole()
 
 
     def export_joints(self):
@@ -163,4 +151,4 @@ class Workspace:
 
         """
 
-        self.dispatch.AddJointLogToBHole()
+        self._dispatch.AddJointLogToBHole()

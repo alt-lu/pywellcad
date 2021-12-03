@@ -1,22 +1,10 @@
-class Title:
+from ._noneable_wrapper import NoneableWrapper
 
-    def __init__(self, title_dispatch):
-        """Creates the title object.
-        
-        Use the get_title method in the borehole object to retrieve
-        an object for the log title.
-        """
-
-        if not title_dispatch:
-            raise TypeError("No title COM object supplied.")
-        
-        self.dispatch = title_dispatch
-
-
+class Title(NoneableWrapper):
     @property
     def left_position(self):
         """Returns a value between 0 and 1 as left log column position."""
-        return self.dispatch.LeftPosition 
+        return self._dispatch.LeftPosition
 
 
     @left_position.setter
@@ -29,13 +17,13 @@ class Title:
 
         """
 
-        self.dispatch.LeftPosition = value
+        self._dispatch.LeftPosition = value
 
 
     @property
     def right_position(self):
         """Returns a value between 0 and 1 as right log column position."""
-        return self.dispatch.RightPosition
+        return self._dispatch.RightPosition
 
 
     @right_position.setter
@@ -48,13 +36,13 @@ class Title:
 
         """
 
-        self.dispatch.RightPosition = value
+        self._dispatch.RightPosition = value
 
 
     @property
     def box_height(self):
         """Returns the title box height in mm."""
-        return self.dispatch.BoxHeight
+        return self._dispatch.BoxHeight
 
 
     @box_height.setter
@@ -66,13 +54,13 @@ class Title:
 
         """
 
-        self.dispatch.BoxHeight = value
+        self._dispatch.BoxHeight = value
 
 
     @property
     def display_frame(self):
         """Returns True if the title box frame is displayed."""
-        return self.dispatch.DisplayFrame
+        return self._dispatch.DisplayFrame
 
 
     @display_frame.setter
@@ -85,13 +73,13 @@ class Title:
 
         """
 
-        self.dispatch.DisplayFrame = flag
+        self._dispatch.DisplayFrame = flag
 
 
     @property
     def frame_color_int(self):
         """Returns an integer of the RGB color."""
-        return self.dispatch.FrameColor
+        return self._dispatch.FrameColor
 
 
     @frame_color_int.setter
@@ -103,7 +91,7 @@ class Title:
 
         """
 
-        self.dispatch.FrameColor = value
+        self._dispatch.FrameColor = value
 
 
     def frame_color_rgb(self, red, green, blue):
@@ -117,7 +105,7 @@ class Title:
         """
 
         colorInt = red + (green * 256) + (blue * 256 * 256)
-        self.dispatch.FrameColor = colorInt
+        self._dispatch.FrameColor = colorInt
 
 
     @property
@@ -131,7 +119,7 @@ class Title:
         4 =  dash-dot-dot
         
         """
-        return self.dispatch.FrameStyle
+        return self._dispatch.FrameStyle
 
 
     @frame_style.setter
@@ -149,13 +137,13 @@ class Title:
 
         """
 
-        self.dispatch.FrameStyle = style
+        self._dispatch.FrameStyle = style
 
 
     @property
     def frame_width(self):
         """Returns the line width in 1/10 mm."""
-        return self.dispatch.FrameWidth
+        return self._dispatch.FrameWidth
 
 
     @frame_width.setter
@@ -167,14 +155,14 @@ class Title:
 
         """
 
-        self.dispatch.FrameWidth = value
+        self._dispatch.FrameWidth = value
 
 
 
     @property
     def background_color_int(self):
         """Returns an integer of the RGB color."""
-        return self.dispatch.BackgroundColor 
+        return self._dispatch.BackgroundColor 
 
 
     @background_color_int.setter
@@ -186,7 +174,7 @@ class Title:
 
         """
 
-        self.dispatch.BackgroundColor  = value
+        self._dispatch.BackgroundColor  = value
 
 
     def background_color_rgb(self, red, green, blue):
@@ -200,13 +188,13 @@ class Title:
         """
 
         colorInt = red + (green * 256) + (blue * 256 * 256)
-        self.dispatch.BackgroundColor  = colorInt
+        self._dispatch.BackgroundColor  = colorInt
 
 
     @property
     def use_background(self):
         """Returns True if the colored background is used."""
-        return self.dispatch.UseColoredBackground
+        return self._dispatch.UseColoredBackground
 
 
     @use_background.setter
@@ -219,13 +207,13 @@ class Title:
 
         """
 
-        self.dispatch.UseColoredBackground = flag
+        self._dispatch.UseColoredBackground = flag
 
 
     @property
     def display_title(self):
         """Returns True if the title partition is displayed."""
-        return self.dispatch.DisplayTitle
+        return self._dispatch.DisplayTitle
 
 
     @display_title.setter
@@ -238,17 +226,17 @@ class Title:
 
         """
 
-        self.dispatch.DisplayTitle = flag
+        self._dispatch.DisplayTitle = flag
 
 
     @property
-    def display_comment(self):
+    def display_dispatchment(self):
         """Returns True if the comment partition is displayed."""
-        return self.dispatch.DisplayComment
+        return self._dispatch.DisplayComment
 
 
-    @display_comment.setter
-    def display_comment(self, flag):
+    @display_dispatchment.setter
+    def display_dispatchment(self, flag):
         """Set to True to display the comment partition.
         
         Arguments:
@@ -257,13 +245,13 @@ class Title:
 
         """
 
-        self.dispatch.DisplayComment = flag
+        self._dispatch.DisplayComment = flag
 
 
     @property
     def display_properties(self):
         """Returns True if the comment partition is displayed."""
-        return self.dispatch.DisplayProperties
+        return self._dispatch.DisplayProperties
 
 
     @display_properties.setter
@@ -276,13 +264,13 @@ class Title:
 
         """
 
-        self.dispatch.DisplayProperties = flag
+        self._dispatch.DisplayProperties = flag
 
 
     @property
     def title_top(self):
         """Value between 0 and 1 indicating the top of the title partition."""
-        return self.dispatch.TitleTop
+        return self._dispatch.TitleTop
 
 
     @title_top.setter
@@ -295,13 +283,13 @@ class Title:
 
         """
 
-        self.dispatch.TitleTop = value
+        self._dispatch.TitleTop = value
 
 
     @property
     def title_bottom(self):
         """Value between 0 and 1 indicating the bottom of the title partition."""
-        return self.dispatch.TitleBottom
+        return self._dispatch.TitleBottom
 
 
     @title_bottom.setter
@@ -314,13 +302,13 @@ class Title:
 
         """
 
-        self.dispatch.TitleBottom = value
+        self._dispatch.TitleBottom = value
 
 
     @property
     def title_color_int(self):
         """Returns an integer of the RGB color."""
-        return self.dispatch.TitleColor  
+        return self._dispatch.TitleColor  
 
 
     @title_color_int.setter
@@ -332,7 +320,7 @@ class Title:
 
         """
 
-        self.dispatch.TitleColor   = value
+        self._dispatch.TitleColor   = value
 
 
     def title_color_rgb(self, red, green, blue):
@@ -346,13 +334,13 @@ class Title:
         """
 
         colorInt = red + (green * 256) + (blue * 256 * 256)
-        self.dispatch.TitleColor   = colorInt
+        self._dispatch.TitleColor   = colorInt
 
 
     @property
     def comment_top(self):
         """Value between 0 and 1 indicating the top of the comment partition."""
-        return self.dispatch.CommentTop
+        return self._dispatch.CommentTop
 
 
     @comment_top.setter
@@ -365,13 +353,13 @@ class Title:
 
         """
 
-        self.dispatch.CommentTop = value
+        self._dispatch.CommentTop = value
 
 
     @property
     def comment_bottom(self):
         """Value between 0 and 1 indicating the bottom of the comment partition."""
-        return self.dispatch.CommentBottom
+        return self._dispatch.CommentBottom
 
     @comment_bottom.setter
     def comment_bottom(self, value):
@@ -383,13 +371,13 @@ class Title:
 
         """
 
-        self.dispatch.CommentBottom = value
+        self._dispatch.CommentBottom = value
 
 
     @property
     def comment_color_int(self):
         """Returns an integer of the RGB color."""
-        return self.dispatch.CommentColor  
+        return self._dispatch.CommentColor  
 
 
     @comment_color_int.setter
@@ -401,7 +389,7 @@ class Title:
 
         """
 
-        self.dispatch.CommentColor   = value
+        self._dispatch.CommentColor   = value
 
 
     def comment_color_rgb(self, red, green, blue):
@@ -415,13 +403,13 @@ class Title:
         """
 
         colorInt = red + (green * 256) + (blue * 256 * 256)
-        self.dispatch.CommentColor   = colorInt
+        self._dispatch.CommentColor   = colorInt
 
 
     @property
     def properties_top(self):
         """Value between 0 and 1 indicating the top of the properties partition."""
-        return self.dispatch.PropertiesTop
+        return self._dispatch.PropertiesTop
 
 
     @properties_top.setter
@@ -434,13 +422,13 @@ class Title:
 
         """
 
-        self.dispatch.PropertiesTop = value
+        self._dispatch.PropertiesTop = value
 
 
     @property
     def properties_bottom(self):
         """Value between 0 and 1 indicating the bottom of the properties partition."""
-        return self.dispatch.PropertiesBottom
+        return self._dispatch.PropertiesBottom
 
 
     @properties_bottom.setter
@@ -453,13 +441,13 @@ class Title:
 
         """
 
-        self.dispatch.PropertiesBottom = value
+        self._dispatch.PropertiesBottom = value
     
 
     @property
     def properties_color_int(self):
         """Returns an integer of the RGB color."""
-        return self.dispatch.PropertiesColor  
+        return self._dispatch.PropertiesColor  
 
 
     @properties_color_int.setter
@@ -471,7 +459,7 @@ class Title:
 
         """
 
-        self.dispatch.PropertiesColor   = value
+        self._dispatch.PropertiesColor   = value
 
 
     def properties_color_rgb(self, red, green, blue):
@@ -485,7 +473,7 @@ class Title:
         """
 
         colorInt = red + (green * 256) + (blue * 256 * 256)
-        self.dispatch.PropertiesColor   = colorInt
+        self._dispatch.PropertiesColor   = colorInt
 
 
     @property
@@ -498,7 +486,7 @@ class Title:
 
         """
 
-        return self.dispatch.TitleHorizontalPosition 
+        return self._dispatch.TitleHorizontalPosition 
 
 
     @title_horizontal_position.setter
@@ -510,7 +498,7 @@ class Title:
 
         """
 
-        self.dispatch.TitleHorizontalPosition = index
+        self._dispatch.TitleHorizontalPosition = index
 
 
     @property
@@ -523,7 +511,7 @@ class Title:
 
         """
 
-        return self.dispatch.TitleVerticalPosition 
+        return self._dispatch.TitleVerticalPosition 
 
 
     @title_vertical_position.setter
@@ -535,7 +523,7 @@ class Title:
 
         """
 
-        self.dispatch.TitleVerticalPosition = index
+        self._dispatch.TitleVerticalPosition = index
 
 
     @property
@@ -549,7 +537,7 @@ class Title:
 
         """
 
-        return self.dispatch.TitleOrientation 
+        return self._dispatch.TitleOrientation 
 
 
     @title_orientation.setter
@@ -562,7 +550,7 @@ class Title:
 
         """
 
-        self.dispatch.TitleOrientation = index
+        self._dispatch.TitleOrientation = index
 
 
     @property
@@ -575,7 +563,7 @@ class Title:
 
         """
 
-        return self.dispatch.CommentHorizontalPosition 
+        return self._dispatch.CommentHorizontalPosition 
 
 
     @comment_horizontal_position.setter
@@ -587,7 +575,7 @@ class Title:
 
         """
 
-        self.dispatch.CommentHorizontalPosition = index
+        self._dispatch.CommentHorizontalPosition = index
 
 
     @property
@@ -600,7 +588,7 @@ class Title:
 
         """
 
-        return self.dispatch.CommentVerticalPosition 
+        return self._dispatch.CommentVerticalPosition 
 
 
     @comment_vertical_position.setter
@@ -612,7 +600,7 @@ class Title:
 
         """
 
-        self.dispatch.CommentVerticalPosition = index
+        self._dispatch.CommentVerticalPosition = index
 
 
     @property
@@ -625,7 +613,7 @@ class Title:
 
         """
 
-        return self.dispatch.CommentAlignment 
+        return self._dispatch.CommentAlignment 
 
 
     @comment_alignment.setter
@@ -637,7 +625,7 @@ class Title:
 
         """
 
-        self.dispatch.CommentAlignment = index
+        self._dispatch.CommentAlignment = index
 
 
     @property
@@ -651,7 +639,7 @@ class Title:
 
         """
 
-        return self.dispatch.CommentOrientation 
+        return self._dispatch.CommentOrientation 
 
 
     @comment_orientation.setter
@@ -664,4 +652,4 @@ class Title:
 
         """
 
-        self.dispatch.CommentOrientation = index
+        self._dispatch.CommentOrientation = index
