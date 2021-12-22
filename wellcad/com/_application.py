@@ -154,7 +154,7 @@ class Application:
         self._dispatch.CloseBorehole(prompt_for_saving, index)
     
     @property
-    def borehole_count(self):
+    def nb_of_documents(self):
         """The number of borehole documents open in WellCAD."""
         return self._dispatch.NbOfDocuments
     

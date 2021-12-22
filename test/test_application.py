@@ -38,8 +38,8 @@ class TestApplication(unittest.TestCase):
     def test_open_bogus_borehole(self):
         self.assertIsNone(self.app.open_borehole("NonExistentFile.wcl"))
     
-    def test_open_borehole_count(self):
-        self.assertGreaterEqual(self.app.borehole_count, 0)
+    def test_nb_of_documents(self):
+        self.assertGreaterEqual(self.app.nb_of_documents, 0)
     
     def test_get_active_borehole(self):
         self.app.new_borehole()
