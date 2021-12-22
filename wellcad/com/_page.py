@@ -1,6 +1,6 @@
-from ._noneable_wrapper import NoneableWrapper
+from ._dispatch_wrapper import DispatchWrapper
 
-class Page(NoneableWrapper):
+class Page(DispatchWrapper):
     @property
     def length(self):
         """Returns the document height in mm."""

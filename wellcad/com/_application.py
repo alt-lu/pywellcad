@@ -1,7 +1,8 @@
 from win32com.client import Dispatch
+from ._dispatch_wrapper import DispatchWrapper
 from ._borehole import Borehole
 
-class Application:
+class Application(DispatchWrapper):
     """The core class used to interact with WellCAD via its COM API.
 
     In general, it is the only class you should instantiate directly. All
@@ -28,10 +29,11 @@ class Application:
     _DISPATCH_METHODS = ("ShowWindow", "NewBorehole", "OpenBorehole",
         "GetBorehole", "GetActiveBorehole", "FileImport", "MultiFileImport")
     
+    def __new__(cls):
+        return object.__new__(cls)
+    
     def __init__(self):
-        self._dispatch = Dispatch("WellCAD.Application")
-        for method_name in self._DISPATCH_METHODS:
-            self._dispatch._FlagAsMethod(method_name)
+        super().__init__(Dispatch("WellCAD.Application"))
         
     def show_window(self):
         """Attempts to display the WellCAD workspace on screen.

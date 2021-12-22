@@ -1,6 +1,6 @@
-from ._noneable_wrapper import NoneableWrapper
+from ._dispatch_wrapper import DispatchWrapper
 
-class Header(NoneableWrapper):
+class Header(DispatchWrapper):
     @property
     def nb_of_items(self):
         """Number of dynamic text fields in the entire header."""

@@ -1,6 +1,6 @@
-from ._noneable_wrapper import NoneableWrapper
+from ._dispatch_wrapper import DispatchWrapper
 
-class Title(NoneableWrapper):
+class Title(DispatchWrapper):
     @property
     def left_position(self):
         """Returns a value between 0 and 1 as left log column position."""

@@ -1,6 +1,6 @@
-from ._noneable_wrapper import NoneableWrapper
+from ._dispatch_wrapper import DispatchWrapper
 
-class Depth(NoneableWrapper):
+class Depth(DispatchWrapper):
     @property
     def unit(self):
         """Returns 0 = meter or 1 = feet."""

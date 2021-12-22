@@ -1,6 +1,6 @@
-from ._noneable_wrapper import NoneableWrapper
+from ._dispatch_wrapper import DispatchWrapper
 
-class Workspace(NoneableWrapper):
+class Workspace(DispatchWrapper):
     def apply_template(self, template, prompt_user=True, config=""):
         """Applies a workspace template
         

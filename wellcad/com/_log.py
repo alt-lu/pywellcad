@@ -1,6 +1,6 @@
-from ._noneable_wrapper import NoneableWrapper
+from ._dispatch_wrapper import DispatchWrapper
 
-class Log(NoneableWrapper):
+class Log(DispatchWrapper):
     def file_export(self, file_name, prompt_user=True, config="", logfile=""):
         """Exports the document to the specified file. Please refer to the WellCAD help file
         for a description of the export parameters to be used in the configuration file and

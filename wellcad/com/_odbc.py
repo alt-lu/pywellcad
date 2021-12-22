@@ -1,6 +1,6 @@
-from ._noneable_wrapper import NoneableWrapper
+from ._dispatch_wrapper import DispatchWrapper
 
-class Odbc(NoneableWrapper):
+class Odbc(DispatchWrapper):
     def interpret_sql(self, sql_statement):
         """Executes the sql statement provided as argument.
 

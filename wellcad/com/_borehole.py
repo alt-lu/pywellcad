@@ -1,4 +1,4 @@
-from ._noneable_wrapper import NoneableWrapper
+from ._dispatch_wrapper import DispatchWrapper
 from ._log import Log
 from ._depth import Depth
 from ._header import Header
@@ -8,7 +8,7 @@ from ._workspace import Workspace
 from ._odbc import Odbc
 
 
-class Borehole(NoneableWrapper):
+class Borehole(DispatchWrapper):
     @property
     def name(self):
         """Returns the title of a borehole document."""
