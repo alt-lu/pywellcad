@@ -3,12 +3,14 @@ import pathlib
 import wellcad.com
 
 class TestApplication(unittest.TestCase):
-    def setUp(self):
-        self.app = wellcad.com.Application()
-        self.fixture_path = pathlib.Path(__file__).parent / "fixtures"
+    @classmethod
+    def setUpClass(cls):
+        cls.app = wellcad.com.Application()
+        cls.fixture_path = pathlib.Path(__file__).parent / "fixtures"
     
-    def tearDown(self):
-        self.app.quit(False)
+    @classmethod
+    def tearDownClass(cls):
+        cls.app.quit(False)
     
     def test_show_window(self):
         self.assertTrue(self.app.show_window())
