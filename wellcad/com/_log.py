@@ -1,420 +1,267 @@
 from ._dispatch_wrapper import DispatchWrapper
 
 class Log(DispatchWrapper):
-    def file_export(self, file_name, prompt_user=True, config="", logfile=""):
-        """Exports the document to the specified file. Please refer to the WellCAD help file
-        for a description of the export parameters to be used in the configuration file and
-        parameter string.
+    _DISPATCH_METHODS = ("DoSettingsDlg",)
+
+    def file_export(self, directory, file_title=None, extension=None, prompt_user=None, config_filename=None):
+        """Exports the data of the log in the specified format (TXT, CSV, ASC,
+        WA* for all log types, BMP, TIF, GIF, JPG, PNG in addition for RGB and
+        Image Logs).
 
         Parameters
         ----------
-        file_name : str
-            Path and name of the file to export.
-        prompt_user : bool
-            If set to False no dialog box will be displayed.
-        config : str
-            Path and name of the .ini file containing the export parameters.
-        logfile : str
-            Format of the saved file. LAS, DLIS, EMF, CGM, JPG, PNG, TIF, BMP, WCL and PDF are supported.
+        directory : str
+            Path to the location where the file should be stored.
+        file_title : str, optional
+            Name of the file that will be created. By default the log title
+            will be taken.
+        extension : str, optional
+            The file extension to be used.
+        prompt_user: bool, optional
+            If set to ``True`` any warning messages during the graphic file
+            export will be shown.
+        config_filename : str, optional
+            Configuration file used for ASCII (TXT, CSV, ASC, WA*) export only.
+        
+        Returns
+        -------
+        bool
+            Whether the log was successfully exported.
         """
-        self._dispatch.FileExport(file_name, prompt_user, config, logfile)
+        return self._dispatch.FileExport(directory, file_title, extension, prompt_user, config_filename)
 
+    @property
     def nb_of_data(self):
-        """Gets the number of data points in a log."""
+        """int: The number of data points in a log."""
         return self._dispatch.NbOfData
 
-    """
     @property
     def name(self):
-        return self.dispatch.Name
-
-    @name.setter
-    def name(self, text):
-        Sets the title of a log.
-
-        Parameters
-        ----------
-        text : str
-            The new name of the log.
-        
-        self.dispatch.Name = name
-        """
-
-    def set_name(self, name):
-        """Sets the title of a log.
-
-        Parameters
-        ----------
-        text : str
-            The new name of the log.
-        """
-
-        self._dispatch.Name = name
-
-    def get_name(self):
-        """Gets the title of a log.
-
-        Parameters
-        ----------
-        text : str
-            The new name of the log."""
+        """str: The title of the log."""
         return self._dispatch.Name
 
-    def set_title_dispatchment(self, comment):
-        """Sets the comment in a log title.
+    @name.setter
+    def name(self, value):
+        self._dispatch.Name = value
 
-        Parameters
-        ----------
-        comment : str
-            The new comment of the log title.
-        """
-
-        self._dispatch.TitleComment = comment
-
-    def get_title_dispatchment(self):
-        """Gets the comment in a log title.
-
-        Parameters
-        ----------
-        comment : str
-            The new comment of the log title."""
+    @property
+    def title_comment(self):
+        """str: The title comment for this log."""
         return self._dispatch.TitleComment
 
-    """
+    @title_comment.setter
+    def title_comment(self, comment):        
+        self._dispatch.TitleComment = comment
+
     @property
-    def title_dispatchment(self):
-        return self.dispatch.TitleComment
-
-    @title_dispatchment.setter
-    def title_dispatchment(self, comment):
-        Sets the comment in a log title.
-
-        Parameters
-        ----------
-        comment : str
-            The new comment of the log title.
-        
-        self.dispatch.TitleComment = comment
-    """
-
     def top_depth(self):
-        """Gets the depth of the first data point in the log using the current depth reference units."""
+        """float: The depth of the first top-most (shallowest) data point in
+        the log using the current depth reference units."""
         return self._dispatch.TopDepth
 
+    @property
     def bottom_depth(self):
-        """Gets the depth of the of the last (deepest) data point in the log using the current depth reference units."""
+        """float: The depth of the of the bottom-most (deepest) data point in
+        the log using the current depth reference units."""
         return self._dispatch.BottomDepth
 
-    def do_settings_dlg(self):  # Is it obsolete ? Should we keep it?
-        """Opens the main settings dialog box corresponding to the log. Please note that
-        since WellCAD v5.0 Properties Bars are used. The dialog boxes displayed with this
-        method may not show all settings anymore."""
-        return self._dispatch.DoSettingsDlg
+    def do_settings_dlg(self):
+        """Opens the main settings dialog box corresponding to the log.
+        
+        Please note that since WellCAD v5.0 Properties Bars are used. The
+        dialog boxes displayed with this method may not show all settings
+        any more.
+        
+        Returns
+        -------
+        bool
+            Whether the settings dialog was successfully displayed.
+        """
+        # TODO: The above documentation is actually out of date. From testing,
+        # this just shows the property bar now.
+        return self._dispatch.DoSettingsDlg()
 
-    def get_data_table(self):
-        """Gets the entire data table from/for a log. The first row in the
-        data table is reserved for the log title (e.g. for a Well Log the fist row
-        in the data table contains the column titles “Depth” and the actual log title).
-        The data format for each log equals the data displayed in the Tabular Editor."""
+    @property
+    def data_table(self):
+        """tuple of tuples: The data table for a log. The first row in the data
+        table is reserved for the log titles (e.g. for a Well Log the fist row
+        in the data table contains the column titles "Depth" and the actual log
+        title). The data format for each log equals the data displayed in the
+        Tabular Editor."""
         return self._dispatch.DataTable
 
-    def set_data_table(self, data):
-        """Sets the entire data table from/for a log. The first row in the
-        data table is reserved for the log title (e.g. for a Well Log the fist row
-        in the data table contains the column titles “Depth” and the actual log title).
-        The data format for each log equals the data displayed in the Tabular Editor.
-
-        Parameters
-        ----------
-        data : array
-            ...
-        """
+    @data_table.setter
+    def data_table(self, data):
         self._dispatch.DataTable = data
 
+    @property
     def data_min(self):
-        """Gets the minimum data value of the Well, Mud or Interval Log)."""
+        """float: The minimum data value of the Well, Mud or Interval Log."""
         return self._dispatch.DataMin
 
+    @property
     def data_max(self):
-        """Gets the maximum data value of the log (Well-, Mud-, Interval Log)."""
+        """float: The maximum data value of the Well, Mud or Interval Log."""
         return self._dispatch.DataMax
 
-    def set_log_unit(self, unit):
-        '''Sets the unit of a log. Restricted to log types having a unit in the log title.
-
-        Parameters
-        ----------
-        unit : str
-            The unit of the log.'''
-        self._dispatch.LogUnit = unit
-
-    def get_log_unit(self):
-        '''Gets the unit of a log. Restricted to log types having a unit in the log title.
-
-        Parameters
-        ----------
-        unit : str
-            The unit of the log.'''
-        return self._dispatch.LogUnit
-
-    '''
     @property
     def log_unit(self):
-        """Gets the unit of a log. Restricted to log types having a unit in the log title."""
-        return self.dispatch.LogUnit
+        """str: The unit of a log. Restricted to log types having a unit in the log title."""
+        return self._dispatch.LogUnit
 
     @log_unit.setter
     def log_unit(self, unit):
-        Sets the unit of a log. Restricted to log types having a unit in the log title.
+        self._dispatch.LogUnit = unit
 
-        Parameters
-        ----------
-        unit : str
-            The unit of the log.
-        
-        self.dispatch.LogUnit = unit
-    '''
-
-    '''
     @property
     def left_position(self):
-        """Sets the left position of the log column in percent of the document width."""
-        return self.dispatch.LeftPosition
+        """float: The left position of the log column as a fraction of the document width."""
+        return self._dispatch.LeftPosition
 
     @left_position.setter
     def left_position(self, position):
-        """Sets the left position of the log column in percent of the document width.
-         
-        Parameters
-        ----------
-        position : float
-            Value between 0 and 1.
-        """
-        self.dispatch.LeftPosition = position
-    '''
-
-    def set_left_position(self, position):
-        """Sets the left position of the log column in percent of the document width.
-
-        Parameters
-        ----------
-        position : float
-            Value between 0 and 1.
-        """
         self._dispatch.LeftPosition = position
 
-    def get_left_position(self):
-        """Gets the left position of the log column in percent of the document width.
-
-        Parameters
-        ----------
-        position : float
-            Value between 0 and 1.
-        """
-        return self._dispatch.LeftPosition
-
-    '''
     @property
     def right_position(self):
-        """Sets the right position of the log column in percent of the document width."""
-        return self.dispatch.RightPosition
+        """float: The right position of the log column as a fraction of the document width."""
+        return self._dispatch.RightPosition
 
     @right_position.setter
     def right_position(self, position):
-        """Sets the right position of the log column in percent of the document width.
-
-        Parameters
-        ----------
-        position : float
-            Value between 0 and 1.
-        """
-        self.dispatch.RightPosition = position
-    '''
-
-    def set_right_position(self, position):
-        """Sets the right position of the log column in percent of the document width.
-
-        Parameters
-        ----------
-        position : float
-            Value between 0 and 1.
-        """
         self._dispatch.RightPosition = position
 
-    def get_right_position(self):
-        """Gets the right position of the log column in percent of the document width.
-
-        Parameters
-        ----------
-        position : float
-            Value between 0 and 1.
-        """
-        return self._dispatch.RightPosition
-
     def set_position(self, left, right):
-        """Sets the left and right position of a log column in percentage of the document width.
+        """Sets the position and width of the log.
 
         Parameters
         ----------
         left : float
-            Value between 0 and 1.
+            The position of the left side of the log column as a fraction of
+            the document width.
 
         right : float
-            Value between 0 and 1.
+            The position of the right side of the log column as a fraction of
+            the document width.
         """
         self._dispatch.SetPosition(left, right)
 
-    def type(self):  # new lineation log should be added
-        """Gets the log type index.
+    @property
+    def type(self):  # TODO: new lineation log should be added to documentation
+        """int: The log type index.
 
-        Parameters
-        ----------
-        log_type : float
-            Undefined = 0
-            Well log = 1
-            Formula log = 2
-            Mud log = 3
-            FWS log = 4
-            Image log = 5
-            Structure log = 6
-            Litho log = 7
-            Comment log = 8
-            Engineering log = 9
-            RGB log = 10
-            Image Float 2 log = 11
-            Image float 4 log = 12
-            Interval log = 13
-            Analysis log = 14
-            Percentage log = 15
-            Coredesc log = 16
-            Depth log = 17
-            Strata log = 18
-            Stack log = 19
-            Polar & Rose log = 20
-            Cross log = 21
-            OLE log = 22
-            Shading log = 23
-            Marker log = 24
-            Breakout log = 25
-            Bio log = 26
+        Log types are one of the below:
+
+        * Undefined = 0
+        * Well log = 1
+        * Formula log = 2
+        * Mud log = 3
+        * FWS log = 4
+        * Image log = 5
+        * Structure log = 6
+        * Litho log = 7
+        * Comment log = 8
+        * Engineering log = 9
+        * RGB log = 10
+        * Image Float 2 log = 11
+        * Image float 4 log = 12
+        * Interval log = 13
+        * Analysis log = 14
+        * Percentage log = 15
+        * Coredesc log = 16
+        * Depth log = 17
+        * Strata log = 18
+        * Stack log = 19
+        * Polar & Rose log = 20
+        * Cross log = 21
+        * OLE log = 22
+        * Shading log = 23
+        * Marker log = 24
+        * Breakout log = 25
+        * Bio log = 26
         """
         return self._dispatch.Type
 
-    #@property # is this one necessary ? the setter option requires an argument. Not working with bool.
-    #def hide_log_title(self):
-    #    """Lets you know if the log title is hidden or not"""
-    #    return self.dispatch.HideLogTitle
-
+    @property
     def hide_log_title(self):
-        """Hides the log title."""
-        self._dispatch.HideLogTitle = True
+        """bool: Whether the log title is hidden."""
+        return self._dispatch.HideLogTitle
 
-    #@property # is this one necessary ? the setter option requires an argument. Not working with bool.
-    #def hide_log_data(self):
-     #   """Lets you know if the log data is hidden or not"""
-     #   return self.dispatch.HideLogData
-
-    def hide_log_data(self):
-        """Hides the log data."""
-        self._dispatch.HideLogData = True
+    @hide_log_title.setter
+    def hide_log_title(self, value):
+        self._dispatch.HideLogTitle = value
 
     @property
-    def log_background_color_int(self):
-        """Gets the background color for a log column as an integer of the RGB color."""
+    def hide_log_data(self):
+        """bool: Whether the log data is hidden."""
+        return self._dispatch.HideLogData
+
+    @hide_log_data.setter
+    def hide_log_data(self, value):
+        self._dispatch.HideLogData = value
+
+    @property
+    def log_background_color(self):
+        """int: The background color of the log column.
+        
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
         return self._dispatch.LogBackgroundColor
 
-    @log_background_color_int.setter
-    def log_background_color_int(self, value):
-        """Sets the background color for a log column as an RGB integer value.
-
-        Parameters
-        ----------
-        value : int
-            RGB tuple value.
-        """
+    @log_background_color.setter
+    def log_background_color(self, value):
         self._dispatch.LogBackgroundColor = value
 
-    def log_background_color_rgb(self, r, g, b):
-        """Sets the background color for a log column as an RGB tuple.
+    @property
+    def border_style(self):
+        """int: The border line style of the log column.
+        
+        Styles are specified as an integer:
 
-        Parameters
-        ----------
-        r : int
-            Value between 0 and 255.
-        g : int
-            Value between 0 and 255.
-        b : int
-            Value between 0 and 255.
+        * Solid = 0
+        * Dashed = 1
+        * Dotted = 2
+        * Dash-Dot = 3
+        * Dash-dot-dot = 4
         """
-        colorInt = r + (g*256) + (b*256*256)
-        self._dispatch.LogBackgroundColor = colorInt
-
-    #@property
-    #def border_style(self):
-    #    """Gets the background color for a log column as an RGB color value."""
-    #    return self.dispatch.BorderStyle
-
-    def get_border_style(self):
-        """Gets the background color for a log column as an RGB color value."""
         return self._dispatch.BorderStyle
 
-    def set_border_style(self, style):
-        """Sets the border style of the log column.
-
-        Parameters
-        ----------
-        style : int
-            Solid = 0
-            Dashed = 1
-            Dotted = 2
-            Dash-Dot = 3
-            Dash-dot-dot = 4
-        """
+    @border_style.setter
+    def border_style(self, style):
         self._dispatch.BorderStyle = style
 
-
     @property
-    def border_color_int(self):
-        """Gets the background color for a log column as an RGB color value."""
+    def border_color(self):
+        """int: The border color for of the log column.
+        
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
         return self._dispatch.BorderColor
 
-    @border_color_int.setter
-    def border_color_int(self, value):
-        """Sets the color used for the log border as an RGB integer value.
-
-        Parameters
-        ----------
-        value : int
-            RGB tuple value.
-        """
+    @border_color.setter
+    def border_color(self, value):
         self._dispatch.BorderColor = value
 
-    def border_color_rgb(self, r, g, b):
-        """Sets the background color for a log column as an RGB tuple.
-
-        Parameters
-        ----------
-        r : int
-            Value between 0 and 255.
-        g : int
-            Value between 0 and 255.
-        b : int
-            Value between 0 and 255.
-        """
-        colorInt = r + (g * 256) + (b * 256 * 256)
-        self._dispatch.LogBackgroundColor = colorInt
-
-
+    @property
     def display_border(self):
-        """Displays the log border."""
-        self._dispatch.DisplayBorder = True
+        """bool: Whether the log column border is displayed."""
+        return self._dispatch.DisplayBorder
+    
+    @display_border.setter
+    def display_border(self, value):
+        self._dispatch.DisplayBorder = value
 
     def clear_history(self):
         """Removes all entries from the log history."""
         self._dispatch.ClearHistory()
 
+    @property
     def nb_of_history_item(self):
-        """Gets the number of entries in the history (audit trail) of a log."""
+        """int: The number of entries in the history (audit trail) of a log."""
         return self._dispatch.NbOfHistoryItem
 
     def history_item_date(self, index):
@@ -424,6 +271,11 @@ class Log(DispatchWrapper):
         ----------
         index : int
             Zero based index of the history entry.
+        
+        Returns
+        -------
+        pywintypes.datetime
+            The datetime of the history item.
         """
         return self._dispatch.HistoryItemDate(index)
 
@@ -433,209 +285,139 @@ class Log(DispatchWrapper):
         Parameters
         ----------
         index : int
-            Zero based index of the history entry."""
+            Zero based index of the history entry.
+        
+        Returns
+        -------
+        str
+            The description of the specified history entry.
+        """
         return self._dispatch.HistoryItemDescription(index)
 
-    '''
     @property
     def null_value(self):
-        """Get the No Data value of a log."""
-        return self.dispatch.NullValue
+        """float: The value that is treated as ``Null`` (not displayed) in a log."""
+        return self._dispatch.NullValue
 
     @null_value.setter
     def null_value(self, value):
-        """Sets the No Data value of a log.
-
-        Parameters
-        ----------
-        value : float
-            numerical value which will represent No Data
-        """
-        self.dispatch.NullValue = value
-        
-    '''
-
-    def get_null_value(self):
-        """Get the No Data value of a log."""
-        return self._dispatch.NullValue
-
-    def set_null_value(self, value):
-        """Sets the No Data value of a log.
-
-        Parameters
-        ----------
-        value : float
-            numerical value which will represent No Data
-        """
         self._dispatch.NullValue = value
 
-    #@property # is this one necessary ? the setter option requires an argument. Not working with bool.
-    #def mask_contacts(self):
-    #    """Lets you know if the contact lines within the log column are masked or not."""
-    #    return self.dispatch.MaskContacts
-
-    #@mask_contacts.setter
+    @property
     def mask_contacts(self):
-        """Masks the contact lines (e.g. from formation tops) within the log column."""
-        self._dispatch.MaskContacts = True
+        """bool: Whether contact lines within the log column are masked or not."""
+        return self._dispatch.MaskContacts
 
-    #@property
-    #def mask_horizontal_grid(self):
-    #    """Lets you know if the horizontal (depth) grid of a log are masked or not."""
-    #    return self.dispatch.MaskHorizontalGrid
+    @mask_contacts.setter
+    def mask_contacts(self, value):
+        self._dispatch.MaskContacts = value
 
-    #@mask_horizontal_grid.setter
+    @property
     def mask_horizontal_grid(self):
-        """Masks the horizontal (depth) grid of a log."""
-        self._dispatch.MaskHorizontalGrid = True
+        """bool: Whether the horizontal (depth) gridlines of a log are masked or not."""
+        return self._dispatch.MaskHorizontalGrid
 
-    '''
+    @mask_horizontal_grid.setter
+    def mask_horizontal_grid(self, value):
+        self._dispatch.MaskHorizontalGrid = value
+
     @property
     def sample_rate(self):
-        """Lets you know the sample interval of a log in current master depth units."""
-        return self.dispatch.SampleRate
+        """float: The sample interval of a log in current master depth units."""
+        return self._dispatch.SampleRate
 
     @sample_rate.setter
     def sample_rate(self, rate):
-        """Sets the sample interval of a log in current master depth units.
-
-        Parameters
-        ----------
-        rate : float
-            numerical value which represents sample rate
-        """
-        self.dispatch.SampleRate = rate
-    '''
-
-    def get_sample_rate(self):
-        """Lets you know the sample interval of a log in current master depth units."""
-        return self._dispatch.SampleRate
-
-    def set_sample_rate(self, rate):
-        """Sets the sample interval of a log in current master depth units.
-
-        Parameters
-        ----------
-        rate : float
-            numerical value which represents sample rate
-        """
         self._dispatch.SampleRate = rate
 
+    @property
+    def scale_low(self):
+        """float: The low value of the log scale."""
+        return self._dispatch.ScaleLow
+    
+    @scale_low.setter
     def scale_low(self, scale):
-        """Sets the low scale value of the log.
-
-        Parameters
-        ----------
-        scale : float
-            number which will represent the scale lowest value
-        """
         self._dispatch.ScaleLow = scale
+    
+    @property
+    def scale_high(self):
+        """float: The high value of the log scale."""
+        return self._dispatch.ScaleHigh
 
+    @scale_high.setter
     def scale_high(self, scale):
-        """Sets the high scale value of the log.
-
-        Parameters
-        ----------
-        scale : float
-            number which will represent the scale highest value
-        """
         self._dispatch.ScaleHigh = scale
 
-    '''
     @property
     def scale_mode(self):
-        """Gets the scale type for the data display of a Well or Mud Logs."""
-        return self.dispatch.ScaleMode
+        """int: The horizontal scale mode (linear or logarithmic) of a log.
+
+        This property is only available for Well or Mud logs, and can have the
+        following values:
+
+        * Linear = 0
+        * Logarithmic = 1
+        """
+        return self._dispatch.ScaleMode
 
     @scale_mode.setter
     def scale_mode(self, mode):
-        """Sets the scale mode for the data display of a Well or Mud Logs.
-
-        Parameters
-        ----------
-        mode : int
-            linear = 0
-            logarithmic = 1
-        """
-        self.dispatch.ScaleMode = mode
-    '''
-
-    def get_scale_mode(self):
-        """Gets the scale type for the data display of a Well or Mud Logs."""
-        return self._dispatch.ScaleMode
-
-    def set_scale_mode(self, mode):
-        """Sets the scale mode for the data display of a Well or Mud Logs.
-
-        Parameters
-        ----------
-        mode : int
-            linear = 0
-            logarithmic = 1
-        """
         self._dispatch.ScaleMode = mode
 
-    #@property
-    #def scale_reversed(self):
-    #    """Lets you know if the flag is set to reverse the data display scale or not."""
-    #    return self.dispatch.ScaleReversed
-
-    #scale_reversed.setter
-
+    @property
     def scale_reversed(self):
-        """Sets the flag to reverse the data display scale of Well or Mud Logs."""
-        self._dispatch.ScaleReversed = True
+        """bool: Whether the data display scale is reversed."""
+        return self._dispatch.ScaleReversed
 
-    #@property
-    #def use_log_colored_background(self):
-    #    """Lets you know if the background color of a log is displayed or not."""
-    #    return self.dispatch.UseLogColoredBackground
+    @scale_reversed.setter
+    def scale_reversed(self, value):
+        self._dispatch.ScaleReversed = value
 
-    #@use_log_colored_backgroung.setter
+    @property
     def use_log_colored_background(self):
-        """Sets the information whether the background color of a log is displayed or not."""
-        self._dispatch.UseLogColoredBackground = True
+        """bool: Whether the background color of a log is displayed."""
+        return self._dispatch.UseLogColoredBackground
 
-    #@property
-    #def grid_enable(self):
-    #    """Lets you know if the flag to display the vertical grid is enabled or not."""
-    #    return self.dispatch.GridEnable
+    @use_log_colored_background.setter
+    def use_log_colored_background(self, value):
+        self._dispatch.UseLogColoredBackground = value
 
-    #@grid_enable.setter
+    @property
     def grid_enable(self):
+        """bool: Whether to display vertical gridlines."""
+        return self._dispatch.GridEnable
+
+    @grid_enable.setter
+    def grid_enable(self, value):
         """Sets the flag to display the vertical grid in Well or Mud Logs."""
-        self._dispatch.GridEnable = True
-
+        self._dispatch.GridEnable = value
+    
+    @property
+    def maj_grid_spacing(self):
+        """float: The spacing between major vertical gridlines."""
+        return self._dispatch.MajGridSpacing
+    
+    @maj_grid_spacing.setter
     def maj_grid_spacing(self, spacing):
-        """Sets the vertical (major) grid for Well or Mud Logs.
-
-        Parameters
-        ----------
-        spacing : float
-            value of the spacing between each grid
-        """
         self._dispatch.MajGridSpacing = spacing
 
+    @property
+    def min_grid_spacing(self):
+        """float: The spacing between minor vertical gridlines."""
+        return self._dispatch.MinGridSpacing
+    
+    @min_grid_spacing.setter
     def min_grid_spacing(self, spacing):
-        """Sets the vertical (minor) grid for Well or Mud Logs.
-
-        Parameters
-        ----------
-        spacing : float
-            value of the spacing between each grid
-        """
         self._dispatch.MinGridSpacing = spacing
 
-    #@property
-    #def lock_log_data(self):
-    #    """Lets you know if the option to lock log data and protect it from editing is enable or not."""
-    #    return self.dispatch.LockLogData
-
-    #@lock_log_data.setter
+    @property
     def lock_log_data(self):
-        """Sets the option to lock log data and protect it from editing."""
-        self._dispatch.LockLogData = True
+        """bool: Whether the log data is protected from editing."""
+        return self._dispatch.LockLogData
 
+    @lock_log_data.setter
+    def lock_log_data(self, value):
+        self._dispatch.LockLogData = value
 
 # Well, Formula, Mud and Interval logs
 
