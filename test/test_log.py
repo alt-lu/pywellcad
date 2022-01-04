@@ -1,26 +1,18 @@
 import unittest
-import pathlib
-import winreg
 import wellcad.com
 import random
 from datetime import datetime, timezone, timedelta
 from ._extra_asserts import ExtraAsserts
+from ._sample_path import SamplePath
 
 
-class TestLog(unittest.TestCase, ExtraAsserts):
+class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
     @classmethod
     def setUpClass(cls):
         cls.app = wellcad.com.Application()
-        cls.sample_path = cls.__find_sample_path()
+        cls.sample_path = cls._find_sample_path()
         cls.borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.gr_log = cls.borehole.get_log("GR")
-    
-    @staticmethod
-    def __find_sample_path():
-        INSTALL_KEY_PATH = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{E5BB225F-20D1-4F4C-861F-C9D1ADE1A2DC}"
-        install_key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, INSTALL_KEY_PATH)
-        install_path = pathlib.Path(winreg.QueryValueEx(install_key, "InstallLocation")[0])
-        return install_path / "Samples"
     
     @classmethod
     def tearDownClass(cls):
