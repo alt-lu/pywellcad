@@ -157,7 +157,7 @@ class Application(DispatchWrapper):
     
     @property
     def nb_of_documents(self):
-        """The number of borehole documents open in WellCAD."""
+        """int: The number of borehole documents open in WellCAD."""
         return self._dispatch.NbOfDocuments
     
     def file_import(self,
