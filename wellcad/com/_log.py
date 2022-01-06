@@ -383,14 +383,22 @@ class Log(DispatchWrapper):
         self._dispatch.UseLogColoredBackground = value
 
     @property
-    def grid_enable(self):
-        """bool: Whether to display vertical gridlines."""
-        return self._dispatch.GridEnable
+    def maj_grid_enable(self):
+        """bool: Whether to display major vertical gridlines."""
+        return self._dispatch.MajGridEnable
 
-    @grid_enable.setter
-    def grid_enable(self, value):
-        """Sets the flag to display the vertical grid in Well or Mud Logs."""
-        self._dispatch.GridEnable = value
+    @maj_grid_enable.setter
+    def maj_grid_enable(self, value):
+        self._dispatch.MajGridEnable = value
+    
+    @property
+    def min_grid_enable(self):
+        """bool: Whether to display minor vertical gridlines."""
+        return self._dispatch.MinGridEnable
+
+    @min_grid_enable.setter
+    def min_grid_enable(self, value):
+        self._dispatch.MinGridEnable = value
     
     @property
     def maj_grid_spacing(self):

@@ -216,8 +216,10 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrChange(self.gr_log, "use_log_colored_background", True)
     
     def test_grid_enable(self):
-        self.assertAttrEqual(self.gr_log, "grid_enable", False)
-        self.assertAttrChange(self.gr_log, "grid_enable", True)
+        self.assertAttrEqual(self.gr_log, "maj_grid_enable", False)
+        self.assertAttrChange(self.gr_log, "maj_grid_enable", True)
+        self.assertAttrEqual(self.gr_log, "min_grid_enable", False)
+        self.assertAttrChange(self.gr_log, "min_grid_enable", True)
     
     def test_grid_spacing(self):
         self.assertAttrEqual(self.gr_log, "maj_grid_spacing", 40.0)
