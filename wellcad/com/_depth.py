@@ -1,158 +1,123 @@
 from ._dispatch_wrapper import DispatchWrapper
 
+
 class Depth(DispatchWrapper):
-    @property
-    def unit(self):
-        """Returns 0 = meter or 1 = feet."""
-        return self._dispatch.Unit
+    """ The reference/master vertical axis. Can be in depth or time.
 
+    Depth objects allow setting properties for the master depth axis
+    such as scale, unit, decimals, ….
 
-    @unit.setter
-    def unit(self, unit):
-        """Sets the depth axis unit.
-        
-        Arguments:
-            unit -- Set 0 for meter or 1 for feet.
-        """
-
-        self._dispatch.Unit = unit
-
-
-    @property
-    def depth_reference(self):
-        """Status of the documents reference axis.
-
-        Returns:
-            True if the master depth axis is the current reference scale.
-        """
-
-        return self._dispatch.UsedAsDepthScale
-
-    
-    @depth_reference.setter
-    def depth_reference(self, enable):
-        """Sets the documents reference axis scale status.
-        
-        Arguments:
-            enable -- If set to True the master depth axis becomes the
-                      reference axis of the document.
-        """
-
-        self._dispatch.UsedAsDepthScale = enable
-
-
-    @property
-    def scale(self):
-        """Returns 100 for a 1:100 depth scale."""
-        return self._dispatch.Scale
-
-
-    @scale.setter
-    def scale(self, scale):
-        """Sets the depth axis scale.
-        
-        Arguments:
-            scale -- Set 100 for a scale of 1:100.
-        """
-
-        self._dispatch.Scale = scale
-
+    Example
+    -------
+    >>> import wellcad.com
+    >>> app = wellcad.com.Application()
+    >>> app.new_borehole()
+    <wellcad.com._borehole.Borehole object at 0x0000018B3DAF9D30>
+    >>> borehole = app.get_active_borehole()
+    >>> depth = borehole.depth
+    """
 
     @property
     def decimals(self):
-        """Returns the number of decimals displayed for the depth."""
+        """int: the number of decimals displayed in the depth string of the master depth axis."""
         return self._dispatch.Decimals
-
 
     @decimals.setter
     def decimals(self, decimals):
-        """Sets the number of decimals displayed in the depth axis.
-        
-        Arguments:
-            decimals -- Set 1 for 0.1, 2 for 0.01, 3 for 0.001 etc..
-        """
-
         self._dispatch.Decimals = decimals
-    
 
-    @property
-    def horizontal_grid_type(self):
-        """Returns the type of horizontal grid used.
-        
-        Returns:
-            0 - No grid
-            1 - Major grid only
-            2 - Major & Minor grid
-        """
-
-        return self._dispatch.HorizontalGrid
-
-
-    @horizontal_grid_type.setter
-    def horizontal_grid_type(self, grid_type):
-        """Sets the type of horiz. grid lines displayed.
-        
-        Arguments:
-            grid_type -- 0 = None, 1 = Major, 2 = Major & Minor.
-        """
-
-        self._dispatch.HorizontalGrid = grid_type
-
-    
     @property
     def horizontal_grid_spacing(self):
-        """Returns the spacing of horizontal grid lines."""
+        """float: The depth grid spacing for the master depth axis"""
         return self._dispatch.HorizontalGridSpacing
-
 
     @horizontal_grid_spacing.setter
     def horizontal_grid_spacing(self, grid_spacing):
-        """Sets the spacing of the horiz. grid lines displayed.
-        
-        Arguments:
-            grid_spacing -- E.g. 1 = every meter or ft.
-        """
-
         self._dispatch.HorizontalGridSpacing = grid_spacing
 
-    
-    def set_position(self, left_pos, right_pos):
-        """Adjusts the left / right border of the depth axis column.
-        
-        Arguments:
-            left_pos -- Value between 0 and 1 (= 100% document width).
-            right_pos -- Value between 0 and 1 (= 100% document width).
+    @property
+    def scale(self):
+        """float: The depth scale (e.g. 100 = 1: 100) for the master depth axis."""
+        return self._dispatch.Scale
+
+    @scale.setter
+    def scale(self, scale):
+        self._dispatch.Scale = scale
+
+    @property
+    def use_as_depth_scale(self):
+        """bool: The flag to use the depth scale as the current reference axis."""
+        return self._dispatch.UsedAsDepthScale
+
+    @use_as_depth_scale.setter
+    def use_as_depth_scale(self, enable):
+        self._dispatch.UsedAsDepthScale = enable
+
+    @property
+    def horizontal_grid(self):
+        """int: The depth grid type.
+
+        The available types are the following:
+
+        * 0 = none
+        * 1 = major grid lines only
+        * 2 = major & minor grid lines
         """
-        self._dispatch.SetPosition(left_pos, right_pos)
-        
-        
+        return self._dispatch.HorizontalGrid
+
+    @horizontal_grid.setter
+    def horizontal_grid(self, grid_type):
+        self._dispatch.HorizontalGrid = grid_type
+
     @property
     def left_position(self):
-        """Returns the left border of the depth axis column."""
+        """float: The left position of the master depth column border
+        relative to the document width (value between 0 and 1)."""
         return self._dispatch.LeftPosition
-
 
     @left_position.setter
     def left_position(self, left_pos):
-        """Adjusts the left border of the depth axis column.
-        
-        Arguments:
-            left_pos -- Value between 0 and 1 (= 100% document width).
-        """
         self._dispatch.LeftPosition = left_pos
-
 
     @property
     def right_position(self):
-        """Returns the right border of the depth axis column."""
+        """float: The right position of the master depth column border
+        relative to the document width (value between 0 and 1)."""
         return self._dispatch.RightPosition
-
 
     @right_position.setter
     def right_position(self, right_pos):
-        """Adjusts the right border of the depth axis column.
-        
-        Arguments:
-            right_pos -- Value between 0 and 1 (= 100% document width).
-        """
         self._dispatch.RightPosition = right_pos
+
+    @property
+    def unit(self):
+        """int: The depth unit
+
+        The available units are the following:
+
+        * 0 = meter
+        * 1 = feet
+        """
+        return self._dispatch.Unit
+
+    @unit.setter
+    def unit(self, unit):
+        self._dispatch.Unit = unit
+
+
+
+    def set_position(self, left_pos, right_pos):
+        """Set the left and right position of the master depth
+        column border relative to the document width (value between 0 and 1).
+        
+        Parameters
+        ----------
+        left_pos : float
+            A value between 0 and 1 indicating the left depth
+            column border relative to the document width.
+        right_pos : float
+            A value between 0 and 1 indicating the right
+            depth column border relative to the document width.
+        """
+        self._dispatch.SetPosition(left_pos, right_pos)
+

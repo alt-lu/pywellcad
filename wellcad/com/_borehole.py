@@ -121,11 +121,10 @@ class Borehole(DispatchWrapper):
 
         self._dispatch.SetVisibleDepthRange(top_depth, bottom_depth)
 
-
-    def get_depth(self):
-        """Returns a depth object for the master depth axis."""
-        obdepth = self._dispatch.Depth
-        return Depth(obdepth)
+    @property
+    def depth(self):
+        """Depth: The reference/master vertical axis. Can be in depth or time."""
+        return Depth(self._dispatch.Depth)
         
         
     def get_header(self):
