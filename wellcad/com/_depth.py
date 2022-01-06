@@ -37,7 +37,14 @@ class Depth(DispatchWrapper):
 
     @property
     def scale(self):
-        """float: The depth scale (e.g. 100 = 1: 100) for the master depth axis."""
+        """float: The depth scale used for the master depth axis.
+        
+        The resulting scale is 1:``scale``.
+        
+        Example
+        -------
+        >>> depth.scale = 100 # Scale is 1:100
+        """
         return self._dispatch.Scale
 
     @scale.setter
