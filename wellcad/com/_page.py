@@ -1,285 +1,179 @@
 from ._dispatch_wrapper import DispatchWrapper
 
+
 class Page(DispatchWrapper):
-    @property
-    def length(self):
-        """Returns the document height in mm."""
-        return self._dispatch.DocumentHeight
-    
+    """ The Page class manages properties for the document print out.
+
+    Example
+    -------
+    >>> import wellcad.com
+    >>> app = wellcad.com.Application()
+    >>> app.new_borehole()
+    <wellcad.com._borehole.Borehole object at 0x0000018B3DAF9D30>
+    >>> borehole = app.get_active_borehole()
+    >>> page = borehole.page
+    """
 
     @property
-    def width(self):
-        """Returns the document width in mm."""
-        return self._dispatch.DocumentHeight
+    def depth_range(self):
+        """int : Identify the depth range mode
 
+        The available modes are the following:
 
-    @width.setter
-    def width(self, value):
-        """Sets the width of the borehole document in mm.
-        
-        Arguments:
-            value -- E.g. set it to 190 for a 190mm wide document.
-
+        * 0 = depth range not defined (maximum depth range to be printed)
+        * 1 = depth range defined by the user
         """
+        return self._dispatch.DepthRange
 
-        self._dispatch.DocumentWidth = value
-
-
-    @property
-    def nb_depth_ranges(self):
-        """Returns the number of defined depth ranges defined."""
-        return self._dispatch.NbOfDepthRanges
-
-
-    @property
-    def depth_range_mode(self):
-        """Returns 0 for max range and 1 for custom range."""
-        return self._dispatch.DepthRange 
-
-
-    @depth_range_mode.setter
-    def depth_range_mode(self, mode):
-        """Sets the depth range mode for printing.
-        
-        Arguments:
-            mode -- Set it to 0 for the max depth range and to 1 to
-                    print the custom depth ranges.
-
-        """
-
+    @depth_range.setter
+    def depth_range(self, mode):
         self._dispatch.DepthRange = mode
 
+    @property
+    def document_height(self):
+        """float: The document height in mm."""
+        return self._dispatch.DocumentHeight
 
-    def add_depth_range(self, top, base):
-        """Adds a new custom depth range.
-        
-        Arguments:
-        top -- Top depth of the interval in units of the
-               master depth axis
-        base -- Bottom depth of the interval in units of
-                the master depth axis
+    @property
+    def document_width(self):
+        """float: The document width in mm."""
+        return self._dispatch.DocumentWidth
 
-        """
+    @document_width.setter
+    def document_width(self, value):
+        self._dispatch.DocumentWidth = value
 
-        return self._dispatch.DepthRange(top, base)
+    @property
+    def nb_of_depth_range(self):
+        """double: The number of defined depth ranges."""
+        return self._dispatch.NbOfDepthRange
 
-
-    def remove_depth_range(self, index):
-        """Removes a custom custom depth range.
-        
-        Arguments:
-        index -- Zero based index of the list of depth ranges
-
-        """
-
-        return self._dispatch.RemoveDepthRange (index)
-
-
-    @property	
+    @property
     def paper_mode(self):
-        """Returns 0 for page-by-page and 1 for fanfold."""
-        return self._dispatch.PaperMode  
-
+        """int: 0 for page-by-page and 1 for fanfold."""
+        return self._dispatch.PaperMode
 
     @paper_mode.setter
     def paper_mode(self, mode):
-        """Sets the page mode for printing.
-        
-        Arguments:
-            mode -- Set it to 0 for page-by-page and to 1 for
-                    fanfold(continuos) printing.
-
-        """
-
         self._dispatch.PaperMode = mode
 
+    @property
+    def print_titles_on_top(self):
+        """bool: Show the log titles at the top of the printout."""
+        return self._dispatch.PrintTitlesOnTop
 
-    @property	
-    def numbering_mode(self):
-        """0 = none, 1 = left, 2 = right, 3 = center, 4 = alternating."""
-        return self._dispatch.Numbering  
+    @print_titles_on_top.setter
+    def print_titles_on_top(self, show):
+        self._dispatch.PrintTitlesOnTop = show
 
+    @property
+    def print_titles_on_bottom(self):
+        """bool: Show the log titles at the bottom of the printout."""
+        return self._dispatch.PrintTitlesOnBottom
 
-    @numbering_mode.setter
-    def numbering_mode(self, mode):
-        """Sets the page numbering mode.
-        
-        Arguments:
-            mode -- Set 0 = none, 1 = left, 2 = right,
-            3 = center, 4 = alternating.
+    @print_titles_on_bottom.setter
+    def print_titles_on_bottom(self, show):
+        self._dispatch.PrintTitlesOnBottom = show
 
-        """
+    @property
+    def print_titles_on_bottom_on_each_page(self):
+        """bool: Repeat the log titles at the bottom of each printed page."""
+        return self._dispatch.PrintTitlesOnBottomOnEachPage
 
-        self._dispatch.Numbering = mode
+    @print_titles_on_bottom_on_each_page.setter
+    def print_titles_on_bottom_on_each_page(self, show):
+        self._dispatch.PrintTitlesOnBottomOnEachPage = show
 
+    @property
+    def print_titles_on_top_on_each_page(self):
+        """bool: Repeat the log titles at the top of each printed page."""
+        return self._dispatch.PrintTitlesOnTopOnEachPage
 
-    @property	
-    def left_margin(self):
-        """Get the left margin of the page to print in mm."""
-        return self._dispatch.LeftMargin   
+    @print_titles_on_top_on_each_page.setter
+    def print_titles_on_top_on_each_page(self, flag):
+        self._dispatch.PrintTitlesOnTopOnEachPage = flag
 
-
-    @left_margin.setter
-    def left_margin(self, value):
-        """Sets the left margin of the page to print.
-        
-        Arguments:
-            value -- integer specifying the left margin in mm 
-
-        """
-
-        self._dispatch.LeftMargin = value
-
-
-    @property	
-    def right_margin(self):
-        """Get the right margin of the page to print in mm."""
-        return self._dispatch.RightMargin   
-
-
-    @right_margin.setter
-    def right_margin(self, value):
-        """Sets the right margin of the page to print.
-        
-        Arguments:
-            value -- integer specifying the right margin in mm 
-
-        """
-
-        self._dispatch.RightMargin = value
-
-
-    @property	
+    @property
     def top_margin(self):
-        """Get the top margin of the page to print in mm."""
-        return self._dispatch.TopMargin   
-
+        """int: The top margin of the page to print in mm."""
+        return self._dispatch.TopMargin
 
     @top_margin.setter
     def top_margin(self, value):
-        """Sets the top margin of the page to print.
-        
-        Arguments:
-            value -- integer specifying the top margin in mm 
-
-        """
-
         self._dispatch.TopMargin = value
 
-
-
-    @property	
+    @property
     def bottom_margin(self):
-        """Get the bottom margin of the page to print in mm."""
-        return self._dispatch.BottomMargin   
-
+        """int: The bottom margin of the page to print in mm."""
+        return self._dispatch.BottomMargin
 
     @bottom_margin.setter
     def bottom_margin(self, value):
-        """Sets the bottom margin of the page to print.
-        
-        Arguments:
-            value -- integer specifying the bottom margin in mm 
-
-        """
-
         self._dispatch.BottomMargin = value
 
+    @property
+    def left_margin(self):
+        """int: The left margin of the page to print in mm."""
+        return self._dispatch.LeftMargin
 
-    @property	
+    @left_margin.setter
+    def left_margin(self, value):
+        self._dispatch.LeftMargin = value
+
+    @property
+    def right_margin(self):
+        """int: The right margin of the page to print in mm."""
+        return self._dispatch.RightMargin
+
+    @right_margin.setter
+    def right_margin(self, value):
+        self._dispatch.RightMargin = value
+
+    @property
+    def numbering(self):
+        """int: The page numbering mode
+
+        The available modes are the following:
+
+        * 0 = none
+        * 1 = left
+        * 2 = right
+        * 3 = center
+        * 4 = alternating
+        """
+        return self._dispatch.Numbering
+
+    @numbering.setter
+    def numbering(self, mode):
+        self._dispatch.Numbering = mode
+
+    @property
     def print_header(self):
-        """Returns True if the header is going to be printed."""
-        return self._dispatch.PrintHeader   
-
+        """bool: Option to print the document header or not."""
+        return self._dispatch.PrintHeader
 
     @print_header.setter
     def print_header(self, flag):
-        """Set to True if the header should be printed.
-        
-        Arguments:
-            flag -- boolean specifiying whether the page header
-                    is printed (True) or not (False) 
-
-        """
-
         self._dispatch.PrintHeader = flag
 
-
-
-    @property	
-    def print_bottom_titles(self):
-        """Returns True if the log titles are printed at the bottom."""
-        return self._dispatch.PrintTitlesOnBottom    
-
-
-    @print_bottom_titles.setter
-    def print_bottom_titles(self, flag):
-        """Set to True if the titles should be printed at the bottom.
+    def add_depth_range(self, top, bottom):
+        """Adds a new depth range to be printed in current master depth units.
         
-        Arguments:
-            flag -- boolean specifiying whether the log titles are
-                    printed at the plot bottom (True) or not (False) 
-
+        Parameters
+        ----------
+        top : float
+            Top depth of the interval that will be added to the print list.
+        bottom : float
+            Bottom depth of the interval that will be added to the print list.
         """
+        return self._dispatch.AddDepthRange(top, bottom)
 
-        self._dispatch.PrintTitlesOnBottom  = flag
-
-
-
-    @property	
-    def print_top_titles(self):
-        """Returns True if the log titles are printed at the top."""
-        return self._dispatch.PrintTitlesOnTop    
-
-
-    @print_top_titles.setter
-    def print_top_titles(self, flag):
-        """Set to True if the titles should be printed at the top.
+    def remove_depth_range(self, index):
+        """Remove an entry from the list of depth ranges.
         
-        Arguments:
-            flag -- boolean specifiying whether the log titles are
-                    printed at the plot top (True) or not (False) 
-
+        Parameters
+        ----------
+        index : int
+            Zero based index of the entry to be removed from the list.
         """
-
-        self._dispatch.PrintTitlesOnTop  = flag
-
-
-
-    @property	
-    def repeat_top_titles(self):
-        """Returns True if titles are repeated at the top of each page."""
-        return self._dispatch.PrintTitlesOnTopOnEachPage    
-
-
-    @repeat_top_titles.setter
-    def repeat_top_titles(self, flag):
-        """Set to True if the titles should be repeated at each page top.
-        
-        Arguments:
-            flag -- boolean specifiying whether the log titles are
-                    repeated at the top of each page (True) or not (False) 
-
-        """
-
-        self._dispatch.PrintTitlesOnTopOnEachPage  = flag
-
-
-
-    @property	
-    def repeat_bottom_titles(self):
-        """Returns True if titles are repeated at each page bottom."""
-        return self._dispatch.PrintTitlesOnBottomOnEachPage    
-
-
-    @repeat_bottom_titles.setter
-    def repeat_bottom_titles(self, flag):
-        """Set to True if the titles should be repeated at each page bottom.
-        
-        Arguments:
-            flag -- boolean specifiying whether the log titles are
-                    repeated at the bottom of each page (True) or not (False) 
-
-        """
-
-        self._dispatch.PrintTitlesOnBottomOnEachPage  = flag
+        return self._dispatch.RemoveDepthRange(index)

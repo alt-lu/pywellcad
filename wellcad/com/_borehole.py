@@ -133,11 +133,10 @@ class Borehole(DispatchWrapper):
         obheader = self._dispatch.Header
         return Header(obheader)
 
-
-    def get_page(self):
-        """Returns a page object for the borehole document."""
-        obpage = self._dispatch.Page
-        return Page(obpage)
+    @property
+    def page(self):
+        """Page: A page object for the borehole document."""
+        return Page(self._dispatch.Page)
 
 
     def create_new_workspace(self, workspace_type, config=""):
