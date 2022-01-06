@@ -12,6 +12,14 @@ class ExtraAsserts:
         self.assertEqual(getattr(obj, name), value)
         setattr(obj, name, original)
         self.assertEqual(getattr(obj, name), original)
+
+    def assertAttrAlmostChange(self, obj, name, value, *args, **kwargs):
+        """Tests setting an attribute to some value and back again."""
+        original = getattr(obj, name)
+        setattr(obj, name, value)
+        self.assertAlmostEqual(getattr(obj, name), value, *args, **kwargs)
+        setattr(obj, name, original)
+        self.assertAlmostEqual(getattr(obj, name), original, *args, **kwargs)
     
     def assertAttrNotChanged(self, obj, name, value):
         """Tests whether setting an attribute to some value does not change it."""
