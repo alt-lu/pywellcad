@@ -1,4 +1,5 @@
 from ._dispatch_wrapper import DispatchWrapper
+from ._font import Font
 
 class Log(DispatchWrapper):
     _DISPATCH_METHODS = ("DoSettingsDlg",)
@@ -50,7 +51,7 @@ class Log(DispatchWrapper):
         return self._dispatch.TitleComment
 
     @title_comment.setter
-    def title_comment(self, comment):        
+    def title_comment(self, comment):
         self._dispatch.TitleComment = comment
 
     @property
@@ -250,7 +251,7 @@ class Log(DispatchWrapper):
     def display_border(self):
         """bool: Whether the log column border is displayed."""
         return self._dispatch.DisplayBorder
-    
+
     @display_border.setter
     def display_border(self, value):
         self._dispatch.DisplayBorder = value
@@ -334,11 +335,11 @@ class Log(DispatchWrapper):
     def scale_low(self):
         """float: The low value of the log scale."""
         return self._dispatch.ScaleLow
-    
+
     @scale_low.setter
     def scale_low(self, scale):
         self._dispatch.ScaleLow = scale
-    
+
     @property
     def scale_high(self):
         """float: The high value of the log scale."""
@@ -390,7 +391,7 @@ class Log(DispatchWrapper):
     @maj_grid_enable.setter
     def maj_grid_enable(self, value):
         self._dispatch.MajGridEnable = value
-    
+
     @property
     def min_grid_enable(self):
         """bool: Whether to display minor vertical gridlines."""
@@ -399,12 +400,12 @@ class Log(DispatchWrapper):
     @min_grid_enable.setter
     def min_grid_enable(self, value):
         self._dispatch.MinGridEnable = value
-    
+
     @property
     def maj_grid_spacing(self):
         """float: The spacing between major vertical gridlines."""
         return self._dispatch.MajGridSpacing
-    
+
     @maj_grid_spacing.setter
     def maj_grid_spacing(self, spacing):
         self._dispatch.MajGridSpacing = spacing
@@ -413,7 +414,7 @@ class Log(DispatchWrapper):
     def min_grid_spacing(self):
         """float: The spacing between minor vertical gridlines."""
         return self._dispatch.MinGridSpacing
-    
+
     @min_grid_spacing.setter
     def min_grid_spacing(self, spacing):
         self._dispatch.MinGridSpacing = spacing
@@ -1199,18 +1200,7 @@ class Log(DispatchWrapper):
     @property
     def font(self):
         """Gets the font used in a Comment Log as Font Object."""
-        return self._dispatch.Font
-
-    @font.setter
-    def font(self, name):
-        """Sets the font used in a Comment Log as Font Object.
-
-        Parameters
-        ----------
-        name : str
-            name of the font to be used.
-        """
-        self._dispatch.Font(name)
+        return Font(self._dispatch.Font)
 
 #Structure and Borehole
 

@@ -9,6 +9,8 @@ from ._odbc import Odbc
 
 
 class Borehole(DispatchWrapper):
+    _DISPATCH_METHODS = ("Log", )
+
     @property
     def name(self):
         """Returns the title of a borehole document."""
@@ -273,20 +275,20 @@ class Borehole(DispatchWrapper):
         return self._dispatch.NbOfLogs
 
     
-    def get_log(self, log):
-        """Accesses and existing log and reates a new log object.
-        
-        Arguments:
-            log -- The zero based index (integer) 
-                   or the title (string) of the log.
+    def log(self, index_or_name):
+        """Gets a log by name or by index.
 
-        Returns:
-            A log object.
+        Parameters
+        ----------
+        index_or_name : int or str
+            The index or the name of the log
+
+        Returns
+        -------
+        Log
+            The Log object.
         """
-
-        self._dispatch._FlagAsMethod("Log")
-        obLog = self._dispatch.Log(log)
-        return Log(obLog)
+        return Log(self._dispatch.Log(index_or_name))
 
 
     def get_title(self, log_name):

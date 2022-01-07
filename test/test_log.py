@@ -12,7 +12,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.app = wellcad.com.Application()
         cls.sample_path = cls._find_sample_path()
         cls.borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
-        cls.gr_log = cls.borehole.get_log("GR")
+        cls.gr_log = cls.borehole.log("GR")
     
     @classmethod
     def tearDownClass(cls):

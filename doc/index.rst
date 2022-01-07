@@ -20,6 +20,7 @@ the interface to be more Pythonic.
    page
    title
    workspace
+   font
 
 Indices and tables
 ==================
