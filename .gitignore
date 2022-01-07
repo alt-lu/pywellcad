@@ -5,3 +5,4 @@ __pycache__
 .idea/
 dist/
 /doc/_build
+venv/

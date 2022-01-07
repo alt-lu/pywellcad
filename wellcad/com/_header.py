@@ -1,74 +1,121 @@
 from ._dispatch_wrapper import DispatchWrapper
 
+
 class Header(DispatchWrapper):
+    """The class that manages the headers fields.
+
+    Example
+    -------
+    >>> header = borehole.header
+    >>> for i in range(header.nb_of_items):
+    >>>     print(header.item_name(i))
+    COMPANY
+    Title
+    STATE
+    FIELD
+    Features
+    email
+    Complementary1
+    Complementary2
+    Tools
+    """
+
     @property
     def nb_of_items(self):
-        """Number of dynamic text fields in the entire header."""
+        """int: Number of dynamic text fields in the entire header."""
         return self._dispatch.NbOfItems
-    
 
-    def get_item_text(self, item_name):
+    def get_item_text(self, name):
         """Contents of a dynamic text field in the header.
-        
-        Argumets:
-            item_name -- ID of the text field as entered in HeadCAD.
 
-        Returns:
+        Parameters
+        ----------
+        name : str
+            ID of the text field as entered in HeadCAD.
+
+        Returns
+        -------
+        str
             The text contained in the dynamic text field.
         """
 
-        return self._dispatch.ItemText(item_name)
-    
+        return self._dispatch.GetItemText(name)
 
-    def set_item_text(self, item_name, item_text):
+    def set_item_text(self, name, text):
         """Adds the content of a dynamic text field in the header.
-        
-        Argumets:
-            item_name -- ID of the text field as entered in HeadCAD.
-            item_text -- Text to add into the dynamic text field.
+
+        Parameters
+        ----------
+        name : str
+            ID of the text field as entered in HeadCAD.
+        text : str
+            Text to add into the dynamic text field.
         """
 
-        self._dispatch.ItemText(item_name, item_text)
+        self._dispatch.SetItemText(name, text)
 
-
-    def get_item_name(self, item_index):
+    def item_name(self, index):
         """Returns the ID of a dynamic text field.
 
         Returns the ID of a dynamic text field in the header based on
         the zero based index. Use GetNbOfItems to retrieve the total
         number of text fields in the header.
 
-        Argumets:
-            item_index -- Zero based index of the dynamic text field.
+        Parameters
+        ----------
+        index : int
+            Zero based index of the dynamic text field.
 
-        Returns:
+        Returns
+        -------
+        str
             The ID of the dynamic text field.
         """
-        
-        return self._dispatch.ItemName(item_index)
 
+        return self._dispatch.ItemName(index)
 
-    def allow_export_header(self, enable, password):
+    def allow_export_header(self, index, enable, password):
         """Changes the protection status to export the header design
-        
-            Arguments:
-                enable -- Set the argument to True to protect the
-                          header export.
-                password -- String of the password used to protect
-                            the header.
+
+        When dealing with a protected document you can use this method to
+        enable / disable the protection to export the header attached to a
+        borehole document as a WCH file. This assumes you are in possession
+        of the password. You still have to export the header manually,
+        this method only toggles the protection.
+
+        Parameters
+        ----------
+        index : int
+            index of the sub-header
+        enable : bool
+            Set this boolean to True to allow the export of the header.
+            Set it to False to protect the header again.
+        password : str
+            String of the password needed to make changes to the
+            protection level of a header.
         """
 
-        self._dispatch.AllowExportHeader(enable, password)
+        self._dispatch.AllowExportHeader(index, enable, password)
 
-
-    def allow_export_trailer(self, enable, password):
+    def allow_export_trailer(self, index, enable, password):
         """Changes the protection status to export the trailer design
-        
-            Arguments:
-                enable -- Set the argument to True to protect the
-                          header export.
-                password -- String of the password used to protect
-                            the header.
+
+        When dealing with a protected document you can use this method to
+        enable / disable the protection to export the trailer attached to a
+        borehole document as a WCH file. This assumes you are in possession
+        of the password. You still have to export the trailer manually,
+        this method only toggles the protection.
+
+        Parameters
+        ----------
+        index : int
+            index of the sub-trailer
+        enable : bool
+            Set this boolean to True to allow the export of the trailer.
+            Set it to False to protect the trailer again.
+        password : str
+            String of the password needed to make changes to the
+            protection level of a trailer.
         """
 
-        self._dispatch.AllowExportTrailer(enable, password)
+        self._dispatch.AllowExportTrailer(index, enable, password)

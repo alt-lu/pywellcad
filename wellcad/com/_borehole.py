@@ -127,12 +127,11 @@ class Borehole(DispatchWrapper):
     def depth(self):
         """Depth: The reference/master vertical axis. Can be in depth or time."""
         return Depth(self._dispatch.Depth)
-        
-        
-    def get_header(self):
-        """Header object for the entire borehole document header."""
-        obheader = self._dispatch.Header
-        return Header(obheader)
+
+    @property
+    def header(self):
+        """Header: The document header for this borehole document."""
+        return Header(self._dispatch.Header)
 
     @property
     def page(self):
