@@ -1567,14 +1567,15 @@ class Log(DispatchWrapper):
         """
         self._dispatch.RemoveStackItemAtDepth(depth)
 
-# depth log
+    @property
+    def used_as_depth_scale(self):
+        """bool: Whether the Depth Log is used as the current depth
+        reference axis."""
+        return self._dispatch.UsedAsDepthScale
 
-    def used_as_depth_scale (self):
-        """Sets the Depth Log as current depth reference axis."""
-
-        self._dispatch.UsedAsDepthScale = True
-
-#OLE log
+    @used_as_depth_scale.setter
+    def used_as_depth_scale(self, mode):
+        self._dispatch.UsedAsDepthScale = mode
 
     def insert_new_ole_box_from_file(self, file_name, allowpicture, topdepth, bottomdepth):
         """Inserts a new interval into an OLE Log.
@@ -1591,8 +1592,6 @@ class Log(DispatchWrapper):
             Bottom depth of the interval in current depth units.
         """
         self._dispatch.InsertNewOleBoxFromFile(file_name, allowpicture, topdepth, bottomdepth)
-
-# Engineering Log
 
     def drill_item(self, index):
         """Gets a Drill Item object from the Engineering Log at the specified index.
