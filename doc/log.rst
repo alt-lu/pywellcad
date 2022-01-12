@@ -7,7 +7,7 @@ The Log class represents a depth or time referenced set of data displayed as a c
 
    app = wellcad.com.Application()
    borehole = app.new_borehole()
-   log = borehole.new_log(1) # Create a new well log
+   log = borehole.insert_new_log(1) # Create a new well log
 
 .. autoclass:: wellcad.com.Log
    :members:

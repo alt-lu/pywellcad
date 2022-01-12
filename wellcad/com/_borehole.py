@@ -303,7 +303,7 @@ class Borehole(DispatchWrapper):
         return Title(obTitle)
 
 
-    def new_log(self, log_type):
+    def insert_new_log(self, log_type):
         """Creates a new log and log object.
         
         The log type that will be created depends on the

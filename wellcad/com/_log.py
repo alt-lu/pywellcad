@@ -1577,21 +1577,26 @@ class Log(DispatchWrapper):
     def used_as_depth_scale(self, mode):
         self._dispatch.UsedAsDepthScale = mode
 
-    def insert_new_ole_box_from_file(self, file_name, allowpicture, topdepth, bottomdepth):
-        """Inserts a new interval into an OLE Log.
+    def insert_new_ole_box_from_file(self, file_name, allow_picture, top_depth, bottom_depth):
+        """Inserts a new OLE object between the specified interval
+        into an OLE Log.
+
+        OLE objects can be files such as images, Excel charts,
+        Word documents or pdfs.
 
         Parameters
         ----------
         file_name : str
-            Path and name of the file to export.
-        allowpicture : bool
-            Set to True to allow graphic files to be displayed using an internal viewer.
-        topdepth : float
-            Top depth of the interval in current depth units.
-        bottomdepth : float
-            Bottom depth of the interval in current depth units.
+            Path and name of the file to be loaded.
+        allow_picture : bool
+            Set to True to allow graphic files to be displayed using
+            an internal viewer.
+        top_depth : float
+            Top depth of the OLE object in current depth units.
+        bottom_depth : float
+            Bottom depth of the OLE object in current depth units.
         """
-        self._dispatch.InsertNewOleBoxFromFile(file_name, allowpicture, topdepth, bottomdepth)
+        self._dispatch.InsertNewOleBoxFromFile(file_name, allow_picture, top_depth, bottom_depth)
 
     def drill_item(self, index):
         """Gets a Drill Item object from the Engineering Log at the specified index.

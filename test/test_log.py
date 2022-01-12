@@ -1,3 +1,4 @@
+import pathlib
 import unittest
 import wellcad.com
 import random
@@ -13,9 +14,9 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.sample_path = cls._find_sample_path()
         cls.borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.gr_log = cls.borehole.log("GR")
+        cls.ole_log = cls.borehole.insert_new_log(22)
         cls.geotech_borehole = cls.app.open_borehole(str(cls.sample_path / "Geotech Plot.WCL"))
         cls.depth_log = cls.geotech_borehole.log("Elev.")
-
     @classmethod
     def tearDownClass(cls):
         cls.app.quit(False)
@@ -245,6 +246,8 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.gr_log.data_table = new_data
         self.assertEqual(self.gr_log.data_table, original_data)
         self.gr_log.lock_log_data = False
+    def test_insert_new_ole_box_from_file(self):
+        self.ole_log.insert_new_ole_box_from_file(str(pathlib.Path(__file__).parent / "fixtures" / "test_img.jpg"), True, 0, 10)
 
     def test_used_as_depth_scale(self):
         self.assertAttrEqual(self.depth_log, "used_as_depth_scale", False)

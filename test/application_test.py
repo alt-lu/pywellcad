@@ -134,7 +134,7 @@ except:
 
 
 try:
-    obj_log = obj_bhole.new_log(1)
+    obj_log = obj_bhole.insert_new_log(1)
 except:
     PrintException("Insert New Log")
 
