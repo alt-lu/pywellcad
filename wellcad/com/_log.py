@@ -1,5 +1,6 @@
 from ._dispatch_wrapper import DispatchWrapper
 from ._font import Font
+from ._interval_item import IntervalItem
 
 class Log(DispatchWrapper):
     _DISPATCH_METHODS = ("DoSettingsDlg",)
@@ -601,7 +602,7 @@ class Log(DispatchWrapper):
         value : float
             the new data value
         """
-        self._dispatch.InsertNewIntervalItem(top_depth, bottom_depth, value)
+        return IntervalItem(self._dispatch.InsertNewIntervalItem(top_depth, bottom_depth, value))
 
     def interval_item(self, index):
         """Gets an interval item object from an Interval Log at the specified index.
