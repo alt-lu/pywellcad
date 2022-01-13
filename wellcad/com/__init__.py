@@ -8,3 +8,4 @@ from ._page import Page
 from ._title import Title
 from ._workspace import Workspace
 from ._font import Font
+from ._polar_and_rose_box import PolarAndRoseBox

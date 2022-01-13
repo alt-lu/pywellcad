@@ -15,8 +15,10 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.gr_log = cls.borehole.log("GR")
         cls.ole_log = cls.borehole.insert_new_log(22)
+        cls.polar_and_rose_log = cls.borehole.insert_new_log(20)
         cls.geotech_borehole = cls.app.open_borehole(str(cls.sample_path / "Geotech Plot.WCL"))
         cls.depth_log = cls.geotech_borehole.log("Elev.")
+
     @classmethod
     def tearDownClass(cls):
         cls.app.quit(False)
@@ -246,12 +248,44 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.gr_log.data_table = new_data
         self.assertEqual(self.gr_log.data_table, original_data)
         self.gr_log.lock_log_data = False
+
     def test_insert_new_ole_box_from_file(self):
-        self.ole_log.insert_new_ole_box_from_file(str(pathlib.Path(__file__).parent / "fixtures" / "test_img.jpg"), True, 0, 10)
+        self.ole_log.insert_new_ole_box_from_file(str(pathlib.Path(__file__).parent / "fixtures" / "test_img.jpg"),
+                                                  True, 0, 10)
 
     def test_used_as_depth_scale(self):
         self.assertAttrEqual(self.depth_log, "used_as_depth_scale", False)
         self.assertAttrChange(self.depth_log, "used_as_depth_scale", True)
+
+    def test_insert_and_remove_new_schmit_box(self):
+        box = self.polar_and_rose_log.insert_new_schmit_box(10.5, 22.5, "No comment")
+        self.assertAttrEqual(self.polar_and_rose_log, "nb_of_data", 1)
+        self.assertIsInstance(box, wellcad.com.PolarAndRoseBox)
+        self.polar_and_rose_log.remove_schmit_box(0)
+        self.assertAttrEqual(self.polar_and_rose_log, "nb_of_data", 0)
+
+    def test_schmit_box_at_depth(self):
+        self.polar_and_rose_log.insert_new_schmit_box(10.5, 22.5, "No comment")
+        box = self.polar_and_rose_log.schmit_box_at_depth(15)
+        self.assertIsInstance(box, wellcad.com.PolarAndRoseBox)
+        self.polar_and_rose_log.remove_schmit_box_at_depth(15)
+        self.assertAttrEqual(self.polar_and_rose_log, "nb_of_data", 0)
+
+    def test_schmit_box(self):
+        self.polar_and_rose_log.insert_new_schmit_box(10.5, 22.5, "No comment")
+        box = self.polar_and_rose_log.schmit_box(0)
+        self.assertIsInstance(box, wellcad.com.PolarAndRoseBox)
+        self.polar_and_rose_log.remove_schmit_box(0)
+
+    def test_non_existing_schmit_box_at_depth(self):  # inconsistent with schmit_box(index)
+        self.assertAttrEqual(self.polar_and_rose_log, "nb_of_data", 0)
+        box = self.polar_and_rose_log.schmit_box_at_depth(15)
+        self.assertIsNone(box)
+
+    def test_inconsistent_behaviour_remove_schmit_box(self):  # same thing applies to schmit_box_at_depth and schmit_box
+        self.assertAttrEqual(self.polar_and_rose_log, "nb_of_data", 0)
+        self.polar_and_rose_log.remove_schmit_box_at_depth(0)  # success
+        self.polar_and_rose_log.remove_schmit_box(0)  # fail
 
 
 if __name__ == '__main__':

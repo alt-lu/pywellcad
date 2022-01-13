@@ -1,5 +1,6 @@
 from ._dispatch_wrapper import DispatchWrapper
 from ._font import Font
+from ._polar_and_rose_box import PolarAndRoseBox
 from ._interval_item import IntervalItem
 
 class Log(DispatchWrapper):
@@ -1400,63 +1401,79 @@ class Log(DispatchWrapper):
         """
         self._dispatch.ApertureUnit(code)
 
-#Polar & Rose Logs
-
-    def insert_new_schmit_box(self, topdepth, bottomdepth, text):
+    def insert_new_schmit_box(self, top_depth, bottom_depth, text):
         """Inserts a new box into a Polar & Rose Log.
 
         Parameters
         ----------
-        topdepth : float
+        top_depth : float
             The top depth value of the interval in the current depth units.
-        bottomdepth : float
+        bottom_depth : float
             The bottom depth value of the interval in the current depth units.
         text : string
             A text description which is only shown in the tabular editor display.
+
+        Returns
+        -------
+        PolarAndRoseBox
+            The newly created Polar & Rose box.
         """
-        self._dispatch.InsertNewSchmitBox(topdepth, bottomdepth, text)
+        return PolarAndRoseBox(self._dispatch.InsertNewSchmitBox(top_depth, bottom_depth, text))
 
     def schmit_box(self, index):
-        """Gets a Schmidt Box object from the Polar & Rose Log at the specified index.
+        """Gets a box object from the Polar & Rose Log at the
+        specified index.
 
         Parameters
         ----------
         index : int
-            Zero based index  of the box to be returned.
+            Zero based index of the box to be returned.
+
+        Returns
+        -------
+        PolarAndRoseBox
+            The Polar & Rose box at the desired index.
         """
-        return self._dispatch.SchmitBox(index)
+        return PolarAndRoseBox(self._dispatch.SchmitBox(index))
 
     def schmit_box_at_depth(self, depth):
-        """Gets a Schmit Box object from the Polar & Rose Log at the specified depth in current depth units.
+        """Gets a box object from the Polar & Rose Log
+        at the specified depth in current depth units.
 
         Parameters
         ----------
         depth : float
             The depth of the box to be returned in current depth units.
-        """
-        self._dispatch.SchmitBoxAtDepth(depth)
 
-    def remove_schmidt_box(self, index):
-        """Removes a Schmit Box object from the Polar & Rose Log at the index.
+        Returns
+        -------
+        PolarAndRoseBox
+            The Polar & Rose box at the desired depth.
+        """
+        return PolarAndRoseBox(self._dispatch.SchmitBoxAtDepth(depth))
+
+    def remove_schmit_box(self, index):
+        """Removes a box from the Polar & Rose Log at the
+        specified index.
 
         Parameters
         ----------
         index : int
-            Zero based index  of the box to be removed.
+            Zero based index of the Polar & Rose box to be removed.
         """
         self._dispatch.RemoveSchmitBox(index)
 
     def remove_schmit_box_at_depth(self, depth):
-        """Removes a box from the Polar & Rose log at the specified depth in current depth units.
+        """Removes a box from the Polar & Rose log at the specified
+        depth in current depth units.
 
         Parameters
         ----------
         depth : float
-            The depth of the box to be removed in current depth units.
+            The depth of the Polar & Rose box to be removed in
+            current depth units.
         """
         self._dispatch.RemoveSchmitBoxAtDepth(depth)
-
-#Cross Section Log
 
     def cross_box(self, index): # the example in the Automation module is wrong
         """Gets a Cross Box object from the Cross Section Log at the specified index.
@@ -1478,17 +1495,17 @@ class Log(DispatchWrapper):
         """
         return self._dispatch.CrossBoxAtDepth(depth)
 
-    def insert_new_cross_box(self, topdepth, bottomdepth):
+    def insert_new_cross_box(self, top_depth, bottom_depth):
         """Inserts a new box into the Cross Section Log.
 
         Parameters
         ----------
-        topdepth : float
+        top_depth : float
             The top depth value of the cross section box in current depth units.
-        bottomdepth : float
+        bottom_depth : float
             The bottom depth value of the cross section box in current depth units.
         """
-        self._dispatch.InsertNewCrossBox(topdepth, bottomdepth)
+        self._dispatch.InsertNewCrossBox(top_depth, bottom_depth)
 
     def remove_cross_box(self, index):
         """Removes a box from the Cross Section Log at the specified index.
