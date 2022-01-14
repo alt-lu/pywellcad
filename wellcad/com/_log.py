@@ -430,339 +430,289 @@ class Log(DispatchWrapper):
     def lock_log_data(self, value):
         self._dispatch.LockLogData = value
 
-# Well, Formula, Mud and Interval logs
-
     def data(self, index):
-        """Gets the data value at the specified index from a Well, Mud, Interval or Depth Log.
+        """Gets the data value for the specified index.
+
+        This method is only applicable for a Well, Mud, Interval or Depth Log.
 
         Parameters
         ----------
         index : int
-            Zero based index of the data point to be retrieved.
+            Zero based index of the data to be retrieved.
+        
+        Returns
+        -------
+        float
+            The value of the log data at the specified index.
         """
         return self._dispatch.Data(index)
 
     def data_at_depth(self, depth):
-        """Gets the data value at the specified depth from a Well, Mud, Interval or Depth Log.
+        """Gets the log data value at the specified depth.
+        
+        This method is only applicable for a Well, Mud, Interval or Depth Log.
 
         Parameters
         ----------
         depth : float
-            Depth value at current units at which the data value will be returned
+            Depth value in current master depth units.
+        
+        Returns
+        -------
+        float
+            The value of the log data at the specified depth.
         """
         return self._dispatch.DataAtDepth(depth)
 
     def data_depth(self, index):
-        """Gets the depth at the specified index of the data point. Valid for Mud, Well, Depth,
-        Percent, Analysis, FWS, Image and RGB Logs. For logs requiring a constant sample step
-        (Well, Image, RGB, Analysis Logs) the index 0 corresponds to the Bottom Depth.
+        """Gets the log data depth for the specified index.
+        
+        This method can be called for Mud, Well, Depth, Percent, Analysis, FWS,
+        Image and RGB Logs. For logs with a constant sample step (Well, Image,
+        RGB, Analysis Logs), the index 0 corresponds to the Bottom Depth.
 
         Parameters
         ----------
         index : int
-            Zero based index of the depth point to be retrieved.
+            Zero based index of the data to be retrieved.
+        
+        Returns
+        -------
+        float
+            The depth of the log data at the specified index.
         """
         return self._dispatch.DataDepth(index)
 
     def insert_data(self, index, value):
-        """Inserts a new data value at the specified index of a Well Log.
+        """Inserts a new data value at the specified index.
+
+        If necessary existing data points will be shifted.
 
         Parameters
         ----------
         index : int
-            Zero based index at which the new data point will be inserted.
-            If necessary existing data points will be shifted.
-            The index must be lower or equal to the number of data points in the log.
+            Zero based index at which the new data point will be inserted. The
+            index must be lower or equal to the number of data points in the
+            log.
         value : float
-            new data value
+            The new data value.
         """
         self._dispatch.InsertData(index, value)
 
     def insert_data_at_depth(self, depth, value):
-        """Inserts a new data value at the specified depth of a Well Log.
+        """Inserts a new data value at the specified depth.
+
+        If necessary existing data points will be shifted.
 
         Parameters
         ----------
         depth : float
-            Depth in current units at which the new data point should be inserted.
-            If necessary existing data points will be shifted.
-            The function fails if the added depth does not respect the constant sample rate of the Well Log.
+            Depth in current master units at which the new data point should be
+            inserted. The function fails if the added depth does not respect
+            the constant sample rate of the Well Log.
         value : float
-            new data value
+            The new data value
         """
         self._dispatch.InsertDataAtDepth(depth, value)
 
-    '''
     @property
     def formula(self):
-        """Lets you know the formula used in a Formula log."""
-        return self.dispatch.Formula
-
-    @formula.setter
-    def formula(self, formula):
-        """Sets the formula to be used in a Formula Log.
-        The formula should not include the equal sign.
-
-        Parameters
-        ----------
-        formula : str
-            equation using standard math symbols
-        """
-        self.dispatch.Formula(formula)
-    '''
-
-    def get_formula(self):
-        """Lets you know the formula used in a Formula log."""
+        """str: The mathematical formula used for a Formula log."""
         return self._dispatch.Formula
 
-    def set_formula(self, formula):
-        """Sets the formula to be used in a Formula Log.
-        The formula should not include the equal sign.
+    @formula.setter
+    def formula(self, value):
+        self._dispatch.Formula = value
 
-        Parameters
-        ----------
-        formula : str
-            equation using standard math symbols
-        """
-        self._dispatch.Formula(formula)
-
-    '''
     @property
     def filter(self):
-        """Lets you know the width (in samples) of the display filter used for Well Logs."""
-        return self.dispatch.Filter
-
-    @filter.setter
-    def filter(self, width):
-        """Sets the width (in samples) of the display filter used for Well Logs.
-
-        Parameters
-        ----------
-        width : int
-            number of samples which corresponds to the filter width
-        """
-        self.dispatch.Filter = width
-    '''
-
-    def get_filter(self):
-        """Lets you know the width (in samples) of the display filter used for Well Logs."""
+        """int: The width (in samples) of the display filter used for Well Logs."""
         return self._dispatch.Filter
 
-    def set_filter(self, width):
-        """Sets the width (in samples) of the display filter used for Well Logs.
+    @filter.setter
+    def filter(self, value):
+        self._dispatch.Filter = value
 
-        Parameters
-        ----------
-        width : int
-            number of samples which corresponds to the filter width
-        """
-        self._dispatch.Filter = width
-
-    '''   
     @property
     def fixed_bar_width(self):
-        """Lets you know the fixed bar width in 1/10 mm for Mud Logs."""
-        return self.dispatch.FixedBarWidth
+        """int: The fixed bar width, in units of 1/10 mm, for Mud Logs."""
+        return self._dispatch.FixedBarWidth
 
     @fixed_bar_width.setter
     def fixed_bar_width(self, width):
-        """Sets the fixed bar width in 1/10 mm for Mud Logs.
-
-        Parameters
-        ----------
-        width : int
-            number of millimeters
-        """
-        self.dispatch.FixedBarWidth = width
-        
-    '''
-
-    def get_fixed_bar_width(self):
-        """Lets you know the fixed bar width in 1/10 mm for Mud Logs."""
-        return self._dispatch.FixedBarWidth
-
-    def set_fixed_bar_width(self, width):
-        """Sets the fixed bar width in 1/10 mm for Mud Logs.
-
-        Parameters
-        ----------
-        width : int
-            number of millimeters
-        """
         self._dispatch.FixedBarWidth = width
-
-    def insert_new_interval_item (self, top_depth, bottom_depth, value):
-        """Inserts a new interval in an interval log.
+    
+    def insert_new_interval_item(self, top_depth, bottom_depth, value):
+        """Inserts a new interval in an Interval log.
 
         Parameters
         ----------
         top_depth : float
-            top depth of the new interval in current depth units
+            The top depth of the new interval in current depth units.
         bottom_depth : float
-            bottom depth of the new interval in current depth units
+            The bottom depth of the new interval in current depth units.
         value : float
-            the new data value
+            The value of the new interval item.
+        
+        Returns
+        -------
+        IntervalItem
+            The newly inserted interval item.
         """
         return IntervalItem(self._dispatch.InsertNewIntervalItem(top_depth, bottom_depth, value))
 
     def interval_item(self, index):
-        """Gets an interval item object from an Interval Log at the specified index.
+        """Gets an interval item object from an Interval Log.
 
         Parameters
         ----------
         index : int
-            zero based index at which to retrieve the interval item.
+            Zero based index of the interval item.
+        
+        Returns
+        -------
+        IntervalItem
+            The interval item at the specified index.
         """
-        return self._dispatch.IntervalItem(index)
+        return IntervalItem(self._dispatch.IntervalItem(index))
 
     def interval_item_at_depth(self, depth):
-        """Gets an interval item object from an Interval Log at the specified depth in current
-        depth units.
+        """Gets an interval item object from an Interval Log at the specified depth.
 
         Parameters
         ----------
         depth : float
-            depth value at which to retrieve the interval item.
+            Depth value of the interval item, in current master depth units.
+        
+        Returns
+        -------
+        IntervalItem
+            The interval item at the specified depth.
         """
-        return self._dispatch.IntervalItemAtDepth(depth)
+        return IntervalItem(self._dispatch.IntervalItemAtDepth(depth))
 
-    def pen_color(self, r, g, b): # RGB as a hole, maybe have to use a python method to convert R,G and B as one number
-        """Sets the pen color used in a Well or Mud Log as RGB color value.
-
-        Parameters
-        ----------
-        r : int
-            Value between 0 and 255.
-        g : int
-            Value between 0 and 255.
-        b : int
-            Value between 0 and 255.
+    @property
+    def pen_color(self):
+        """int: The pen color for a Well or Mud log.
+        
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
         """
-        colorInt = r + (g * 256) + (b * 256 * 256)
-        self._dispatch.BackgroundColor = colorInt
+        return self._dispatch.PenColor
+    
+    @pen_color.setter
+    def pen_color(self, color):
+        self._dispatch.PenColor = color
 
     @property
     def pen_style(self):
-        """Lets you know the pen style used in a Well or Mud Log."""
+        """int: The pen style for the Well or Mud log.
+        
+        Styles are specified as an integer:
+
+        * Solid = 0
+        * Dashed = 1
+        * Dotted = 2
+        * Dash-Dot = 3
+        * Dash-dot-dot = 4
+        """
         return self._dispatch.PenStyle
 
     @pen_style.setter
     def pen_style(self, style):
-        """Sets the pen style used in a Well or Mud Log.
-
-        Parameters
-        ----------
-        style : int
-            Solid = 0
-            Dashed = 1
-            Dotted = 2
-            Dash-Dot = 3
-            Dash-dot-dot = 4
-        """
         self._dispatch.PenStyle = style
 
     @property
     def pen_width(self):
-        """Lets you know the pen width used in a Well or Mud Log in 1/10 mm."""
+        """int: The pen width used in a Well or Mud Log in units of 1/10 mm."""
         return self._dispatch.PenWidth
 
     @pen_width.setter
     def pen_width(self, width):
-        """Sets the pen width used in a Well or Mud Log in 1/10 mm.
-
-        Parameters
-        ----------
-        width : int
-            number of millimeters
-        """
         self._dispatch.PenWidth = width
 
     def remove_data(self, index):
-        """Removes the data point at the specified index from a Mud or Well Log.
-         For Well Logs the data value will be set to NULL.
+        """Removes a data point from a Mud or Well Log.
+        
+        For Well Logs the data value will be set to ``Null``.
 
         Parameters
         ----------
         index : int
-            zero based index at which the data point will be removed
+            Zero based index for the data point to be removed
         """
         self._dispatch.RemoveData(index)
 
     def remove_data_at_depth(self, depth):
-        """Removes the data point at the specified depth from a Mud or Well Log.
-         For Well Logs the data value will be set to NULL.
+        """Removes a data point from a Mud or Well Log.
+        
+        For Well Logs the data value will be set to ``Null``.
 
         Parameters
         ----------
         depth : float
-            depth value in current units at which the data point will be removed
+            The depth value (in current master units) at which the data point.
+            will be removed.
         """
         self._dispatch.RemoveDataAtDepth(depth)
 
     def remove_interval_item(self, index):
-        """Removes a data interval from an Interval Log at the specified index.
+        """Removes a data interval from an Interval log.
 
         Parameters
         ----------
         index : int
-            zero based index at which the data interval that will be removed
+            Zero based index to specify which data interval will be removed.
         """
         self._dispatch.RemoveIntervalItem(index)
 
     def remove_interval_item_at_depth(self, depth):
-        """Removes a data interval from an Interval Log at the specified depth.
+        """Removes a data interval from an Interval log.
 
         Parameters
         ----------
         depth : float
-            depth value in current units at which the data point will be removed
+            Depth value in current master units to specify which interval item
+            will be removed.
         """
         self._dispatch.RemoveIntervalItemAtDepth(depth)
 
     @property
     def shading(self):
-        """Lets you know the shading position used in a Well or Mud Log (0 = none, 1 = left, 2 = right)."""
+        """int: The shading position used in a Well or Mud Log.
+        
+        * None = 0
+        * Left = 1
+        * Right = 2
+        """
         return self._dispatch.Shading
 
     @shading.setter
     def shading(self, position):
-        """Sets the the shading position used in a Well or Mud Log.
-
-        Parameters
-        ----------
-        position : int
-            None = 0
-            Left = 1
-            Right = 2
-        """
         self._dispatch.Shading = position
 
     @property
     def style(self):
-        """Lets you know the for Mud Logs (1 = fixed bar, 2 = dynamic bar, 3 = line)
-        and Engineering Logs (0 = full, 1 = left, 2 = right)."""
+        """int: The data display style for a log.
+        
+        For Mud logs:
+
+        * Fixed Bar = 1
+        * Dynamic Bar = 2
+        * Line = 3
+        
+        For Engineering logs:
+
+        * Full = 0
+        * Left = 1
+        * Right = 2
+        """
         return self._dispatch.Style
 
     @style.setter
-    def style(self, style_number):
-        """Sets the data display style for Mud Logs and Engineering Logs.
-
-        Parameters
-        ----------
-        style_number : int
-
-            Mud Logs :
-            fixed bar = 1
-            dynamic bar = 2
-            line = 3
-
-            Engineering Log :
-            full = 0
-            left = 1 = left,
-            right = 2
-        """
-
-        self._dispatch.Style = style_number
+    def style(self, style):
+        self._dispatch.Style = style
 
 
 # litho, Coredesc, and percentage logs

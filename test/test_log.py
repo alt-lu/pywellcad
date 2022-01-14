@@ -12,12 +12,19 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
     def setUpClass(cls):
         cls.app = wellcad.com.Application()
         cls.sample_path = cls._find_sample_path()
+
         cls.borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.gr_log = cls.borehole.log("GR")
+        cls.sonic_e1_mud_log = cls.borehole.log("Sonic - E1 - Mud")
+        cls.gr_litho_interval_log = cls.borehole.log("Lithology from GR Classification")
         cls.ole_log = cls.borehole.insert_new_log(22)
         cls.polar_and_rose_log = cls.borehole.insert_new_log(20)
+
         cls.geotech_borehole = cls.app.open_borehole(str(cls.sample_path / "Geotech Plot.WCL"))
         cls.depth_log = cls.geotech_borehole.log("Elev.")
+
+        cls.volume_analysis_borehole = cls.app.open_borehole(str(cls.sample_path / "Volume Analysis.wcl"))
+        cls.formula_log = cls.volume_analysis_borehole.log("GR percent")
 
     @classmethod
     def tearDownClass(cls):
@@ -248,7 +255,117 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.gr_log.data_table = new_data
         self.assertEqual(self.gr_log.data_table, original_data)
         self.gr_log.lock_log_data = False
+    
+    def test_data(self):
+        self.assertEqual(self.gr_log.data(0), 97.86750030517578)
+        self.assertEqual(self.gr_log.data(-1), self.gr_log.null_value)
+    
+    def test_data_at_depth(self):
+        self.assertEqual(self.gr_log.data_at_depth(88.0), 97.86750030517578)
+        self.assertEqual(self.gr_log.data_at_depth(90.0), self.gr_log.null_value)
+        self.assertEqual(self.gr_log.data_at_depth(87.0), 98.1874008178711)
+    
+    def test_data_depth(self):
+        self.assertEqual(self.gr_log.data_depth(0), 88.0)
+        self.assertIsNone(self.gr_log.data_depth(-1), "What is the behaviour of data_depth() with out-of-bound indices?")
+    
+    def test_insert_remove_data(self):
+        self.gr_log.insert_data(0, 10.0)
+        self.assertEqual(self.gr_log.data(0), 10.0)
+        self.gr_log.remove_data(0)
+        self.assertEqual(self.gr_log.data(0), 97.86750030517578)
+    
+    def test_insert_oob_data(self):
+        self.gr_log.insert_data(-1, 11.0)
+    
+    def test_insert_remove_data_at_depth(self):
+        original = self.gr_log.data_at_depth(87.05)
+        self.gr_log.insert_data_at_depth(87.05, 11.0)
+        self.assertAlmostEqual(self.gr_log.data_at_depth(87.05), 11.0)
+        self.gr_log.remove_data_at_depth(87.05)
+        self.assertAlmostEqual(self.gr_log.data_at_depth(87.05), original)
+    
+    def test_insert_data_at_depth_documentation(self):
+        self.fail("It isn't clear which direction data gets pushed when a new data point is inserted.")
+    
+    def test_remove_data_at_depth_documentation(self):
+        self.fail("Behaviour isn't the same as in documentation. remove_data_at_depth() in a Well Log actually removes it, it doesn't just set it to NULL")
+    
+    def test_insert_data_between_samples(self):
+        original = self.gr_log.data_at_depth(87.05)
+        self.gr_log.insert_data_at_depth(87.06, 12.0)
+        self.assertNotAlmostEqual(self.gr_log.data_at_depth(87.06), 12.0, msg="No data should have been inserted (off sample spacing).")
+        self.assertAlmostEqual(self.gr_log.data_at_depth(87.05), original)
+    
+    def test_setting_data(self):
+        self.fail("There are no methods for setting data by index or depth.")
 
+    def test_formula(self):
+        self.assertAttrEqual(self.formula_log, "formula", "{GR}/100")
+        self.assertAttrChange(self.formula_log, "formula", "{GR}/1000")
+        self.assertAttrNotChanged(self.formula_log, "formula", "InvalidFormula")
+    
+    def test_filter(self):
+        self.assertAttrEqual(self.gr_log, "filter", 0)
+        self.assertAttrChange(self.gr_log, "filter", 2)
+        self.assertAttrNotChanged(self.gr_log, "filter", -1)
+    
+    def test_fixed_bar_width(self):
+        self.assertAttrEqual(self.sonic_e1_mud_log, "fixed_bar_width", 15)
+        self.assertAttrChange(self.sonic_e1_mud_log, "fixed_bar_width", 10)
+        self.assertAttrNotChanged(self.sonic_e1_mud_log, "fixed_bar_width", -1)
+    
+    def test_insert_interval_item_remove_by_depth(self):
+        item = self.gr_litho_interval_log.insert_new_interval_item(80.0, 82.0, 23.0)
+        self.assertIsInstance(item, wellcad.com.IntervalItem)
+        self.gr_litho_interval_log.remove_interval_item_at_depth(81.0)
+        item = self.gr_litho_interval_log.interval_item_at_depth(81.0)
+        self.assertNotAlmostEqual(item.value, 23.0)
+    
+    def test_insert_interval_item_remove_by_index(self):
+        item = self.gr_litho_interval_log.insert_new_interval_item(20.0, 22.0, 78.8)
+        self.assertIsInstance(item, wellcad.com.IntervalItem)
+        self.gr_litho_interval_log.remove_interval_item(0)
+        self.assertIsNone(self.gr_litho_interval_log.interval_item_at_depth(21.0))
+
+    def test_interval_item(self):
+        item = self.gr_litho_interval_log.interval_item(1)
+        self.assertIsInstance(item, wellcad.com.IntervalItem)
+        self.assertAlmostEqual(item.value, 72.5)
+        item = self.gr_litho_interval_log.interval_item(-1)
+        self.assertIsNone(item)
+    
+    def test_interval_item_at_depth(self):
+        item = self.gr_litho_interval_log.interval_item_at_depth(90.0)
+        self.assertIsNone(item)
+        item = self.gr_litho_interval_log.interval_item_at_depth(84.0)
+        self.assertAlmostEqual(item.value, 95.0)
+    
+    def test_pen_color(self):
+        self.assertAttrEqual(self.gr_log, "pen_color", 0x00ffffff)
+        self.assertAttrChange(self.gr_log, "pen_color", 0x00ff0000)
+        self.assertAttrNotChanged(self.gr_log, "pen_color", -10)
+    
+    def test_pen_style(self):
+        self.assertAttrEqual(self.gr_log, "pen_style", 0)
+        self.assertAttrChange(self.gr_log, "pen_style", 1)
+        self.assertAttrNotChanged(self.gr_log, "pen_style", 5)
+    
+    def test_pen_width(self):
+        self.assertAttrEqual(self.gr_log, "pen_width", 3)
+        self.assertAttrChange(self.gr_log, "pen_width", 5)
+        self.assertAttrNotChanged(self.gr_log, "pen_width", -1)
+    
+    def test_shading(self):
+        self.assertAttrEqual(self.gr_log, "shading", 1)
+        self.assertAttrChange(self.gr_log, "shading", 0)
+        self.assertAttrNotChanged(self.gr_log, "shading", 3)
+    
+    def test_style_mud_log(self):
+        self.assertAttrEqual(self.sonic_e1_mud_log, "style", 1)
+        self.assertAttrChange(self.sonic_e1_mud_log, "style", 3)
+        self.assertAttrNotChanged(self.sonic_e1_mud_log, "style", 0)
+    
     def test_insert_new_ole_box_from_file(self):
         self.ole_log.insert_new_ole_box_from_file(str(pathlib.Path(__file__).parent / "fixtures" / "test_img.jpg"),
                                                   True, 0, 10)
