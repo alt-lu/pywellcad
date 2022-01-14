@@ -1,5 +1,6 @@
 from ._dispatch_wrapper import DispatchWrapper
 from ._font import Font
+from ._litho_bed import LithoBed
 from ._polar_and_rose_box import PolarAndRoseBox
 from ._interval_item import IntervalItem
 
@@ -801,8 +802,13 @@ class Log(DispatchWrapper):
         position : float
             A value between 0 and 1 determining the horizontal position Position of a non repeated symbol
             in percent of the track width.
+
+        Returns
+        ----------
+        LithoBed
+            The newly created LithoBed.
         """
-        self._dispatch.InsertNewLithoBed(top_depth, bottom_depth, litho_code, value, position)
+        return LithoBed(self._dispatch.InsertNewLithoBed(top_depth, bottom_depth, litho_code, value, position))
 
     def litho_bed(self, index):
         """Gets a LithoBed object at the specified index from a Lithology Log.
@@ -811,8 +817,13 @@ class Log(DispatchWrapper):
         ----------
         index : int
             Zero based index of the LithoBed to be retrieved.
+
+        Returns
+        ----------
+        LithoBed
+            The LithoBed at the desired index.
         """
-        return self._dispatch.LithoBed(index)
+        return LithoBed(self._dispatch.LithoBed(index))
 
     def litho_bed_at_depth(self, depth):
         """Gets a LithoBed object at the specified depth from a Lithology Log.
@@ -821,8 +832,13 @@ class Log(DispatchWrapper):
         ----------
         depth : float
             depth value in current depth units at which the item will be retrieved
+
+        Returns
+        ----------
+        LithoBed
+            The LithoBed at the desired depth.
         """
-        return self._dispatch.LithoBedAtDepth(depth)
+        return LithoBed(self._dispatch.LithoBedAtDepth(depth))
 
     @property
     def litho_dictionary(self):
@@ -879,8 +895,6 @@ class Log(DispatchWrapper):
             the depth value in current depth units at which the lithological bed will be removed.
         """
         self._dispatch.RemoveLithoBedAtDepth(depth)
-
-# Image and FWS logs
 
     def insert_trace(self, index):
         """Inserts a new data trace into an Image, FWS or Analysis Log at the specified index.
