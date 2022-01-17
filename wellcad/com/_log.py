@@ -3,6 +3,7 @@ from ._font import Font
 from ._litho_bed import LithoBed
 from ._polar_and_rose_box import PolarAndRoseBox
 from ._interval_item import IntervalItem
+from ._stacking_pattern_item import StackingPatternItem
 
 class Log(DispatchWrapper):
     _DISPATCH_METHODS = ("DoSettingsDlg",)
@@ -1493,21 +1494,21 @@ class Log(DispatchWrapper):
 
 #Stacking Pattern Log
 
-    def insert_new_stack_item(self, topdepth, bottomdepth, topwidth, bottomwidth):
+    def insert_new_stack_item(self, top_depth, bottom_depth, top_width, bottom_width):
         """Inserts a new data interval into a Stacking Pattern Log.
 
         Parameters
         ----------
-        topdepth : float
+        top_depth : float
             The top depth value of the interval in the current depth units.
-        bottomdepth : float
+        bottom_depth : float
             The bottom depth value of the interval in the current depth units.
-        topwidth : float
+        top_width : float
            Width value at the top of the new interval.
-        bottomwidth : float
+        bottom_width : float
             Width value at the bottom of the new interval.
         """
-        self._dispatch.InsertNewStackItem(topdepth, bottomdepth, topwidth, bottomwidth)
+        return StackingPatternItem(self._dispatch.InsertNewStackItem(top_depth, bottom_depth, top_width, bottom_width))
 
     def stack_item(self, index):
         """Gets a Stack Item object from the Stacking Pattern Log at the specified depth index.
@@ -1517,7 +1518,7 @@ class Log(DispatchWrapper):
         index : int
             Zero based index of the item to be retrieve.
         """
-        return self._dispatch.StackItem(index)
+        return StackingPatternItem(self._dispatch.StackItem(index))
 
     def stack_item_at_depth(self, depth):
         """Gets a Stack Item object from the Stacking Pattern Log at the specified depth in current depth units.
@@ -1527,7 +1528,7 @@ class Log(DispatchWrapper):
         depth : float
             The depth of the item to be retrieved in current depth units.
         """
-        return self._dispatch.StackItemAtDepth(depth)
+        return StackingPatternItem(self._dispatch.StackItemAtDepth(depth))
 
     def remove_stack_item(self, index):
         """Removes an item from the Stacking Pattern Log at the specified index.
