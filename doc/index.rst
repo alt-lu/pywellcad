@@ -14,13 +14,16 @@ the interface to be more Pythonic.
    application
    borehole
    log
-   depth
-   header
-   odbc
-   page
    title
+   depth
+   page
+   header
+   interval_item
+   litho_bed
+   polar_and_rose_box
    workspace
    font
+   odbc
 
 Indices and tables
 ==================

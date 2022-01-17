@@ -10,3 +10,4 @@ from ._workspace import Workspace
 from ._font import Font
 from ._interval_item import IntervalItem
 from ._polar_and_rose_box import PolarAndRoseBox
+from ._litho_bed import LithoBed
