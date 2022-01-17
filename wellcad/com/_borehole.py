@@ -171,11 +171,10 @@ class Borehole(DispatchWrapper):
         obworkspace = self._dispatch.Workspace(workspace_id)
         return Workspace(obworkspace)
 
-
-    def get_odbc(self):
-        """Returns an object to access the ODBC module."""
-        obj_odbc = self._dispatch.ODBC
-        return Odbc(obj_odbc) 
+    @property
+    def odbc(self):
+        """Odbc: An ODBC object that allows interaction with a database."""
+        return Odbc(self._dispatch.ODBC) 
 
 
     def connect_to(self, server_name, server_address, port_number="1600"):

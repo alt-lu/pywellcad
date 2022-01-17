@@ -1,16 +1,29 @@
 from ._dispatch_wrapper import DispatchWrapper
 
 class Odbc(DispatchWrapper):
-    def interpret_sql(self, sql_statement):
-        """Executes the sql statement provided as argument.
+    """ An ODBC object allows interaction with databases from within WellCAD.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+    Example
+    -------
+    >>> odbc = borehole.odbc
+    >>> odbc.interpret_sql_statement('$dsn = OpenDatabase(Test, Admin)')
+    >>> odbc.interpret_sql_statement('$log = SELECT Depth, Value FROM tblGamma')
+    """
 
-        Arguments:
-            sql_statement -- String containing the sql statement.
+    def interpret_sql_statement(self, statement):
+        """Executes the SQL statement provided
 
+        A user manual documenting the syntax of the SQL statements that can be
+        used can be obtained by contacting support@alt.lu.
+
+        Parameters
+        ----------
+        statement : str
+            The SQL statement to execute.
+
+        Returns
+        -------
+        bool
+            Whether the statement executed successfully.
         """
-
-        self._dispatch.InterpretSQLStatement(sql_statement)
+        return self._dispatch.InterpretSQLStatement(statement)
