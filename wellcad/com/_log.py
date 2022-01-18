@@ -4,6 +4,7 @@ from ._litho_bed import LithoBed
 from ._polar_and_rose_box import PolarAndRoseBox
 from ._interval_item import IntervalItem
 from ._stacking_pattern_item import StackingPatternItem
+from ._cross_section_box import CrossSectionBox
 
 class Log(DispatchWrapper):
     _DISPATCH_METHODS = ("DoSettingsDlg",)
@@ -1448,7 +1449,7 @@ class Log(DispatchWrapper):
         index : int
             Zero based index of the box to be retrieve.
         """
-        return self.CrossBox(index)
+        return CrossSectionBox(self._dispatch.CrossBox(index))
 
     def cross_box_at_depth(self, depth):
         """Gets a Cross Box object from the Cross Section Log at the specified depth in current depth units.
@@ -1458,7 +1459,7 @@ class Log(DispatchWrapper):
         depth : float
             The depth of the box to be retrieved in current depth units.
         """
-        return self._dispatch.CrossBoxAtDepth(depth)
+        return CrossSectionBox(self._dispatch.CrossBoxAtDepth(depth))
 
     def insert_new_cross_box(self, top_depth, bottom_depth):
         """Inserts a new box into the Cross Section Log.
@@ -1470,7 +1471,7 @@ class Log(DispatchWrapper):
         bottom_depth : float
             The bottom depth value of the cross section box in current depth units.
         """
-        self._dispatch.InsertNewCrossBox(top_depth, bottom_depth)
+        return CrossSectionBox(self._dispatch.InsertNewCrossBox(top_depth, bottom_depth))
 
     def remove_cross_box(self, index):
         """Removes a box from the Cross Section Log at the specified index.
