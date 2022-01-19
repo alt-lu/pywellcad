@@ -289,17 +289,20 @@ class Borehole(DispatchWrapper):
         return Log(self._dispatch.Log(index_or_name))
 
 
-    def get_title(self, log_name):
-        """Returns an object for the tile of a log.
+    def title(self, log_name):
+        """Gets the title object for the specified log.
 
-        Arguments:
-            log_name -- Title of the log as shown in the propeties.
+        Parameters
+        ----------
+        log_name : str
+            The name of the log to get the title for.
 
+        Returns
+        -------
+        Title
+            The Title object.
         """
-
-        self._dispatch._FlagAsMethod("Title")
-        obTitle = self._dispatch.Title(log_name)
-        return Title(obTitle)
+        return Title(self._dispatch.Title(log_name))
 
 
     def insert_new_log(self, log_type):
