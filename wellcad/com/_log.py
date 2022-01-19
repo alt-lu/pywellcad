@@ -3,8 +3,10 @@ from ._font import Font
 from ._litho_bed import LithoBed
 from ._polar_and_rose_box import PolarAndRoseBox
 from ._interval_item import IntervalItem
+from ._marker_item import MarkerItem
 from ._stacking_pattern_item import StackingPatternItem
 from ._cross_section_box import CrossSectionBox
+
 
 class Log(DispatchWrapper):
     _DISPATCH_METHODS = ("DoSettingsDlg",)
@@ -1080,27 +1082,37 @@ class Log(DispatchWrapper):
         self._dispatch.InsertNewCommentBox(top_depth, bottom_depth, text)
 
     def marker(self, index):
-        """Gets the marker object of the specified index from the Marker Log.
+        """Gets the marker with the specified index.
 
         Parameters
         ----------
         index : int
-            Zero based index at which the marker object will be retrieved.
+            Zero based index of the marker.
+
+        Returns
+        -------
+        MarkerItem
+            The marker with the specified index.
         """
-        return self._dispatch.Marker(index)
+        return MarkerItem(self._dispatch.Marker(index))
 
     def marker_by_name(self, name):
-        """Gets the marker object of the specified name from the Marker Log.
+        """Gets the marker with the specified name.
 
         Parameters
         ----------
         name : str
-            Text of the marker object to be retrieved.
+            Name of the marker to be retrieved.
+
+        Returns
+        -------
+        MarkerItem
+            The marker with the specified name.
         """
-        return self._dispatch.MarkerByName(name)
+        return MarkerItem(self._dispatch.MarkerByName(name))
 
     def insert_new_marker(self, depth, name, comment, contact):
-        """Sets a new marker at the specified depth into a Marker Log
+        """Inserts a new marker at the specified depth into a Marker Log
 
         Parameters
         ----------
@@ -1112,8 +1124,13 @@ class Log(DispatchWrapper):
             The optional comment for the marker.
         contact : str
             Name of a contact style to be used and available in the contact dictionary of the Marker Log.
+
+        Returns
+        -------
+        MarkerItem
+            The Marker object at the desired depth with the specified attributes.
         """
-        self._dispatch.InsertNewMarker(depth,name, comment, contact)
+        return MarkerItem(self._dispatch.InsertNewMarker(depth,name, comment, contact))
 
     def removes_dispatchment_box(self, index):
         """Removes a comment box from the Comment log at the specified index.
