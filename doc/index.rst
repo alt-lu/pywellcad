@@ -20,6 +20,7 @@ the interface to be more Pythonic.
    header
    interval_item
    litho_bed
+   marker_item
    polar_and_rose_box
    workspace
    font

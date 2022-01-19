@@ -52,12 +52,12 @@ class Depth(DispatchWrapper):
         self._dispatch.Scale = scale
 
     @property
-    def use_as_depth_scale(self):
-        """bool: The flag to use the depth scale as the current reference axis."""
+    def used_as_depth_scale(self):
+        """bool: Whether this depth scale is used as the current reference axis."""
         return self._dispatch.UsedAsDepthScale
 
-    @use_as_depth_scale.setter
-    def use_as_depth_scale(self, enable):
+    @used_as_depth_scale.setter
+    def used_as_depth_scale(self, enable):
         self._dispatch.UsedAsDepthScale = enable
 
     @property

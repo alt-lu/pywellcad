@@ -12,3 +12,4 @@ from ._interval_item import IntervalItem
 from ._polar_and_rose_box import PolarAndRoseBox
 from ._litho_bed import LithoBed
 from ._cross_section_box import CrossSectionBox
+from ._marker_item import MarkerItem

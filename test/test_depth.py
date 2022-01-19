@@ -24,14 +24,13 @@ class TestDepth(unittest.TestCase, SamplePath, ExtraAsserts):
         self.assertAttrEqual(self.depth, "horizontal_grid_spacing", 4.0)
         self.assertAttrChange(self.depth, "horizontal_grid_spacing", 4.5)
 
-
     def test_scale(self):
         self.assertAttrEqual(self.depth, "scale", 150.0)
         self.assertAttrChange(self.depth, "scale", 100.0)
 
-    def test_use_as_depth_scale(self):
-        self.assertAttrEqual(self.depth, "use_as_depth_scale", True)
-        self.assertAttrChange(self.depth, "use_as_depth_scale", False)  # Setting fails
+    def test_used_as_depth_scale(self):
+        self.assertAttrEqual(self.depth, "used_as_depth_scale", True)
+        self.assertAttrChange(self.depth, "used_as_depth_scale", False)  # Setting fails
 
     def test_horizontal_grid(self):
         self.assertAttrEqual(self.depth, "horizontal_grid", 2)
