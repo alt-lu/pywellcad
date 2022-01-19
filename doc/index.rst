@@ -18,6 +18,7 @@ the interface to be more Pythonic.
    depth
    page
    header
+   comment_box
    interval_item
    litho_bed
    marker_item

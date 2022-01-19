@@ -3,6 +3,7 @@ from ._font import Font
 from ._litho_bed import LithoBed
 from ._polar_and_rose_box import PolarAndRoseBox
 from ._interval_item import IntervalItem
+from ._comment_box import CommentBox
 from ._marker_item import MarkerItem
 from ._stacking_pattern_item import StackingPatternItem
 from ._cross_section_box import CrossSectionBox
@@ -1055,7 +1056,7 @@ class Log(DispatchWrapper):
         index : int
             Zero based index at which the box will be retrieved.
         """
-        return self._dispatch.CommentBox(index)
+        return CommentBox(self._dispatch.CommentBox(index))
 
     def comment_box_at_depth(self, depth):
         """Gets the Comment Box object from the Comment Log at the specified depth.
@@ -1065,9 +1066,9 @@ class Log(DispatchWrapper):
         depth : float
             The depth value in current depth units at which the comment box will be retrieved.
         """
-        return self._dispatch.CommentBoxAtDepth(depth)
+        return CommentBox(self._dispatch.CommentBoxAtDepth(depth))
 
-    def insert_new_dispatchment_box(self, top_depth, bottom_depth, text):
+    def insert_new_comment_box(self, top_depth, bottom_depth, text):
         """Sets a new box with the specified text into a Comment Log.
 
         Parameters
@@ -1079,7 +1080,7 @@ class Log(DispatchWrapper):
         text : str
             The text to be displayed in the new box.
         """
-        self._dispatch.InsertNewCommentBox(top_depth, bottom_depth, text)
+        return CommentBox(self._dispatch.InsertNewCommentBox(top_depth, bottom_depth, text))
 
     def marker(self, index):
         """Gets the marker with the specified index.
@@ -1132,7 +1133,7 @@ class Log(DispatchWrapper):
         """
         return MarkerItem(self._dispatch.InsertNewMarker(depth,name, comment, contact))
 
-    def removes_dispatchment_box(self, index):
+    def remove_comment_box(self, index):
         """Removes a comment box from the Comment log at the specified index.
 
         Parameters
@@ -1142,7 +1143,7 @@ class Log(DispatchWrapper):
         """
         self._dispatch.RemoveCommentBox(index)
 
-    def removes_dispatchment_box_at_depth(self, depth):
+    def remove_comment_box_at_depth(self, depth):
         """Removes a comment box from the Comment log at the specified depth.
 
         Parameters
