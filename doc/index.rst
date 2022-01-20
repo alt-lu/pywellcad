@@ -23,6 +23,7 @@ the interface to be more Pythonic.
    litho_bed
    marker_item
    polar_and_rose_box
+   stacking_pattern_item
    workspace
    font
    odbc
