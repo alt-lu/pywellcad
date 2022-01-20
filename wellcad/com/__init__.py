@@ -14,3 +14,4 @@ from ._litho_bed import LithoBed
 from ._cross_section_box import CrossSectionBox
 from ._marker_item import MarkerItem
 from ._comment_box import CommentBox
+from ._stacking_pattern_item import StackingPatternItem

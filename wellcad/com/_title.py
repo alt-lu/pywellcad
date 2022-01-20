@@ -163,6 +163,24 @@ class Title(DispatchWrapper):
         self._dispatch.DisplayProperties = flag
 
     @property
+    def title_text(self):
+        """str: The text for the title partition."""
+        return self._dispatch.TitleText
+
+    @title_text.setter
+    def title_text(self, text):
+        self._dispatch.TitleText = text
+
+    @property
+    def comment_text(self):
+        """str: The text for the comment partition."""
+        return self._dispatch.CommentText
+
+    @comment_text.setter
+    def comment_text(self, text):
+        self._dispatch.CommentText = text
+
+    @property
     def title_top(self):
         """float: The top of the title partition of a group or log
         title box as a fraction of the box height (value between 0 and 1)."""

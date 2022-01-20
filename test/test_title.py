@@ -223,6 +223,29 @@ class TestTitle(unittest.TestCase, SamplePath, ExtraAsserts):
         self.assertAttrEqual(self.title, "properties_color", 0)
         self.assertAttrChange(self.title, "properties_color", 150)
 
+    def test_title_text(self):
+        self.assertAttrEqual(self.title, "title_text", "GR")
+        self.assertAttrChange(self.title, "title_text", "New title")
+
+    def test_default_title_text(self):
+        text = self.title.title_text
+        self.assertAttrEqual(self.title, "title_text", "GR")
+        self.title.title_text = ""
+        self.assertAttrEqual(self.title, "title_text", "#1")
+        self.title.title_text = text
+        self.assertAttrEqual(self.title, "title_text", "GR")
+
+    def test_comment_text(self):
+        self.assertAttrEqual(self.title, "comment_text", "")
+        self.assertAttrChange(self.title, "comment_text", "New comment")
+        self.assertAttrChange(self.title, "comment_text", "")
+
+    def test_title_text_missing_documentation(self):
+        self.fail("Documentation for TitleText is missing in wellcad")
+
+    def test_comment_text_missing_documentation(self):
+        self.fail("Documentation for CommentText is missing in wellcad")
+
     def test_title_font(self):
         self.assertIsInstance(self.title.title_font, wellcad.com.Font)
 

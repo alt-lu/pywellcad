@@ -243,7 +243,7 @@ class Log(DispatchWrapper):
 
     @property
     def border_color(self):
-        """int: The border color for of the log column.
+        """int: The border color of the log column.
         
         Colours are specified as a 32 bit integer with an ``xBGR`` structure.
         Each of the blue (B), green (G) and red (R) components are 8 bit
