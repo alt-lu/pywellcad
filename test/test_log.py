@@ -67,10 +67,6 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrChangeRaises(self.gr_log, "top_depth", 0)
         self.assertAttrChangeRaises(self.gr_log, "bottom_depth", 0)
 
-    def test_do_settings_dlg(self):
-        self.assertTrue(self.gr_log.do_settings_dlg())
-        self.fail("Settings dialog boxes are not shown, only property bars.")
-
     def test_data_table(self):
         original_data = self.gr_log.data_table
         self.assertIsInstance(original_data, tuple)

@@ -53,7 +53,12 @@ class Depth(DispatchWrapper):
 
     @property
     def used_as_depth_scale(self):
-        """bool: Whether this depth scale is used as the current reference axis."""
+        """bool: Whether this depth scale is used as the current reference axis.
+
+        Setting this property to True on another depth log changes
+        the property to False on this object. If no other depth log
+        is used as the depth scale, the main depth log will
+        automatically be used as the depth scale."""
         return self._dispatch.UsedAsDepthScale
 
     @used_as_depth_scale.setter

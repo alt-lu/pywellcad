@@ -77,21 +77,6 @@ class Log(DispatchWrapper):
         the log using the current depth reference units."""
         return self._dispatch.BottomDepth
 
-    def do_settings_dlg(self):
-        """Opens the main settings dialog box corresponding to the log.
-        
-        Please note that since WellCAD v5.0 Properties Bars are used. The
-        dialog boxes displayed with this method may not show all settings
-        any more.
-        
-        Returns
-        -------
-        bool
-            Whether the settings dialog was successfully displayed.
-        """
-        # TODO: The above documentation is actually out of date. From testing,
-        # this just shows the property bar now.
-        return self._dispatch.DoSettingsDlg()
 
     @property
     def data_table(self):

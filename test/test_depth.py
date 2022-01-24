@@ -30,7 +30,13 @@ class TestDepth(unittest.TestCase, SamplePath, ExtraAsserts):
 
     def test_used_as_depth_scale(self):
         self.assertAttrEqual(self.depth, "used_as_depth_scale", True)
-        self.assertAttrChange(self.depth, "used_as_depth_scale", False)  # Setting fails
+        new_depth_log = self.borehole.insert_new_log(17)  # new depth log
+        new_depth_log.used_as_depth_scale = True   # Setting the new depth log as depth scale (True) changes the other ones to False
+        self.assertAttrEqual(self.depth, "used_as_depth_scale", False)
+        self.depth.used_as_depth_scale = True
+        self.assertAttrEqual(self.depth, "used_as_depth_scale", True)
+        self.assertAttrNotChanged(self.depth, "used_as_depth_scale", False)  # Setting fails because it is the main depth log
+
 
     def test_horizontal_grid(self):
         self.assertAttrEqual(self.depth, "horizontal_grid", 2)

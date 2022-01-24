@@ -75,20 +75,20 @@ class Font(DispatchWrapper):
         self._dispatch.Bold = flag
 
     @property
-    def strikethrought (self):
+    def strikethrough (self):
         """bool: Whether the font is struck through."""
-        return self._dispatch.Strikethrought
+        return self._dispatch.Strikethrough
 
-    @strikethrought.setter
-    def strikethrought(self, flag):
-        self._dispatch.Strikethrought = flag
+    @strikethrough.setter
+    def strikethrough(self, flag):
+        self._dispatch.Strikethrough = flag
 
     @property
     def size(self):
         """int: The size of the font.
 
-        This value can be positive or negative (see the Win32 ``LOGFONT``
-        documentation for more of an explanation).
+        See the Win32 ``LOGFONT`` documentation for more of an
+        explanation.
         """
         return self._dispatch.Size
 

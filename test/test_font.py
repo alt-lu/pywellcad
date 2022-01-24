@@ -22,8 +22,9 @@ class TestFont(unittest.TestCase, SamplePath, ExtraAsserts):
         self.assertAttrChange(self.font, "name", "Calibri")
 
     def test_size(self):
-        self.assertAttrEqual(self.font, "size", 11)  # "Expected :Decimal('-21')"
-        self.assertAttrChange(self.font, "size", 20)
+        self.assertAttrEqual(self.font, "size", -21)
+        self.assertAttrChange(self.font, "size", -8)  # actually sets it to -7
+        self.assertAttrChange(self.font, "size", 15)  # actually sets it to -20
 
     def test_weight(self):
         self.assertAttrEqual(self.font, "weight", 400)
@@ -41,12 +42,10 @@ class TestFont(unittest.TestCase, SamplePath, ExtraAsserts):
         self.assertAttrEqual(self.font, "bold", False)
         self.assertAttrChange(self.font, "bold", True)
 
-    def test_strikethrought(self):
-        self.assertAttrEqual(self.font, "strikethrought", False)
-        self.assertAttrChange(self.font, "strikethrought", True)
+    def test_strikethrough(self):
+        self.assertAttrEqual(self.font, "strikethrough", False)
+        self.assertAttrChange(self.font, "strikethrough", True)
 
-    def test_spelling_mistake(self):
-        assert False, "Spelling mistake in StriketroughT"
 
     def test_charset(self):
         self.assertAttrEqual(self.font, "charset", 0)
