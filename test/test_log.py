@@ -315,6 +315,13 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrChange(self.sonic_e1_mud_log, "fixed_bar_width", 10)
         self.assertAttrNotChanged(self.sonic_e1_mud_log, "fixed_bar_width", -1)
     
+    def test_new_interval_item_at_depth(self):
+        item = self.gr_litho_interval_log.insert_new_interval_item(20.0, 22.0, 78.8)
+        self.assertIsInstance(item, wellcad.com.IntervalItem)
+        query = self.gr_litho_interval_log.interval_item_at_depth(21.0)
+        self.assertIsNotNone(query)
+        self.gr_litho_interval_log.remove_interval_item_at_depth(21.0)
+    
     def test_insert_interval_item_remove_by_depth(self):
         item = self.gr_litho_interval_log.insert_new_interval_item(80.0, 82.0, 23.0)
         self.assertIsInstance(item, wellcad.com.IntervalItem)
