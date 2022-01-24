@@ -1,5 +1,8 @@
 import pathlib
 import unittest
+
+import pywintypes
+
 import wellcad.com
 import random
 import pywintypes
@@ -13,6 +16,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
     def setUpClass(cls):
         cls.app = wellcad.com.Application()
         cls.sample_path = cls._find_sample_path()
+        cls.fixture_path = pathlib.Path(__file__).parent / "fixtures"
 
         cls.borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.gr_log = cls.borehole.log("GR")
@@ -26,6 +30,12 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
 
         cls.volume_analysis_borehole = cls.app.open_borehole(str(cls.sample_path / "Volume Analysis.wcl"))
         cls.formula_log = cls.volume_analysis_borehole.log("GR percent")
+
+        cls.fmi_borehole = cls.app.open_borehole(str(cls.sample_path / "FMI and Net Sand Estimation.wcl"))
+        cls.structure_log = cls.fmi_borehole.log("Structure")
+
+        cls.breakout_borehole = cls.app.open_borehole(str(cls.fixture_path / "Breakout Picking.WCL"))
+        cls.breakout_log = cls.breakout_borehole.log("Breakouts")
 
     @classmethod
     def tearDownClass(cls):
@@ -412,6 +422,54 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrEqual(self.polar_and_rose_log, "nb_of_data", 0)
         self.polar_and_rose_log.remove_schmit_box_at_depth(0)  # success
         self.polar_and_rose_log.remove_schmit_box(0)  # fail
+
+    def test_aperture_unit(self):
+        self.assertAlmostEqual(self.structure_log.aperture_unit, 0.00254, 3)
+        self.assertAttrAlmostChange(self.structure_log, "aperture_unit", 0.001, 3)
+
+    def test_caliper_unit(self):
+        self.assertAlmostEqual(self.structure_log.caliper_unit, 0.001, 3)
+        self.assertAttrAlmostChange(self.structure_log, "caliper_unit", 0.0254, 3)
+
+    def test_length_unit(self):
+        self.assertAlmostEqual(self.breakout_log.length_unit, 0.001, 3)
+        self.assertAttrAlmostChange(self.breakout_log, "length_unit", 0.0254, 3)
+
+    def test_attribute_name(self):
+        self.assertEqual(self.structure_log.get_attribute_name(0), "Type")
+        self.structure_log.set_attribute_name(0, "new_name")
+        self.assertEqual(self.structure_log.get_attribute_name(0), "new_name")
+        self.structure_log.set_attribute_name(0, "Type")
+
+    def test_insert_new_attribute(self):
+        with self.assertRaises(pywintypes.com_error):
+            self.structure_log.get_attribute_name(1)
+        self.structure_log.insert_new_attribute("my_new_attribute")
+        self.assertEqual(self.structure_log.get_attribute_name(1), "my_new_attribute")
+
+    def test_attach_attribute_dictionary(self):
+        attribute_dictionary = str(self.fixture_path / "DefaultStructure.tad")
+        self.structure_log.attach_attribute_dictionary("new_attribute", attribute_dictionary)
+
+    def test_insert_delete_structure(self):
+        self.structure_log.insert_new_structure_ex(depth=10.0, azimuth=20.0, dip=3.0, aperture=0.0)
+        self.structure_log.insert_new_structure_ex(depth=15.0, azimuth=50.0, dip=1.0, aperture=0.0)
+        struct1 = self.structure_log.structure(0)
+        struct2 = self.structure_log.structure_at_depth(15.0)
+        self.assertAttrEqual(struct1, "azimuth", 20.0)
+        self.assertAttrEqual(struct2, "azimuth", 50.0)
+        self.structure_log.remove_structure(0)
+        self.structure_log.remove_structure_at_depth(15.0)
+
+    def test_insert_delete_breakout(self):
+        self.breakout_log.insert_new_breakout_ex(depth=10.0, azimuth=20.0, tilt=3.0, length=1.0, opening=5.0)
+        self.breakout_log.insert_new_breakout_ex(depth=15.0, azimuth=50.0, tilt=3.0, length=1.0, opening=5.0)
+        breakout1 = self.breakout_log.breakout(0)
+        breakout2 = self.breakout_log.breakout_at_depth(15.0)
+        self.assertAttrEqual(breakout1, "azimuth", 20.0)
+        self.assertAttrEqual(breakout2, "azimuth", 50.0)  #TODO fails, breakout_at_depth does not work as intended
+        self.breakout_log.remove_breakout(0)
+        self.breakout_log.remove_breakout_at_depth(15.0)
 
 
 if __name__ == '__main__':

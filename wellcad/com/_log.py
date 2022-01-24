@@ -1,5 +1,7 @@
 from ._dispatch_wrapper import DispatchWrapper
 from ._font import Font
+from ._structure import Structure
+from ._breakout import Breakout
 from ._litho_bed import LithoBed
 from ._polar_and_rose_box import PolarAndRoseBox
 from ._interval_item import IntervalItem
@@ -9,8 +11,9 @@ from ._stacking_pattern_item import StackingPatternItem
 from ._cross_section_box import CrossSectionBox
 
 
+
 class Log(DispatchWrapper):
-    _DISPATCH_METHODS = ("DoSettingsDlg",)
+    _DISPATCH_METHODS = ("DoSettingsDlg", "Structure")
 
     def file_export(self, directory, file_title=None, extension=None, prompt_user=None, config_filename=None):
         """Exports the data of the log in the specified format (TXT, CSV, ASC,
@@ -552,7 +555,7 @@ class Log(DispatchWrapper):
     @fixed_bar_width.setter
     def fixed_bar_width(self, width):
         self._dispatch.FixedBarWidth = width
-    
+
     def insert_new_interval_item(self, top_depth, bottom_depth, value):
         """Inserts a new interval in an Interval log.
 
@@ -611,7 +614,7 @@ class Log(DispatchWrapper):
         values.
         """
         return self._dispatch.PenColor
-    
+
     @pen_color.setter
     def pen_color(self, color):
         self._dispatch.PenColor = color
@@ -725,8 +728,7 @@ class Log(DispatchWrapper):
     def style(self, style):
         self._dispatch.Style = style
 
-
-# litho, Coredesc, and percentage logs
+    # litho, Coredesc, and percentage logs
 
     def attach_litho_dictionary(self, dictionary):
         """Attaches a new symbol or pattern library (\*.LTH file) to Litho, CoreDesc,
@@ -738,7 +740,6 @@ class Log(DispatchWrapper):
             path and name of the LTH file to attach
         """
         self._dispatch.AttachLithoDictionary(dictionary)
-
 
     def component_name(self, column, code):
         """Sets the color used for the log border as an RGB color value.
@@ -1136,7 +1137,7 @@ class Log(DispatchWrapper):
         MarkerItem
             The Marker object at the desired depth with the specified attributes.
         """
-        return MarkerItem(self._dispatch.InsertNewMarker(depth,name, comment, contact))
+        return MarkerItem(self._dispatch.InsertNewMarker(depth, name, comment, contact))
 
     def remove_comment_box(self, index):
         """Removes a comment box from the Comment log at the specified index.
@@ -1193,27 +1194,49 @@ class Log(DispatchWrapper):
         """Gets the font used in a Comment Log as Font Object."""
         return Font(self._dispatch.Font)
 
-#Structure and Borehole
-
     def attach_attribute_dictionary(self, attribute, file):
-        """Attaches a new attribute library (\*.TAD file) to a Structure / Breakout Log.
+        """Attaches a new attribute library (\*.TAD file) to a
+        Structure or Breakout Log.
 
         Parameters
         ----------
         attribute : str
-            Name of the classification column (see column_name).
+            Name of the classification column.
         file : str
-            Path and name of the TAD file to attach.
+            Path to the TAD file to attach.
         """
         self._dispatch.AttachAttributeDictionary(attribute, file)
 
+    def insert_new_attribute(self, attribute_name):
+        """Inserts a new blank classification column to a
+        Structure or Breakout Log.
 
-    def attribute_name(self):
-        """Gets the name of the attribute class (i.e. classification column) in a Breakout Log or a Structure Log."""
-        return self._dispatch.AttributeName
+        Parameters
+        ----------
+        attribute_name : str
+            Name of the new class.
+        """
+        self._dispatch.InsertNewAttribute(attribute_name)
+
+    def get_attribute_name(self, index):
+        """Gets the name of the attribute class (i.e. classification
+        column) in a Breakout Log or a Structure Log.
+
+        Parameters
+        ----------
+        index : str
+            Zero based index of the column.
+
+        Returns
+        ----------
+        str
+            The name of the attribute class (classification column)
+        """
+        return self._dispatch.GetAttributeName(index)
 
     def set_attribute_name(self, index, name):
-        """Sets the name of the attribute class (i.e. classification column) in a Breakout Log or a Structure Log.
+        """Sets the name of the attribute class (i.e. classification
+        column) in a Breakout Log or a Structure Log.
 
         Parameters
         ----------
@@ -1222,56 +1245,64 @@ class Log(DispatchWrapper):
         name : str
             New name of the classification column.
         """
-        self._dispatch.AttributeName(index, name)
+        self._dispatch.SetAttributeName(index, name)
 
     def structure(self, index):
-        """Gets a Structure object from the Structure Log at the specified depth index.
+        """Gets a Structure object from the Structure Log at the
+        specified index.
 
         Parameters
         ----------
         index : int
-            Zero based index  of the structure object to be retrieved.
+            Zero based index of the structure object to be retrieved.
         """
-        return self._dispatch.Structure(index)
+        return Structure(self._dispatch.Structure(index))
 
     def structure_at_depth(self, depth):
-        """Gets a Structure object from the Structure Log at the specified depth in current depth units.
+        """Gets the closest Structure object from the Structure Log
+        to the specified depth in current depth units.
 
         Parameters
         ----------
         depth : float
-            The depth value in current depth units at which the structure object will be retrieved.
-            Feature closest to specified depth will be returned.
+            The depth value in current depth units at which the
+            structure object will be retrieved.
         """
-        self._dispatch.StructureAtDepth(depth)
+        return Structure(self._dispatch.StructureAtDepth(depth))
 
     def breakout(self, index):
-        """Gets a breakout from the Breakout Log at the specified depth index.
+        """Gets a breakout from the Breakout Log at the specified
+        index.
 
         Parameters
         ----------
         index : int
-            Zero based index  of the breakout to be retrieved.
+            Zero based index of the breakout to be retrieved.
         """
-        return self._dispatch.Breakout(index)
+        return Breakout(self._dispatch.Breakout(index))
 
     def breakout_at_depth(self, depth):
-        """Gets a breakout from the Breakout Log at the specified depth in current depth units.
+        """Gets a breakout from the Breakout Log at the specified
+        depth in current depth units.
 
         Parameters
         ----------
         depth : float
-            The depth value in current depth units at which the breakout will be retrieved.
+            The depth value in current depth units at which the
+            breakout will be retrieved.
         """
-        return self._dispatch.BreakoutAtDepth(depth)
+        return Breakout(self._dispatch.Breakout(depth))
 
     def insert_new_breakout_ex(self, depth, azimuth, tilt, length, opening):
         """Sets a new breakout in a Breakout Log.
 
+        If the mirror option is active, a second breakout object is
+        added 180° degrees apart.
+
         Parameters
         ----------
         depth : float
-            The depth value in the current units of the breakout to be inserted.
+            The depth value of the breakout in current depth units
         azimuth : float
             The azimuth angle of the breakout measured in degrees.
         tilt : float
@@ -1279,9 +1310,9 @@ class Log(DispatchWrapper):
         length : float
             The length of the breakout in meters.
         opening : float
-            The opening angle of the breakout in degrees.
+            The opening (or aperture) angle of the breakout in degrees.
         """
-        self._dispatch.InsertNewBreakoutEx(depth, azimuth, tilt, length, opening)
+        return Breakout(self._dispatch.InsertNewBreakoutEx(depth, azimuth, tilt, length, opening))
 
     def insert_new_structure_ex(self, depth, azimuth, dip, aperture):
         """Sets a new structure in a Structure Log.
@@ -1289,7 +1320,8 @@ class Log(DispatchWrapper):
         Parameters
         ----------
         depth : float
-            The depth value in the current units of the breakout to be inserted.
+            The depth value in the current units of the breakout to
+            be inserted.
         azimuth : float
             The azimuth angle of the structure measured in degrees.
         dip : float
@@ -1297,98 +1329,92 @@ class Log(DispatchWrapper):
         aperture : float
             The aperture of the structure in meters.
         """
-        self._dispatch.InsertNewStructureEx(depth, azimuth, dip, aperture)
+        return Structure(self._dispatch.InsertNewStructureEx(depth, azimuth, dip, aperture))
 
     def remove_breakout(self, index):
-        """Removes a breakout from the Breakout Log at the specified index.
+        """Removes a breakout from the Breakout Log at the specified
+        index.
 
         Parameters
         ----------
         index : int
-            Zero based index  of the breakout to be removed.
+            Zero based index of the breakout to be removed.
         """
         self._dispatch.RemoveBreakout(index)
 
     def remove_breakout_at_depth(self, depth):
-        """Removes a breakout from the Breakout Log at the specified depth in current depth units.
+        """Removes a breakout from the Breakout Log at the specified
+        depth in current depth units.
 
         Parameters
         ----------
         depth : float
-            The depth value in current depth units at which the breakout will be removed.
+            The depth value in current depth units at which the
+            breakout will be removed.
         """
         self._dispatch.RemoveBreakoutAtDepth(depth)
 
     def remove_structure(self, index):
-        """Removes a structure from the Structure Log at the specified index.
+        """Removes a structure from the Structure Log at the
+        specified index.
 
         Parameters
         ----------
         index : int
-            Zero based index  of the structure to be removed.
+            Zero based index of the structure to be removed.
         """
         self._dispatch.RemoveStructure(index)
 
     def remove_structure_at_depth(self, depth):
-        """Removes a structure from the Structure Log at the specified depth in current depth units.
+        """Removes a structure from the Structure Log at the
+        specified depth in current depth units.
 
         Parameters
         ----------
         depth : float
-            The depth value in current depth units at which the structure will be removed.
+            The depth value in current depth units at which the
+            structure will be removed.
         """
         self._dispatch.RemoveStructureAtDepth(depth)
 
     @property
     def length_unit(self):
-        """Gets the unit of the breakout length measured in the breakout log
-        (0.001 when measured in mm and 0.0254 when measured in inches) """
+        """float: The conversion factor (from meters) for the
+        breakout length measured in the breakout log
+
+        Set it to 0.001 when measured in mm and to 0.0254 when
+        measured in inches."""
         return self._dispatch.LengthUnit
 
     @length_unit.setter
-    def length_unit(self, code):
-        """Sets the unit of the breakout length measured in the breakout log.
-
-        Parameters
-        ----------
-        code : float
-            0.001 when measured in mm or 0.0254 when measured in inches.
-        """
-        self._dispatch.LengthUnit(code)
+    def length_unit(self, factor):
+        self._dispatch.LengthUnit = factor
 
     @property
     def caliper_unit(self):
-        """Gets the unit of the caliper used in the structure log.
-        (0.001 when measured in mm and 0.0254 when measured in inches) """
+        """float: The conversion factor (from meters) for the caliper
+        value in a structure log.
+
+        Set it to 0.001 when measured in mm and to 0.0254 when
+        measured in inches."""
         return self._dispatch.CaliperUnit
 
     @caliper_unit.setter
-    def caliper_unit(self, code):
-        """Sets the unit of the caliper used in the structure log.
-
-        Parameters
-        ----------
-        code : float
-            0.001 when measured in mm or 0.0254 when measured in inches.
-        """
-        self._dispatch.CaliperUnit(code)
+    def caliper_unit(self, factor):
+        self._dispatch.CaliperUnit = factor
 
     @property
     def aperture_unit(self):
-        """Gets the aperture value in a structure log.
-        (0.001 when measured in mm and 0.0254 when measured in inches) """
+        """float: The conversion factor (from meters) for the 
+        aperture value in a structure log.  
+
+        Set it to 0.001 when measured in mm and to 0.00254 when
+        measured in 1/10th inches."""
         return self._dispatch.ApertureUnit
 
     @aperture_unit.setter
-    def aperture_unit(self, code):
-        """Sets the aperture value in a structure log.
-
-        Parameters
-        ----------
-        code : float
-            0.001 when measured in mm or 0.0254 when measured in inches.
-        """
-        self._dispatch.ApertureUnit(code)
+    def aperture_unit(self, factor):
+        self._dispatch.ApertureUnit = factor
 
     def insert_new_schmit_box(self, top_depth, bottom_depth, text):
         """Inserts a new box into a Polar & Rose Log.
@@ -1464,7 +1490,7 @@ class Log(DispatchWrapper):
         """
         self._dispatch.RemoveSchmitBoxAtDepth(depth)
 
-    def cross_box(self, index): # the example in the Automation module is wrong
+    def cross_box(self, index):  # the example in the Automation module is wrong
         """Gets a Cross Box object from the Cross Section Log at the specified index.
 
         Parameters
@@ -1516,7 +1542,7 @@ class Log(DispatchWrapper):
         """
         self._dispatch.RemoveCrossBoxAtDepth(depth)
 
-#Stacking Pattern Log
+    # Stacking Pattern Log
 
     def insert_new_stack_item(self, top_depth, bottom_depth, top_width, bottom_width):
         """Inserts a new data interval into a Stacking Pattern Log.
@@ -1769,7 +1795,7 @@ class Log(DispatchWrapper):
         """Gets the background hatch style for the Engineering Log  """
         return self._dispatch.BackgroundHatchStyle
 
-    @background_hatch_style.setter # code number 4 is missing
+    @background_hatch_style.setter  # code number 4 is missing
     def background_hatch_style(self, code):
         """Sets the background hatch style for the Engineering Log.
 
@@ -1803,9 +1829,7 @@ class Log(DispatchWrapper):
         """
         self._dispatch.BackgroundStyle = code
 
-
-#Protection
-
+    # Protection
 
     def allow_export_attribute_dictionary(self, index, export, password):
         """When dealing with a protected document you can use this method to enable/disable the option

@@ -10,6 +10,8 @@ from ._workspace import Workspace
 from ._font import Font
 from ._interval_item import IntervalItem
 from ._polar_and_rose_box import PolarAndRoseBox
+from ._structure import Structure
+from ._breakout import Breakout
 from ._litho_bed import LithoBed
 from ._cross_section_box import CrossSectionBox
 from ._marker_item import MarkerItem
