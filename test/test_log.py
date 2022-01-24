@@ -2,6 +2,7 @@ import pathlib
 import unittest
 import wellcad.com
 import random
+import pywintypes
 from datetime import datetime, timezone, timedelta
 from ._extra_asserts import ExtraAsserts
 from ._sample_path import SamplePath
@@ -276,7 +277,8 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertEqual(self.gr_log.data(0), 97.86750030517578)
     
     def test_insert_oob_data(self):
-        self.gr_log.insert_data(-1, 11.0)
+        with self.assertRaises(pywintypes.com_error):
+            self.gr_log.insert_data(-1, 11.0)
     
     def test_insert_remove_data_at_depth(self):
         original = self.gr_log.data_at_depth(87.05)

@@ -502,6 +502,11 @@ class Log(DispatchWrapper):
             log.
         value : float
             The new data value.
+        
+        Raises
+        ------
+        pywintypes.com_error
+            If the data couldn't be inserted (out-of-bounds index or other)
         """
         self._dispatch.InsertData(index, value)
 
