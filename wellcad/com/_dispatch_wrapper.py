@@ -1,4 +1,6 @@
+import win32com.client.build
 from win32com.client.dynamic import CDispatch
+
 
 class DispatchWrapper:
     """A helper class that wraps a pywin32 dynamic dispatch COM object.
@@ -19,6 +21,14 @@ class DispatchWrapper:
       define ``_DISPATCH_METHODS`` at class level as a tuple of method names.
       The constructor will automatically call ``dispatch._FlagAsMethod`` for
       all of these.
+    * It provides a technique to flag attributes at the dispatch level. Because
+      of the dynamic nature of the dispatch, ``pywin32`` attempts to detect new
+      attributes at the time of access. Unfortunately, if the attribute access
+      raises an exception, ``pywin32`` assumes it is not a valid attribute and
+      raises an ``AttributeError``.
+      
+      Defining the class attribute ``_DISPATCH_ATTRIBUTES`` forces ``pywin32``
+      to register any attributes in the enumeration as actual attributes.
 
     Parameters
     ----------
@@ -32,6 +42,7 @@ class DispatchWrapper:
     """
 
     _DISPATCH_METHODS = ()
+    _DISPATCH_ATTRIBUTES = ()
 
     def __new__(cls, dispatch):
         return super().__new__(cls) if isinstance(dispatch, CDispatch) else None
@@ -40,3 +51,6 @@ class DispatchWrapper:
         self._dispatch = dispatch
         for method_name in self._DISPATCH_METHODS:
             self._dispatch._FlagAsMethod(method_name)
+        for attribute_name in self._DISPATCH_ATTRIBUTES:
+            entry = win32com.client.build.MapEntry(self._dispatch._oleobj_.GetIDsOfNames(0, attribute_name), (attribute_name,))
+            self._dispatch._olerepr_.propMap[attribute_name] = entry

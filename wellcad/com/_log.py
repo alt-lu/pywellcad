@@ -14,6 +14,7 @@ from ._cross_section_box import CrossSectionBox
 
 class Log(DispatchWrapper):
     _DISPATCH_METHODS = ("DoSettingsDlg", "Structure")
+    _DISPATCH_ATTRIBUTES = ("Style",)
 
     def file_export(self, directory, file_title=None, extension=None, prompt_user=None, config_filename=None):
         """Exports the data of the log in the specified format (TXT, CSV, ASC,
