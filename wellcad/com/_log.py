@@ -1,10 +1,12 @@
 from ._dispatch_wrapper import DispatchWrapper
 from ._font import Font
+from ._drill_item import DrillItem
 from ._structure import Structure
 from ._breakout import Breakout
 from ._litho_bed import LithoBed
 from ._polar_and_rose_box import PolarAndRoseBox
 from ._interval_item import IntervalItem
+from ._equipment_item import EquipmentItem
 from ._comment_box import CommentBox
 from ._marker_item import MarkerItem
 from ._stacking_pattern_item import StackingPatternItem
@@ -1618,115 +1620,156 @@ class Log(DispatchWrapper):
         self._dispatch.InsertNewOleBoxFromFile(file_name, allow_picture, top_depth, bottom_depth)
 
     def drill_item(self, index):
-        """Gets a Drill Item object from the Engineering Log at the specified index.
+        """Gets a Drill Item object from the Engineering Log at the
+        specified index.
 
         Parameters
         ----------
         index : int
             Zero based index at which the drill item will be retrieved.
+
+        Returns
+        -------
+        DrillItem
+            The drill item at the specified index.
         """
-        return self._dispatch.DrillItem(index)
+        return DrillItem(self._dispatch.DrillItem(index))
 
     def drill_item_at_depth(self, depth):
-        """Gets a Drill Item object from the Engineering Log at the specified depth.
+        """Gets a Drill Item object from the Engineering Log at the
+        specified depth.
 
         Parameters
         ----------
         depth : float
-            The depth of the item to be retrieved in current depth units.
+            The depth of the item to be retrieved in current depth
+            units.
+
+        Returns
+        -------
+        DrillItem
+            The drill item at the specified depth.
         """
-        return self._dispatch.DrillItemAtDepth(depth)
+        return DrillItem(self._dispatch.DrillItemAtDepth(depth))
 
     def eqp_item(self, index):
-        """Gets an Equipment Item object at the specified index from the Engineering Log.
+        """Gets an Equipment Item object at the specified index from
+        the Engineering Log.
 
         Parameters
         ----------
         index : int
             Zero based index at which the item will be retrieved.
-        """
-        return self._dispatch.EqpItem(index)
 
-    def ground_depth(self, depth):
-        """Sets the starting point (reference datum) of the borehole.
-
-        Parameters
-        ----------
-        depth : float
-            The depth value in current unit corresponding to the starting point of the borehole.
+        Returns
+        -------
+        EquipmentItem
+            The equipment item at the specified index.
         """
-        self._dispatch.GroundDepth(depth)
+        return EquipmentItem(self._dispatch.EqpItem(index))
+
+    @property
+    def ground_depth(self):
+        """float: The starting point (reference datum) of the
+        borehole."""
+        return self._dispatch.GroundDepth
+
+    @ground_depth.setter
+    def ground_depth(self, starting_point):
+        self._dispatch.GroundDepth = starting_point
 
     @property
     def diameter_high(self):
-        """Gets the maximum diameter scaling value (width of the log column) for an Engineering Log. """
+        """float: The maximum diameter scaling value
+        (width of the log column) for an Engineering Log."""
         return self._dispatch.DiameterHigh
 
     @diameter_high.setter
     def diameter_high(self, diameter):
-        """Sets the maximum diameter scaling value (width of the log column) for an Engineering Log.
+        self._dispatch.DiameterHigh = diameter
 
-        Parameters
-        ----------
-        diameter : float
-            Width value of the log column.
-        """
-        self._dispatch.DiameterHigh(diameter)
-
-    def insert_new_drill_item(self, depth, diameter):
+    def insert_new_drill_item(self, bottom_depth, diameter):
         """Inserts a new drill item into the Engineering Log.
 
+        Item index are ordered by depth value in the stack of drill
+        items.
+
         Parameters
         ----------
-        bottom depth : float
+        bottom_depth : float
             The bottom depth of the borehole in current depth units.
-            (The top depth is either the ground_depth or the former bottom depth).
-        """
-        self._dispatch.InsertNewDrillItem(depth, diameter)
+            (The top depth is either the ground_depth or the former
+            bottom depth).
+        diameter : float
+            The diameter of the borehole.
 
-    def insert_new_eqp_item(self, topdepth, bottomdepth, name):
-        """Inserts a new equipment item of the specified name and depth interval into the Engineering Log.
+        Returns
+        -------
+        DrillItem
+            The inserted DrillItem
+        """
+        return DrillItem(self._dispatch.InsertNewDrillItem(bottom_depth, diameter))
+
+    def insert_new_eqp_item(self, top_depth, bottom_depth, name):
+        """Inserts a new equipment item of the specified name and
+        depth interval into the Engineering Log.
+
+        The new item is given the last index in the list of equipment
+        items.
 
         Parameters
         ----------
-        topdepth : float
-            The top depth of the equipment item interval in current units.
-        bottomdepth : float
-            The bottom depth of the equipment item interval in current units.
+        top_depth : float
+            The top depth of the equipment item interval
+            in current units.
+        bottom_depth : float
+            The bottom depth of the equipment item interval
+            in current units.
         name : str
             The name (code) of the equipment item to be inserted.
-            Possible item are :
-            -PlainCasing
-            -WireWoundCasing
-            -SlottedCasing
-            -PerforatedCasing
-            -Centralizer
-            -Shoe
-            -Packer
-            -Water
-            -Wedge
-            -HeadWorks
-            -Transducer
-            -Gauge
-            -Cement
-            -Gravel
-            -NormalThread
-            -ReverseThread
-            -Plug
+            Base available equipments names are listed below, but you
+            can modify or add your own in the Equipment dictionary.
 
+                * PlainCasing
+                * WireWoundCasing
+                * SlottedCasing
+                * PerforatedCasing
+                * Centralizer
+                * Shoe
+                * Packer
+                * Water
+                * Wedge
+                * HeadWorks
+                * Transducer
+                * Gauge
+                * Cement
+                * Gravel
+                * NormalThread
+                * ReverseThread
+                * Plug
+
+            If an invalid name is provided, no item will be inserted.
+
+        Returns
+        -------
+        EqpItem
+            The inserted EqpItem
         """
-        self._dispatch.InsertNewEqpItem(topdepth, bottomdepth, name)
+        return EquipmentItem(self._dispatch.InsertNewEqpItem(top_depth, bottom_depth, name))
 
+    @property
     def nb_of_drill_item(self):
-        """Gets the number of drill items in an Engineering Log."""
+        """int: The number of drill items in an Engineering Log."""
         return self._dispatch.NbOfDrillItem
 
+    @property
     def nb_of_eqp_item(self):
-        """Gets the number of equipment items in an Engineering Log."""
+        """int: The number of equipment items in an Engineering Log."""
         return self._dispatch.NbOfEqpItem
 
     def remove_drill_item(self, index):
-        """Removes the drill item at the specified index from an Engineering Log.
+        """Removes the drill item at the specified index from an
+        Engineering Log.
 
         Parameters
         ----------
@@ -1736,7 +1779,8 @@ class Log(DispatchWrapper):
         self._dispatch.RemoveDrillItem(index)
 
     def remove_eqp_item(self, index):
-        """Removes an equipment item at the specified depth index from an Engineering Log.
+        """Removes an equipment item at the specified depth index
+        from an Engineering Log.
 
         Parameters
         ----------
@@ -1746,76 +1790,58 @@ class Log(DispatchWrapper):
         self._dispatch.RemoveEqpItem(index)
 
     @property
-    def background_color_int(self):
-        """Gets the color used in the background of the Engineering Log as an integer of the RGB color."""
+    def background_color(self):
+        """int: The background color of the engineering log.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
         return self._dispatch.BackgroundColor
 
-    @background_color_int.setter
-    def background_color_int(self, value):
-        """Sets the color used in the background of the Engineering Log as an RGB integer value.
-
-        Parameters
-        ----------
-        value : int
-            RGB tuple value.
-        """
+    @background_color.setter
+    def background_color(self, value):
         self._dispatch.BackgroundColor = value
 
-    def background_color_rgb(self, r, g, b):
-        """Sets the Engineering Log background color as an RGB tuple.
-
-        Parameters
-        ----------
-        r : int
-            Value between 0 and 255.
-        g : int
-            Value between 0 and 255.
-        b : int
-            Value between 0 and 255.
-        """
-        colorInt = r + (g * 256) + (b * 256 * 256)
-        self._dispatch.BackgroundColor = colorInt
 
     @property
     def background_hatch_style(self):
-        """Gets the background hatch style for the Engineering Log  """
+        """int: The background hatch style for the Engineering Log.
+
+        Available styles are:
+
+        * 0: horizontal
+        * 1: vertical
+        * 2: forward diagonal
+        * 3: backward diagonal
+        * 4: cross
+        * 5: diagonal cross
+
+        If an invalid style is set, nothing will happen.
+        """
         return self._dispatch.BackgroundHatchStyle
 
     @background_hatch_style.setter  # code number 4 is missing
     def background_hatch_style(self, code):
-        """Sets the background hatch style for the Engineering Log.
-
-        Parameters
-        ----------
-        code : int
-            horizontal = 0
-            vertical = 1
-            forward diagonal = 2
-            backward diagonal = 3
-            cross = 5
-            diagonal cross = 6
-        """
         self._dispatch.BackgroundHatchStyle = code
 
     @property
     def background_style(self):
-        """Gets the background style for the Engineering Log."""
+        """int: The background style for the Engineering Log.
+
+        Available styles are:
+
+        * 0: none
+        * 1: solid
+        * 2: hatch
+
+        If an invalid style is set, nothing will happen.
+        """
         return self._dispatch.BackgroundStyle
 
     @background_style.setter
     def background_style(self, code):
-        """Sets the background style for the Engineering Log.
-
-        Parameters
-        ----------
-        code : int
-            none = 0
-            solid = 1
-            hatch = 2
-        """
         self._dispatch.BackgroundStyle = code
-
-    # Protection
 
     def allow_export_attribute_dictionary(self, index, export, password):
         """When dealing with a protected document you can use this method to enable/disable the option

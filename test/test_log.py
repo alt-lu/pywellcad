@@ -27,6 +27,9 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
 
         cls.geotech_borehole = cls.app.open_borehole(str(cls.sample_path / "Geotech Plot.WCL"))
         cls.depth_log = cls.geotech_borehole.log("Elev.")
+        cls.engineering_borehole = cls.app.open_borehole(
+            str(cls.sample_path / "Engineering Log and Borehole Volume.wcl"))
+        cls.engineering_log = cls.engineering_borehole.log("Well Sketch")
 
         cls.volume_analysis_borehole = cls.app.open_borehole(str(cls.sample_path / "Volume Analysis.wcl"))
         cls.formula_log = cls.volume_analysis_borehole.log("GR percent")
@@ -384,6 +387,116 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
     def test_insert_new_ole_box_from_file(self):
         self.ole_log.insert_new_ole_box_from_file(str(pathlib.Path(__file__).parent / "fixtures" / "test_img.jpg"),
                                                   True, 0, 10)
+
+    def test_background_color(self):
+        self.assertAttrEqual(self.engineering_log, "background_color", 4227327)
+        self.assertAttrChange(self.engineering_log, "background_color", 4227300)
+
+    def test_background_hatch_style(self):
+        self.assertAttrEqual(self.engineering_log, "background_hatch_style", 5)
+        self.assertAttrChange(self.engineering_log, "background_hatch_style", 0)
+        self.assertAttrChange(self.engineering_log, "background_hatch_style", 1)
+        self.assertAttrChange(self.engineering_log, "background_hatch_style", 2)
+        self.assertAttrChange(self.engineering_log, "background_hatch_style", 3)
+        self.assertAttrChange(self.engineering_log, "background_hatch_style", 4)
+        self.assertAttrChange(self.engineering_log, "background_hatch_style", 5)
+        self.assertAttrNotChanged(self.engineering_log, "background_hatch_style", 7)
+
+    def background_hatch_style_is_wrong(self):
+        self.fail("background_hatch_style 6 should not be in the documentation and 4 should be")
+
+    def test_background_style(self):
+        self.assertAttrEqual(self.engineering_log, "background_style", 0)
+        self.assertAttrChange(self.engineering_log, "background_style", 0)
+        self.assertAttrChange(self.engineering_log, "background_style", 1)
+        self.assertAttrChange(self.engineering_log, "background_style", 2)
+        self.assertAttrNotChanged(self.engineering_log, "background_style", 3)
+
+    def test_drill_item(self):
+        self.assertAttrEqual(self.engineering_log, "nb_of_drill_item", 3)
+        drill_item_1 = self.engineering_log.drill_item(0)
+        drill_item_2 = self.engineering_log.drill_item(1)
+        drill_item_3 = self.engineering_log.drill_item(2)
+        self.assertIsInstance(drill_item_1, wellcad.com.DrillItem)
+        self.assertIsInstance(drill_item_2, wellcad.com.DrillItem)
+        self.assertIsInstance(drill_item_3, wellcad.com.DrillItem)
+
+    def test_drill_item_at_depth(self):
+        self.assertAttrEqual(self.engineering_log, "nb_of_drill_item", 3)
+        drill_item_index_0 = self.engineering_log.drill_item(0)
+        drill_item_index_1 = self.engineering_log.drill_item(1)
+        drill_item_index_2 = self.engineering_log.drill_item(2)
+        depth0 = drill_item_index_0.bottom_depth  # 15
+        depth1 = drill_item_index_1.bottom_depth  # 50
+        depth2 = drill_item_index_2.bottom_depth  # 90
+        self.assertNotEqual(depth0, depth1)
+        self.assertNotEqual(depth1, depth2)
+        self.assertNotEqual(depth0, depth2)
+        drill_item_at_depth_0 = self.engineering_log.drill_item_at_depth(depth0)
+        depth0_ = drill_item_at_depth_0.bottom_depth
+        self.assertEqual(depth0_, depth0)
+
+    def test_remove_drill_item(self):
+        self.assertAttrEqual(self.engineering_log, "nb_of_drill_item", 3)
+        self.engineering_log.insert_new_drill_item(100, 96.0)
+        self.assertAttrEqual(self.engineering_log, "nb_of_drill_item", 4)
+        self.engineering_log.remove_drill_item(3)
+        self.assertAttrEqual(self.engineering_log, "nb_of_drill_item", 3)
+
+    def test_insert_new_drill_item(self):
+        self.assertAttrEqual(self.engineering_log, "nb_of_drill_item", 3)
+        self.engineering_log.insert_new_drill_item(70, 96.0)  # log should have a 15m, 50m, 70m and 90m drill
+        self.assertAttrEqual(self.engineering_log, "nb_of_drill_item", 4)
+        depth = self.engineering_log.drill_item(2).bottom_depth
+        self.assertEqual(depth, 70)
+        self.engineering_log.remove_drill_item(2)
+        self.assertAttrEqual(self.engineering_log, "nb_of_drill_item", 3)
+
+    def test_insert_bigger_drill_below_smaller_drill(self):
+        top_drill = self.engineering_log.drill_item(0)
+        self.assertAttrEqual(top_drill, "bottom_depth", 15.0)
+        self.assertAttrEqual(top_drill, "diameter", 300.0)
+        self.engineering_log.insert_new_drill_item(20, 400.0)  # drill at 20m, diameter = 400
+        self.assertAttrEqual(top_drill, "diameter", 300.0)
+
+    def test_nb_of_drill_item(self):
+        self.assertAttrEqual(self.engineering_log, "nb_of_drill_item", 3)
+
+    def test_nb_of_eqp_item(self):
+        self.assertAttrEqual(self.engineering_log, "nb_of_eqp_item", 20)
+
+    def test_eqp_item(self):
+        self.assertAttrEqual(self.engineering_log, "nb_of_eqp_item", 20)
+        eqp_item = self.engineering_log.eqp_item(0)
+        self.assertIsInstance(eqp_item, wellcad.com.EquipmentItem)
+
+    def test_insert_and_remove_new_eqp_item(self):
+        self.assertAttrEqual(self.engineering_log, "nb_of_eqp_item", 20)
+        self.assertIsNone(self.engineering_log.eqp_item(20))
+        self.assertAttrEqual(self.engineering_log.eqp_item(19), "name", "PVC")  # last item is PVC
+        self.engineering_log.insert_new_eqp_item(10.0, 15.0, "Water")  # item is put at the end of the list
+        self.assertAttrEqual(self.engineering_log.eqp_item(20), "name", "Water")  # new last item is water
+        self.engineering_log.remove_eqp_item(20)
+        self.assertIsNone(self.engineering_log.eqp_item(20))
+
+    def test_no_insert_if_invalid_eqp_name(self):
+        self.assertAttrEqual(self.engineering_log, "nb_of_eqp_item", 20)
+        self.engineering_log.insert_new_eqp_item(10.0, 15.0, "invalid name")
+        self.assertAttrEqual(self.engineering_log, "nb_of_eqp_item", 20)
+
+    def test_diameter_high(self):
+        self.assertAttrEqual(self.engineering_log, "diameter_high", 400.0)
+        self.assertAttrChange(self.engineering_log, "diameter_high", 500.0)
+
+    def test_ground_depth(self):
+        self.assertAttrEqual(self.engineering_log, "ground_depth", 0.0)
+        self.assertAttrChange(self.engineering_log, "ground_depth", 1.0)
+
+    def test_style_engineering_log(self):
+        self.assertAttrEqual(self.engineering_log, "style", 0)
+        self.assertAttrChange(self.engineering_log, "style", 0)
+        self.assertAttrChange(self.engineering_log, "style", 1)
+        self.assertAttrChange(self.engineering_log, "style", 2)
 
     def test_used_as_depth_scale(self):
         self.assertAttrEqual(self.depth_log, "used_as_depth_scale", False)

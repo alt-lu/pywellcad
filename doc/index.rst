@@ -26,6 +26,8 @@ the interface to be more Pythonic.
    marker_item
    polar_and_rose_box
    stacking_pattern_item
+   drill_item
+   equipment_item
    workspace
    font
    odbc
