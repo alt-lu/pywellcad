@@ -576,7 +576,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         breakout1 = self.breakout_log.breakout(0)
         breakout2 = self.breakout_log.breakout_at_depth(15.0)
         self.assertAttrEqual(breakout1, "azimuth", 20.0)
-        self.assertAttrEqual(breakout2, "azimuth", 50.0)  #TODO fails, breakout_at_depth does not work as intended
+        self.assertAttrEqual(breakout2, "azimuth", 50.0)
         self.breakout_log.remove_breakout(0)
         self.breakout_log.remove_breakout_at_depth(15.0)
 

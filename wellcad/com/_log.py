@@ -1279,7 +1279,7 @@ class Log(DispatchWrapper):
             The depth value in current depth units at which the
             breakout will be retrieved.
         """
-        return Breakout(self._dispatch.Breakout(depth))
+        return Breakout(self._dispatch.BreakoutAtDepth(depth))
 
     def insert_new_breakout_ex(self, depth, azimuth, tilt, length, opening):
         """Sets a new breakout in a Breakout Log.
