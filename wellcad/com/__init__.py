@@ -19,3 +19,5 @@ from ._cross_section_box import CrossSectionBox
 from ._marker_item import MarkerItem
 from ._comment_box import CommentBox
 from ._stacking_pattern_item import StackingPatternItem
+from ._litho_dictionary import LithoDictionary
+from ._litho_pattern import LithoPattern

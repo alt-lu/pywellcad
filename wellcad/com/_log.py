@@ -11,7 +11,7 @@ from ._comment_box import CommentBox
 from ._marker_item import MarkerItem
 from ._stacking_pattern_item import StackingPatternItem
 from ._cross_section_box import CrossSectionBox
-
+from ._litho_dictionary import LithoDictionary
 
 
 class Log(DispatchWrapper):
@@ -726,8 +726,13 @@ class Log(DispatchWrapper):
         ----------
         dictionary : str
             path and name of the LTH file to attach
+
+        Returns
+        ----------
+            LithoDictionary
+                The LithoDictionary object
         """
-        self._dispatch.AttachLithoDictionary(dictionary)
+        return LithoDictionary(self._dispatch.AttachLithoDictionary(dictionary))
 
     def component_name(self, column, code):
         """Sets the color used for the log border as an RGB color value.
@@ -799,7 +804,7 @@ class Log(DispatchWrapper):
         value : float
             Hardness value between 0 and 1.
         position : float
-            A value between 0 and 1 determining the horizontal position Position of a non repeated symbol
+            A value between 0 and 1 determining the horizontal position of a non repeated symbol
             in percent of the track width.
 
         Returns
@@ -815,7 +820,7 @@ class Log(DispatchWrapper):
         Parameters
         ----------
         index : int
-            Zero based index of the LithoBed to be retrieved.
+            Zero based index of the LithoBed to retrieve.
 
         Returns
         ----------
@@ -830,10 +835,10 @@ class Log(DispatchWrapper):
         Parameters
         ----------
         depth : float
-            depth value in current depth units at which the item will be retrieved
+            Depth value in current depth units at which the item will be retrieved.
 
         Returns
-        ----------
+        -------
         LithoBed
             The LithoBed at the desired depth.
         """
@@ -842,7 +847,7 @@ class Log(DispatchWrapper):
     @property
     def litho_dictionary(self):
         """Gets the symbol library used by the log as LithoDictionary object."""
-        return self._dispatch.LithoDictionary
+        return LithoDictionary(self._dispatch.LithoDictionary)
 
     @litho_dictionary.setter
     def litho_dictionary(self, dictionary):
@@ -850,10 +855,33 @@ class Log(DispatchWrapper):
 
         Parameters
         ----------
-        dictionary : str
-            path and name of the LTH file to attach
+        dictionary : LithoDictionary
+           The LithoDictionary object.
+
+        Returns
+        -------
+        LithoDictionary
+            The LithoDictionary specified by the file name.
+
         """
-        self._dispatch.LithoDictionary(dictionary)
+        return LithoDictionary(self._dispatch.LithoDictionary(dictionary))
+
+    def attach_litho_dictionary(self, name):
+        """Attach a new symbol or pattern library (*.LTH file) to the log.
+
+        Parameters
+        ----------
+        name : str
+            The path and name of the LTH file.
+
+        Returns
+        -------
+        LithoDictionary
+            The LithoDictionary specified by the file name.
+
+        """
+
+        return LithoDictionary(self._dispatch.AttachLithoDictionary(name))
 
     def remove_fossil_item(self, index):
         """Removes an item at the specified index from a CoreDesc Log.

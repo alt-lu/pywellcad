@@ -21,6 +21,8 @@ the interface to be more Pythonic.
    comment_box
    interval_item
    litho_bed
+   litho_dictionary
+   litho_pattern
    structure
    breakout
    marker_item
