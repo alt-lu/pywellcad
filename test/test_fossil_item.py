@@ -22,9 +22,9 @@ class TestFossilItem(unittest.TestCase, ExtraAsserts):
     def test_bottom_depth(self):
         self.assertAlmostEqual(self.fossil.bottom_depth, 12.0, 3)
 
-    def test_code(self):
-        self.assertAttrEqual(self.fossil, "code", 'mycode')
-        self.assertAttrChange(self.fossil, "code", 'mycode2')
+    def test_symbol_code(self):
+        self.assertAttrEqual(self.fossil, "symbol_code", 'mycode')
+        self.assertAttrChange(self.fossil, "symbol_code", 'mycode2')
 
     def test_set_abundance(self):
         self.assertAlmostEqual(self.fossil.abundance, 5.0, 3)

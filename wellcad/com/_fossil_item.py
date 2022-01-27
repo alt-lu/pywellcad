@@ -28,12 +28,12 @@ class FossilItem(DispatchWrapper):
         return self._dispatch.BottomDepth
 
     @property
-    def code(self):
+    def symbol_code(self):
         """str: The code of the item."""
         return self._dispatch.SymbolCode
 
-    @code.setter
-    def code(self, value):
+    @symbol_code.setter
+    def symbol_code(self, value):
         self._dispatch.SymbolCode = value
 
     @property
