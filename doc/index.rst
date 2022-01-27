@@ -23,6 +23,7 @@ the interface to be more Pythonic.
    litho_bed
    litho_dictionary
    litho_pattern
+   fossil_item
    structure
    breakout
    marker_item

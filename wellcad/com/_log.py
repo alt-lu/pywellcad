@@ -6,6 +6,7 @@ from ._breakout import Breakout
 from ._litho_bed import LithoBed
 from ._polar_and_rose_box import PolarAndRoseBox
 from ._interval_item import IntervalItem
+from ._fossil_item import FossilItem
 from ._equipment_item import EquipmentItem
 from ._comment_box import CommentBox
 from ._marker_item import MarkerItem
@@ -755,7 +756,7 @@ class Log(DispatchWrapper):
         index : int
             Zero based index of the item to be retrieved.
         """
-        return self._dispatch.FossilItem(index)
+        return FossilItem(self._dispatch.FossilItem(index))
 
     def fossil_item_at_depth(self, depth):
         """Gets a fossil item object from the CoreDesc Log at the specified depth.
@@ -765,7 +766,7 @@ class Log(DispatchWrapper):
         depth : float
             depth value in current depth units at which the item will be retrieved
         """
-        return self._dispatch.FossilItemAtDepth(depth)
+        return FossilItem(self._dispatch.FossilItemAtDepth(depth))
 
     def insert_new_fossil_item(self, top_depth, bottom_depth, litho_code, abundance, dominance, position):
         """Inserts a new data point or interval into a Core Description Log.
@@ -788,7 +789,7 @@ class Log(DispatchWrapper):
         position : float
             A value between 0 and 1 determining the horizontal position of the symbol within the log column.
         """
-        self._dispatch.InsertNewFossilItem(top_depth, bottom_depth, litho_code, abundance, dominance, position)
+        return FossilItem(self._dispatch.InsertNewFossilItem(top_depth, bottom_depth, litho_code, abundance, dominance, position))
 
     def insert_new_litho_bed(self, top_depth, bottom_depth, litho_code, value, position):
         """Inserts a new lithology bed into a Litho Log.
