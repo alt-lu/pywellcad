@@ -511,8 +511,7 @@ class Log(DispatchWrapper):
         ----------
         depth : float
             Depth in current master units at which the new data point should be
-            inserted. The function fails if the added depth does not respect
-            the constant sample rate of the Well Log.
+            inserted. Depth is rounded to the nearest sample for Well Logs.
         value : float
             The new data value
         """
@@ -520,7 +519,13 @@ class Log(DispatchWrapper):
 
     @property
     def formula(self):
-        """str: The mathematical formula used for a Formula log."""
+        """str: The mathematical formula used for a Formula log.
+        
+        Raises
+        ------
+        pywintypes.com_error
+            If, during setting, the supplied formula is invalid.
+        """
         return self._dispatch.Formula
 
     @formula.setter
@@ -574,8 +579,9 @@ class Log(DispatchWrapper):
         
         Returns
         -------
-        IntervalItem
-            The interval item at the specified index.
+        IntervalItem or None
+            The interval item at the specified index, or None if the index
+            is out of range.
         """
         return IntervalItem(self._dispatch.IntervalItem(index))
 
@@ -589,8 +595,9 @@ class Log(DispatchWrapper):
         
         Returns
         -------
-        IntervalItem
-            The interval item at the specified depth.
+        IntervalItem or None
+            The interval item at the specified depth, or None if no interval
+            item exists at the specified depth.
         """
         return IntervalItem(self._dispatch.IntervalItemAtDepth(depth))
 

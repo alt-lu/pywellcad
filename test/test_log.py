@@ -303,10 +303,9 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.fail("Behaviour isn't the same as in documentation. remove_data_at_depth() in a Well Log actually removes it, it doesn't just set it to NULL")
     
     def test_insert_data_between_samples(self):
-        original = self.gr_log.data_at_depth(87.05)
         self.gr_log.insert_data_at_depth(87.06, 12.0)
-        self.assertNotAlmostEqual(self.gr_log.data_at_depth(87.06), 12.0, msg="No data should have been inserted (off sample spacing).")
-        self.assertAlmostEqual(self.gr_log.data_at_depth(87.05), original)
+        self.assertAlmostEqual(self.gr_log.data_at_depth(87.05), 12.0)
+        self.gr_log.remove_data_at_depth(87.05)
     
     def test_setting_data(self):
         self.fail("There are no methods for setting data by index or depth.")
@@ -314,7 +313,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
     def test_formula(self):
         self.assertAttrEqual(self.formula_log, "formula", "{GR}/100")
         self.assertAttrChange(self.formula_log, "formula", "{GR}/1000")
-        self.assertAttrNotChanged(self.formula_log, "formula", "InvalidFormula")
+        self.assertAttrChangeRaises(self.formula_log, "formula", "InvalidFormula", pywintypes.com_error)
     
     def test_filter(self):
         self.assertAttrEqual(self.gr_log, "filter", 0)

@@ -31,10 +31,10 @@ class ExtraAsserts:
             setattr(obj, name, original)
             raise AssertionError(f"Attribute {name} changed from {original} to {new} when it shouldn't have.")
 
-    def assertAttrChangeRaises(self, obj, name, value):
+    def assertAttrChangeRaises(self, obj, name, value, exception=Exception):
         """Tests whether setting an attribute raises an exception."""
         original = getattr(obj, name)
-        with self.assertRaises(Exception):
+        with self.assertRaises(exception):
             try:
                 setattr(obj, name, value)
             finally:
