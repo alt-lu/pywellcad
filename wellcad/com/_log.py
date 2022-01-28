@@ -276,9 +276,9 @@ class Log(DispatchWrapper):
         Returns
         -------
         pywintypes.datetime
-            The datetime of the history item.
+            The timezone-aware datetime of the history item.
         """
-        return self._dispatch.HistoryItemDate(index)
+        return self._dispatch.HistoryItemDate(index).replace(tzinfo=None).astimezone()
 
     def history_item_description(self, index):
         """Gets the description of the history item at the specified index.

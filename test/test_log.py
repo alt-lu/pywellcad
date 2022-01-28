@@ -188,7 +188,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         change_date = self.gr_log.history_item_date(change_count - 1)
         self.assertAlmostEqual(now, change_date, delta=timedelta(seconds=1))
         change_description = self.gr_log.history_item_description(change_count - 1)
-        self.assertEqual(change_description, "'GRA' has been renamed as 'GR'")
+        self.assertEqual(change_description, "'GRA' has been renamed as 'GR'.")
         self.gr_log.clear_history()
         self.assertEqual(self.gr_log.nb_of_history_item, 0)
         self.assertAttrChangeRaises(self.gr_log, "nb_of_history_item", 0)
