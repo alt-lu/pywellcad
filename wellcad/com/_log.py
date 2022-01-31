@@ -736,7 +736,7 @@ class Log(DispatchWrapper):
             path and name of the LTH file to attach
 
         Returns
-        ----------
+        -------
             LithoDictionary
                 The LithoDictionary object
         """
@@ -816,7 +816,7 @@ class Log(DispatchWrapper):
             in percent of the track width.
 
         Returns
-        ----------
+        -------
         LithoBed
             The newly created LithoBed.
         """
@@ -831,7 +831,7 @@ class Log(DispatchWrapper):
             Zero based index of the LithoBed to retrieve.
 
         Returns
-        ----------
+        -------
         LithoBed
             The LithoBed at the desired index.
         """
@@ -1252,7 +1252,7 @@ class Log(DispatchWrapper):
             Zero based index of the column.
 
         Returns
-        ----------
+        -------
         str
             The name of the attribute class (classification column)
         """

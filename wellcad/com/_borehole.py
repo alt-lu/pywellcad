@@ -9,7 +9,10 @@ from ._odbc import Odbc
 
 
 class Borehole(DispatchWrapper):
-    _DISPATCH_METHODS = ("Log",)
+    _DISPATCH_METHODS = ("Log", "ApplyStructureTrueToApparentCorrection", "ApplyStructureApparentToTrueCorrection",
+                         "RemoveStructuralDip", "ExtractStructureIntervalStatistic", "ColorClassification",
+                         "RepresentativePicks", "ImageComplexityMap", "NormalizeImage", "OrientImageToNorth",
+                         "FilterImageLog", "ApplyConditionalTesting", "RQD", )
 
     @property
     def name(self):
@@ -886,494 +889,747 @@ class Borehole(DispatchWrapper):
         oblog = self._dispatch.ElogCorrection(prompt_user, config)
         return Log(oblog)
 
-    # Image & Structure logs processes
+    def correct_bad_traces(self, log=None):
+        """Replaces NULL data traces in Image, RGB and FWS logs.
 
-    def correct_image_traces(self, log):
-        """ Replaces NoData traces in an image log.
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box
+            displaying a list of available logs will be displayed.
         """
-
         self._dispatch.CorrectBadTraces(log)
 
-    def conditional_testing(self, log_if, log_then, prompt_user=True, config=""):
-        """Applies If-Then-Else testing to image logs.
+    def apply_conditional_testing(self, log_if=None, log_then=None, prompt_user=None, config=None):
+        """Applies conditional testing (If-Then-Else) to image log
+        values.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation.
+        Parameters
+        ----------
+        log_if : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log used for the 'If' clause.
+        log_then : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log used for the 'Then' clause.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log_if -- Zero based index (integer) or title (string) of
-                         the log used for the If clause.
-            log_then -- Zero based index (integer) or title (string) of
-                         the log used for the Then clause.		 
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
+                [ApplyConditionalTesting]
+                Condition = != / <= / >= / > / < / ==
+                ConditionValue = 100.0
+                IsSecondCondition = yes / no
+                SecondLogTest = <title of second log to test>
+                OperatorSecondCondition = AND / OR
+                SecondCondition = != / <= / >= / > / < / ==
+                SecondConditionValue = 120.0
+                ThenValue = NULL
+                ElseValue = Amplitude
+
+        Returns
+        -------
+        Log
+            A newly created log.
         """
-        self._dispatch._FlagAsMethod("ApplyConditionalTesting")
-        oblog = self._dispatch.ApplyConditionalTesting(log_if, log_then, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.ApplyConditionalTesting(log_if, log_then, prompt_user, config))
 
-    def filter_image(self, log, prompt_user=True, config=""):
-        """Average, median and clipping filter for image logs
+    def filter_image_log(self, log=None, prompt_user=None, config=None):
+        """Average, median and clipping filter for image logs.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
-        Returns:
-            An object of the filtered image log.
+                [FilterImageLog]
+                FilterType = Average / Median / Despiking
+                FilterWidth = 3
+                FilterHeight = 3
+                HighCutLimit = 75
+                LowCutLimit = 15
 
+        Returns
+        -------
+        Log
+            The computed log.
         """
-        self._dispatch._FlagAsMethod("FilterImageLog")
-        oblog = self._dispatch.FilterImageLog(log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.FilterImageLog(log, prompt_user, config))
 
-    def mirror_image(self, log):
-        """Flips an image at the 180° position
+    def mirror_image(self, log=None):
+        """Rearranges the data within an image log so that the data
+        appears mirrored when compared to the original image.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
         """
-
-        self._dispatch._FlagAsMethod("MirrorImage")
         self._dispatch.MirrorImage(log)
 
-    def rotate_image(self, log, prompt_user=True, config=""):
-        """Rotates an image log by a fixed or log value.
+    def rotate_image(self, log=None, prompt_user=None, config=None):
+        """Rotate the image data by adding an angle (clockwise
+        rotation) or subtracting it (counterclockwise rotation).
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-        
+            .. code-block:: ini
+
+                [RotateImage]
+                RotateBy= 1.2 / Log
+                RotateClockwise = yes / no
         """
-
         self._dispatch.RotateImage(log, prompt_user, config)
 
-    def orient_image_highside(self, log, prompt_user=True, config=""):
-        """Rotates an image to the inverse direction of gravity.
+    def orient_image_to_highside(self, log=None, prompt_user=None, config=None):
+        """Rotates an image log to high side according to the
+        deviation channels provided.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
+                [OrientImageToHighside]
+                InclX = Acc X
+                InclY = Acc Y
+                InclZ =
+                InclXPositive = yes / no
+                InclYPositive = yes / no
+                InclZPositive = yes / no
+                IsAccelerometer = yes / no
+                MarkerPosition = 180.2
         """
         self._dispatch.OrientImageToHighside(log, prompt_user, config)
 
-    def orient_image_north(self, log, prompt_user=True, config=""):
-        """Rotates an image to mag north.
+    def orient_image_to_north(self, log=None, prompt_user=None, config=None):
+        """Rotates an image log to magnetic north according to the
+        deviation channels provided.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+                        Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
+                [OrientImageToNorth]
+                MagX = Mag X
+                MagY = Mag Y
+                MagZ = Mag Z
+                InclX = Acc X
+                InclY = Acc Y
+                InclZ =
+                MagXPositive = yes / no
+                MagYPositive = yes / no
+                MagZPositive = yes / no
+                InclXPositive = yes / no
+                InclYPositive = yes / no
+                InclZPositive = yes / no
+                IsAccelerometer = yes / no
+                MarkerPosition = 180.2
         """
-
         self._dispatch.OrientImageToNorth(log, prompt_user, config)
 
-    def image_statistics(self, log, prompt_user=True, config=""):
-        """Extracts statistics across single or multiple image logs
+    def extract_image_log_image_statistics(self, log=None, prompt_user=None, config=None):
+        """Extracts minimum, maximum, average, median and other
+        statistical values fulfilling an optional condition from each
+        image log trace.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
+            .. code-block:: ini
+                [ExtractImageLogStatistics]
+                Minimum = yes / no
+                Maximum = yes / no
+                Mode = yes / no
+                Average = yes / no
+                Median = yes / no
+                StandardDeviation = yes / no
+                Percentage = yes / no
+                MeanAbsoluteDeviation = yes / no
+                GeometricMean = yes / no
+                GeometricStandardDeviation = yes / no
+                Skewness = yes / no
+                Kurtosis = yes / no
+                Quartiles = yes / no
+                RMS = yes / no
+                RMSD = yes / no
+                Condition = 0 (None) / 1 (lower than Value 1) / 2 (larger than Value1) / 3 (lower and equal)
+                / 4 (larger and equal) / 5 (equal) / 6 (not equal) / 7 (between Value1 and Value2)
+                / 8 (between and equal to Value1 and Value2)
+                Value1 = 50
+                Value2 = 100
+                OneOutputlogPerImageLog = yes / no
+                DepthRange = Maximum / UserDefined / Zones / LogZones
+                TopDepth = 1.0
+                BottomDepth = 200.0
+                ZonesDepthRange = 10.0, 20.0, 50.0, 80.0 (top1, bottom1,...,topN, bottomN)
+                LogZonesDepthRange=Litho,06,05 (log name, interval code 1, interval code 2,...)
         """
         self._dispatch.ExtractImageLogStatistics(log, prompt_user, config)
 
-    def normalize_image(self, log, prompt_user=True, config=""):
+    def normalize_image(self, log=None, prompt_user=None, config=None):
         """Applies Static or Dynamic normalization to image logs
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
-        Returns:
-            A log object of the normalized image.
+                [NormalizeImage]
+                Mode = Static /Dynamic_1D / Dynamic_2D / HighPass
+                WindowHeight = 0.3
+                WindowWidth = 5
+
+
+        Returns
+        -------
+        Log
+            The normalized log.
+        """
+        return Log(self._dispatch.NormalizeImage(log, prompt_user, config))
+
+    def image_complexity_map(self, log=None, prompt_user=None, config=None):
+        """Computes the complexity map from an RGB or image log.
+
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [ImageComplexityMap]
+                LogType=1
+                ;RGB OTV image: 0,
+                ;Greyscale OTV image: 1,
+                ;Diamond-drilled hole, ATV image: 2,
+                ;RC-drilled hole, ATV image: 3,
+                ;FMI image: 4,
+                Palette=0,0,0,255,56,255,0,0,12,64,224,208,21,50,205,50,31,255,255,0,39,255,215,0,47,255,104,32
+
+
+        Returns
+        -------
+        Log
+            The computed log.
+        """
+        return Log(self._dispatch.ImageComplexityMap(log, prompt_user, config))
+    
+    def apply_structure_apparent_to_true_correction(self, log=None, prompt_user=None, config=None):
+        """Corrects the apparent azimuth and dip angles in a
+        Structure log
+
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+
+            [ApplyStructureApparentToTrueCorrection]
+            AzimuthLog = azimuth log name
+            TiltLog = tilt log name
+            ReferenceIsNorth = yes / no
+
+        Returns
+        -------
+        Log
+            The corrected log.
+        """
+        return Log(self._dispatch.ApplyStructureApparentToTrueCorrection(log, prompt_user, config))
+
+    def apply_structure_true_to_apparent_correction(self, log=None, prompt_user=None, config=None):
+        """Recalculates the apparent azimuth and dip angles in a
+        Structure log from the true structure angles.
+
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [ApplyStructureApparentToTrueCorrection]
+                AzimuthLog = azimuth log name
+                TiltLog = tilt log name
+                ReferenceIsNorth = yes / no
+
+        Returns
+        -------
+        Log
+            The computed log.
+        """
+        return Log(self._dispatch.ApplyStructureTrueToApparentCorrection(log, prompt_user, config))
+
+    def recalculate_structure_azimuth(self, log=None, prompt_user=None, config=None):
+        """Adds or subtracts a value from all Azimuth data within a
+        structure log.
+
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [RecalculateStructureAzimuth]
+                Angle = 45 / Log
+                RotateClockwise = yes / no
+                MaxDepthRange = yes / no
+                TopDepth = 0.0
+                BottomDepth = 1.0
 
         """
-
-        self._dispatch._FlagAsMethod("NormalizeImage")
-        oblog = self._dispatch.NormalizeImage(log, prompt_user, config)
-        return Log(oblog)
-
-    def image_dispatchplexity_map(self, log, prompt_user=True, config=""):
-        """Computes the complexity map from an RGB or image log
-  
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
-        Returns:
-            A log object of the complexity log.
-
-        """
-
-        self._dispatch._FlagAsMethod("ImageComplexityMap")
-        oblog = self._dispatch.ImageComplexityMap(log, prompt_user, config)
-        return Log(oblog)
-
-    def fluid_velocity(self, log, prompt_user=True, config=""):
-        """Estimates the fluid velocity from ATV travel time data
-
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
-        Returns:
-            A log object of the velocity log.
-
-        """
-        self._dispatch._FlagAsMethod("CalculateFluidVelocity")
-        oblog = self._dispatch.CalculateFluidVelocity(log, prompt_user, config)
-        return Log(oblog)
-
-    def acoustic_caliper(self, log, prompt_user=True, config=""):
-        """Computes the borehole cdiameter from ATV travel time data
-
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
-        """
-
-        self._dispatch.CalculateAcousticCaliper(log, prompt_user=True, config="")
-
-    def apparent_to_true(self, log, prompt_user=True, config=""):
-        """Corrects apparent structure picks for borehole deviation
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
-        Returns:
-            A log object of the corrected log.
-
-        """
-
-        self._dispatch._FlagAsMethod("ApplyStructureApparentToTrueCorrection")
-        oblog = self._dispatch.ApplyStructureApparentToTrueCorrection(log, prompt_user, config)
-        return Log(oblog)
-
-    def true_to_apparent(self, log, prompt_user=True, config=""):
-        """Returns true structure picks to apparent ones
-
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
-        Returns:
-            A log object of the apparent picks.
-
-        """
-
-        self._dispatch._FlagAsMethod("ApplyStructureTrueToApparentCorrection")
-        oblog = self._dispatch.ApplyStructureTrueToApparentCorrection(log, prompt_user, config)
-        return Log(oblog)
-
-    def recalculate_structure_azimuth(self, log, prompt_user=True, config=""):
-        """Applies a rotation to the dip direction of structure picks
-
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
-        """
-
         self._dispatch.RecalculateStructureAzimuth(log, prompt_user, config)
 
-    def recalculate_structure_dip(self, log, prompt_user=True, config=""):
-        """Corrects dip angles for caliper variations
+    def recalculate_structure_dip(self, log=None, prompt_user=None, config=None):
+        """Correct the dip angle data within a structure log for new
+        caliper settings.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
+
+                [RecalculateStructureDip]
+                Caliper = Log / 200.0
+                CaliperUnit = mm / in
+                MaxDepthRange = yes / no
+                TopDepth = 0
+                BottomDepth = 1
 
         """
-
         self._dispatch.RecalculateStructureDip(log, prompt_user, config)
 
-    def remove_structure_dip(self, log, prompt_user=True, config=""):
-        """Conducts a residual dip analysis
+    def remove_structural_dip(self, log=None, prompt_user=None, config=None):
+        """Removes a given regional dip and azimuth from the data in
+        a structure log and recalculates new Dip and Azimuth angles.
 
-        Removes a given regional dip and azimuth from the data in a
-        structure log and recalculates new Dip and Azimuth angles.
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+                [RemoveStructuralDip]
+                Azimuth = Log /45
+                Dip = Log /10
+                MaxDepthRange = yes / no
+                TopDepth = 0.0
+                BottomDepth = 1.0
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-        
-        Returns:
-            A log object for the new structure picks.
-
+        Returns
+        -------
+        Log
+            The computed log.
         """
+        return Log(self._dispatch.RemoveStructuralDip(log, prompt_user, config))
 
-        self._dispatch._FlagAsMethod("RemoveStructuralDip")
-        oblog = self._dispatch.RemoveStructuralDip(log, prompt_user, config)
-        return Log(oblog)
+    def extract_color_components(self, log=None, method=None, color_model=None, prompt_user=None):
+        """Allows the extraction of color data from an RGB Log.
 
-    def color_dispatchponents(self, log, method=0, model=0, prompt_user=False):
-        """Extracts color data like red, green and blue intensities
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        method : int, optional
+            The methode used.
+            Available models are:
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+            * 0 = Average
+            * 1 = Mode
+            * 2 = Image Log
+        color_model : int, optional
+            The color model used.
+            Available models are:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            method -- 0 (Average), 1 (Mode), 2 (Image Log)
-            model -- 0 (RGB), 1 (HSV), 2(YUV), 3 (CIELAB)
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
+            * 0 = RGB
+            * 1 = HSV
+            * 2 = YUV
+            * 3 = CIELAB
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
         """
+        self._dispatch.ExtractColorComponents(log, method, color_model, prompt_user)
 
-        self._dispatch.ExtractColorComponents(log, method, model, prompt_user)
+    def color_classification(self, log=None, prompt_user=None, config=None):
+        """Builds color classes from an RGB Log based on user
+        specified reference colors.
 
-    def color_classification(self, log, prompt_user=True, config=""):
-        """Performs a classification of color values in an RGB log
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the RGB log to process.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+            .. code-block:: ini
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+                [ColorClassification]
+                OutputImage = yes
+                OutputAnalysis = yes
+                NoiseReduction = 10
+                Class1="Class 1";"0,255,0";58;50;"166,143,81"
+                Class2="Class 2";"255,0,255";37;50;"44,42,34"
+                Class3="Class 3";"255,255,0";34;50;"251,165,75"
 
-        Returns:
-            Object of the resulting Analysis log or RGB log
-
+        Returns
+        -------
+        Log
+            One of the computed log.  #TODO figure out which log is returned
         """
+        return Log(self._dispatch.ColorClassification(log, prompt_user, config))
 
-        self._dispatch._FlagAsMethod("ColorClassification")
-        oblog = self._dispatch.ColorClassification(log, prompt_user, config)
-        return Log(oblog)
-
-    def brightness_and_contrast(self, log, prompt_user=True):
+    def adjust_image_brightness_and_contrast(self, log=None, prompt_user=None):  #TODO you can't specify the parameters in the function call ?
         """Adjusts the brightness and contrast in RGB logs
 
-        A full description of the method is given in the Automation
-        Module chapter of the WellCAD help documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-
+        Parameters
+        ----------
+        log : str or int, optional
+            A string specifying the log name or an integer
+            representing the index of the log to be processed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to False, the new brightness and
+            contrast values will be determined automatically.
         """
-
         self._dispatch.AdjustImageBrightnessAndContrast(log, prompt_user)
 
-    def structure_statistics(self, log, prompt_user=True, config=""):
-        """Performs interval based statistics of Structure logs
+    def extract_structure_interval_statistics(self, log=None, prompt_user=None, config=None):
+        """Allows determination of statistical values (e.g. frequency
+        of dips) per interval from a structure log.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
+                [ExtractStructureIntervalStatistic]
+                Reference = 5.0 / Log
+                OutputMinAzimuth = yes / no
+                OutputMaxAzimuth = yes / no
+                OutputAverageAzimuth = yes / no
+                OutputMinDip = yes / no
+                OutputMaxDip = yes / no
+                OutputAverageDip = yes / no
+                OutputMinTilt = yes / no
+                OutputMaxTilt = yes / no
+                OutputAverageTilt = yes / no
+                OutputMinAperture = yes / no
+                OutputMaxAperture = yes / no
+                OutputAverageAperture = yes / no
+                OutputMinLength = yes / no
+                OutputMaxLength = yes / no
+                OutputAverageLength = yes / no
+                OutputMinOpening = yes / no
+                OutputMaxOpening = yes / no
+
+        Returns
+        -------
+        Log
+            One of the computed log.  #TODO figure out which
         """
+        return Log(self._dispatch.ExtractStructureIntervalStatistic(log, prompt_user, config))
+    
+    def rqd(self, log=None, prompt_user=None, config=None):
+        """Computes the Rock Quality Designation from the structure
+        picks in a Structure Log.
 
-        self._dispatch._FlagAsMethod("ExtractStructureIntervalStatistic")
-        oblog = self._dispatch.ExtractStructureIntervalStatistic(log, prompt_user, config)
-        return Log(oblog)
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-    def rqd(self, log, prompt_user=True, config=""):
-        """Rock quality designation based on Structure logs
+            .. code-block:: ini
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+                [RQD]
+                CorePieceLength = 0.1
+                CoreLength = 1
+                AttributeName1 = Defect Type
+                AttributeValues1 = JT-MAJ, JT-MED, JT-MIN,
+                AttributeName2 = Defect Condition
+                AttributeValues2 = cont, part
+                DepthRange = Maximum / UserDefined / Zones
+                'UserDefined
+                TopDepth=25
+                BottomDepth=30
+                'Zones
+                ZonesDepthRange = 20,26, 24,30
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
+        Returns
+        -------
+        Log
+            The computed log.
         """
+        return Log(self._dispatch.RQD(log, prompt_user, config))
 
-        self._dispatch._FlagAsMethod("RQD")
-        oblog = self._dispatch.RQD(log, prompt_user, config)
-        return Log(oblog)
+    def representative_picks(self, log=None, prompt_user=None, config=None):
+        """Used to derive the most representative picks from a
+        Structure log given user defined classification limits.
 
-    def representative_picks(self, log, prompt_user=True, config=""):
-        """Determines the representative pick from pick clusters
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+            .. code-block:: ini
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+                [RepresentativePicks]
+                TopDepth=0.0
+                BottomDepth=10.0
+                TiltWindow=5.0 (structural dip angle interval, here +/- 5 degrees)
+                AzimuthWindow=15.0 (structural azimuth angle interval, here +/- 15 degrees)
+                DepthWindow=0.5
+                KeepFeaturesUngrouped=TRUE / FALSE
 
+        Returns
+        -------
+        Log
+            The computed log.
         """
+        return Log(self._dispatch.RepresentativePicks(log, prompt_user, config))
 
-        self._dispatch._FlagAsMethod("RepresentativePicks")
-        oblog = self._dispatch.RepresentativePicks(log, prompt_user, config)
-        return Log(oblog)
+    def correct_dead_sensor(self, log=None, prompt_user=None, config=None):
+        """Corrects the Null and invalid data columns in Image Logs.
 
-    # Cased hole processes
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            
+            .. code-block:: ini
 
-    def dead_sensor_correction(self, log, prompt_user=True, config=""):
-        """Corrects errorneous data columns in Image logs
-
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
+                [DeadSensor]
+                Method = Automatic / Range / Columns
+                ReplaceBy = 2 / Null / Average / Median / Interpolate / LogName
+                ‘ If Method = Automatic
+                WindowHeight = 0
+                Discrimination = 0.125
+                MinDataHeight = 0
+                ‘ If Method = Range
+                WindowHeight = 0
+                Low = 0
+                High = 0
+                ‘ If Method = Columns
+                Columns = 1, 2, 15-20, 5
         """
         self._dispatch.CorrectDeadSensor(log, prompt_user, config)
 
@@ -1589,18 +1845,18 @@ class Borehole(DispatchWrapper):
         oblog = self._dispatch.CasedHoleNormalization(log, prompt_user, config)
         return Log(oblog)
 
-    # FWS processes
-
-    def correct_fws_traces(self, log):
-        """Replaces NO DATA traces in a FWS log
+    def correct_bad_traces(self, log=None):
+        """Replaces NULL data traces in Image, RGB and FWS logs.
         
-        Arguments:
-            log -- Zero based index (integer) or title (string) of
-                   the log to process.
-
+        Parameters
+        ----------
+        log	: str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box 
+            displaying a list of available logs will be displayed.
         """
 
-        self._dispatch.CorrectBadTraces(log)
+        return self._dispatch.CorrectBadTraces(log)
 
     def stack_fws_traces(self, log, prompt_user=True, config=""):
         """Stacks multiple FWS traces to create and average trace
@@ -1993,7 +2249,6 @@ class Borehole(DispatchWrapper):
         oblog = self._dispatch.IntegratedTravelTime(log, prompt_user, config)
         return Log(oblog)
 
-    # Spectral gamma processes
 
     def stack_spectra(self, log, prompt_user=True, config=""):
         """Stacks multiple spectra to derive n average spectrum
@@ -2171,7 +2426,6 @@ class Borehole(DispatchWrapper):
         oblog = self._dispatch.ComputeGR(log_k, log_u, log_th, prompt_user, config)
         return Log(oblog)
 
-    # NMR processes
 
     def process_nmr(self, log, prompt_user=True, config=""):
         """Performs a post-processing of NMRSA's BMR tool raw data
@@ -2192,7 +2446,6 @@ class Borehole(DispatchWrapper):
 
         self._dispatch.ProcessNMRSAData(log, prompt_user, config)
 
-    # Groundwater processes
 
     def water_salinity(self, log, prompt_user=True, config=""):
         """Salinity estimation from fluid conductivity or resisitivity.
