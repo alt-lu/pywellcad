@@ -12,7 +12,7 @@ class TestLithoBed(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.sample_path = cls._find_sample_path()
         cls.borehole = cls.app.open_borehole(str(cls.sample_path / "Engineering Log and Borehole Volume.wcl"))
         cls.litho_log = cls.borehole.log("Lithology")
-        cls.bed = cls.litho_log.litho_bed(60)
+        cls.bed = cls.litho_log.get_litho_bed(60)
 
     @classmethod
     def tearDownClass(cls):
