@@ -16,7 +16,7 @@ from ._litho_dictionary import LithoDictionary
 
 
 class Log(DispatchWrapper):
-    _DISPATCH_METHODS = ("DoSettingsDlg", "Structure")
+    _DISPATCH_METHODS = ("Structure",)
     _DISPATCH_ATTRIBUTES = ("Style",)
 
     def file_export(self, directory, file_title=None, extension=None, prompt_user=None, config_filename=None):
@@ -234,6 +234,15 @@ class Log(DispatchWrapper):
         self._dispatch.BorderStyle = style
 
     @property
+    def border_width(self):
+        """float: The width for the log column border in 1/10 mm."""
+        return self._dispatch.BorderWidth
+
+    @border_width.setter
+    def border_width(self, width):
+        self._dispatch.BorderWidth = width
+
+    @property
     def border_color(self):
         """int: The border color of the log column.
         
@@ -428,7 +437,7 @@ class Log(DispatchWrapper):
     def lock_log_data(self, value):
         self._dispatch.LockLogData = value
 
-    def data(self, index):
+    def get_data(self, index):
         """Gets the data value for the specified index.
 
         This method is only applicable for a Well, Mud, Interval or Depth Log.
@@ -443,9 +452,23 @@ class Log(DispatchWrapper):
         float
             The value of the log data at the specified index.
         """
-        return self._dispatch.Data(index)
+        return self._dispatch.GetData(index)
 
-    def data_at_depth(self, depth):
+    def set_data(self, index, value):
+        """Sets the data value for the specified index.
+
+        This method is only applicable for a Well, Mud, Interval or Depth Log.
+
+        Parameters
+        ----------
+        index : int
+            Zero based index of the data to be retrieved.
+        value : float
+            The value you want to set the data to.
+        """
+        return self._dispatch.SetData(index, value)
+
+    def get_data_at_depth(self, depth):
         """Gets the log data value at the specified depth.
         
         This method is only applicable for a Well, Mud, Interval or Depth Log.
@@ -460,7 +483,21 @@ class Log(DispatchWrapper):
         float
             The value of the log data at the specified depth.
         """
-        return self._dispatch.DataAtDepth(depth)
+        return self._dispatch.GetDataAtDepth(depth)
+
+    def set_data_at_depth(self, depth, value):
+        """Sets the log data value at the specified depth.
+
+        This method is only applicable for a Well, Mud, Interval or Depth Log.
+
+        Parameters
+        ----------
+        depth : float
+            Depth value in current master depth units.
+        value : float
+            The value you want to set the data to.
+        """
+        return self._dispatch.SetDataAtDepth(depth, value)
 
     def data_depth(self, index):
         """Gets the log data depth for the specified index.
@@ -724,8 +761,6 @@ class Log(DispatchWrapper):
     def style(self, style):
         self._dispatch.Style = style
 
-    # litho, Coredesc, and percentage logs
-
     def attach_litho_dictionary(self, dictionary):
         """Attaches a new symbol or pattern library (\*.LTH file) to Litho, CoreDesc,
         Strata, Analysis or Percentage Log.
@@ -742,8 +777,27 @@ class Log(DispatchWrapper):
         """
         return LithoDictionary(self._dispatch.AttachLithoDictionary(dictionary))
 
-    def component_name(self, column, code):
-        """Sets the color used for the log border as an RGB color value.
+    def get_component_name(self, column):
+        """Gets the name (i.e. litho code) for the component used in
+        the specified data column of a Percentage or Analysis Log.
+
+        Parameters
+        ----------
+        column : int
+            Zero based index of the data column in the tabular editor for
+            which the component name should be set or retrieved.
+
+        Returns
+        -------
+        str
+            The code of the component used in the specified data
+            column of a Percentage or Analysis Log.
+        """
+        return self._dispatch.GetComponentName(column)
+
+    def set_component_name(self, column, code):
+        """Sets the name (i.e. litho code) for the component used in
+        the specified data column of a Percentage or Analysis Log.
 
         Parameters
         ----------
@@ -751,9 +805,10 @@ class Log(DispatchWrapper):
             Zero based index of the data column in the tabular editor for
             which the component name should be set or retrieved.
         code : str
-            Code of the component to be used as specified in the litho library of the log.
+            Code of the component to be used in the specified data
+            column of a Percentage or Analysis Log.
         """
-        self._dispatch.ComponentName(column, code)
+        self._dispatch.SetComponentName(column, code)
 
     def fossil_item(self, index):
         """Gets a Fossil Item object from the CoreDesc Log at the specified index.
@@ -822,7 +877,7 @@ class Log(DispatchWrapper):
         """
         return LithoBed(self._dispatch.InsertNewLithoBed(top_depth, bottom_depth, litho_code, value, position))
 
-    def litho_bed(self, index):
+    def get_litho_bed(self, index):
         """Gets a LithoBed object at the specified index from a Lithology Log.
 
         Parameters
@@ -835,9 +890,22 @@ class Log(DispatchWrapper):
         LithoBed
             The LithoBed at the desired index.
         """
-        return LithoBed(self._dispatch.LithoBed(index))
+        return LithoBed(self._dispatch.GetLithoBed(index))
 
-    def litho_bed_at_depth(self, depth):
+    def set_litho_bed(self, index, lithobed):
+        """Sets a LithoBed object at the specified index from another
+        LithoBed object.
+
+        Parameters
+        ----------
+        index : int
+            Zero based index of the LithoBed to retrieve.
+        lithobed : Lithobed
+            The Lithobed object to copy.
+        """
+        self._dispatch.SetLithoBed(index, lithobed)
+
+    def get_litho_bed_at_depth(self, depth):
         """Gets a LithoBed object at the specified depth from a Lithology Log.
 
         Parameters
@@ -850,46 +918,29 @@ class Log(DispatchWrapper):
         LithoBed
             The LithoBed at the desired depth.
         """
-        return LithoBed(self._dispatch.LithoBedAtDepth(depth))
+        return LithoBed(self._dispatch.GetLithoBedAtDepth(depth))
+
+    def set_litho_bed_at_depth(self, depth, lithobed):
+        """Sets a LithoBed object at the specified depth from another
+        LithoBed object.
+
+        Parameters
+        ----------
+        depth : float
+            Depth value in current depth units at which the item will be retrieved.
+        lithobed : Lithobed
+            The Lithobed object to copy.
+        """
+        self._dispatch.SetLithoBedAtDepth(depth, lithobed)
 
     @property
     def litho_dictionary(self):
-        """Gets the symbol library used by the log as LithoDictionary object."""
+        """LithoDictionary: The symbol library used by the log as LithoDictionary object."""
         return LithoDictionary(self._dispatch.LithoDictionary)
 
     @litho_dictionary.setter
     def litho_dictionary(self, dictionary):
-        """Sets the symbol library used by the log as LithoDictionary object.
-
-        Parameters
-        ----------
-        dictionary : LithoDictionary
-           The LithoDictionary object.
-
-        Returns
-        -------
-        LithoDictionary
-            The LithoDictionary specified by the file name.
-
-        """
-        return LithoDictionary(self._dispatch.LithoDictionary(dictionary))
-
-    def attach_litho_dictionary(self, name):
-        """Attach a new symbol or pattern library (*.LTH file) to the log.
-
-        Parameters
-        ----------
-        name : str
-            The path and name of the LTH file.
-
-        Returns
-        -------
-        LithoDictionary
-            The LithoDictionary specified by the file name.
-
-        """
-
-        return LithoDictionary(self._dispatch.AttachLithoDictionary(name))
+        self._dispatch.LithoDictionary = dictionary
 
     def remove_fossil_item(self, index):
         """Removes an item at the specified index from a CoreDesc Log.
@@ -978,8 +1029,8 @@ class Log(DispatchWrapper):
         """
         self._dispatch.InsertTraceAtDepth(depth)
 
-    def trace_data(self, depth_index, trace_index):
-        """set the data value at the specified row index and position within the trace
+    def get_trace_data(self, depth_index, trace_index):
+        """Gets the data value at the specified row index and position within the trace
          (column index) of an Analysis, Percentage, FWS, Image or RGB Log.
 
         Parameters
@@ -988,17 +1039,51 @@ class Log(DispatchWrapper):
             zero based index of the depth (0 = bottom depth).
         trace_index : int
             zero based index of the column.
+
+        Returns
+        -------
+        float
+            The data value at the specified depth.
         """
-        self._dispatch.TraceData(depth_index, trace_index)
+        return self._dispatch.GetTraceData(depth_index, trace_index)
 
-    @property
-    def trace_data_at_depth(self):
+    def set_trace_data(self, depth_index, trace_index, value):
+        """Sets the data value at the specified row index and position within the trace
+         (column index) of an Analysis, Percentage, FWS, Image or RGB Log.
+
+        Parameters
+        ----------
+        depth_index : int
+            zero based index of the depth (0 = bottom depth).
+        trace_index : int
+            zero based index of the column.
+        value : float
+            The value you want to set the data to.
+        """
+        self._dispatch.SetTraceData(depth_index, trace_index, value)
+
+    def get_trace_data_at_depth(self, depth, trace_position):
         """Gets the data value at the specified depth and position within the trace of an Analysis,
-        Percentage, FWS, Image or RGB Log."""
-        return self._dispatch.TraceDataAtDepth
+        Percentage, FWS, Image or RGB Log.
 
-    @trace_data_at_depth.setter
-    def trace_data_at_depth(self, depth, trace_position):
+        Parameters
+        ----------
+        depth : float
+            The depth value at which you would like to retrieve the
+            data value in the current depth units.
+        trace_position : float
+            The position within the trace (time or angle as shown in
+            the column header of the tabular editor, not the index)
+            at which you would like to retrieve the data value.
+
+        Returns
+        -------
+        float
+            The data value at the specified depth.
+        """
+        return self._dispatch.GetTraceDataAtDepth(depth, trace_position)
+
+    def set_trace_data_at_depth(self, depth, trace_position, value):
         """set the data value at the specified depth and position within
          the trace of an Analysis, Percentage, FWS, Image or RGB Log
 
@@ -1009,8 +1094,10 @@ class Log(DispatchWrapper):
         trace_position : float
             The position within the trace (time or angle as shown in the column header of the tabular editor,
             not the index) at which you would like to retrieve the data value.
+        value : float
+            The value you want to set the data to.
         """
-        self._dispatch.TraceDataAtDepth(depth, trace_position)
+        self._dispatch.SetTraceDataAtDepth(depth, trace_position, value)
 
     @property
     def trace_length(self):
@@ -1060,13 +1147,22 @@ class Log(DispatchWrapper):
         """
         self._dispatch.TraceSampleRate(rate)
 
-    @property
-    def column_name(self):
-        """Gets the name of a Strata Log column."""
-        return self._dispatch.ColumnName
+    def get_column_name(self):
+        """Gets set the name of a Strata Log column.
 
-    @column_name.setter
-    def column_name(self, column, name):
+        Parameters
+        ----------
+        column : int
+            Zero based index of the column to be retrieved
+
+        Returns
+        -------
+        str
+            The name of the column.
+        """
+        return self._dispatch.GetColumnName
+
+    def set_column_name(self, column, name):
         """Sets set the name of a Strata Log column.
 
         Parameters
@@ -1076,7 +1172,7 @@ class Log(DispatchWrapper):
         name : str
             New name of the column.
         """
-        self._dispatch.ColumnName(column, name)
+        self._dispatch.SetColumnName(column, name)
 
     def comment_box(self, index):
         """Gets the Comment Box object from the Comment Log at the specified index.
@@ -1921,7 +2017,7 @@ class Log(DispatchWrapper):
         """
         self._dispatch.AllowModifyLogData(export, password)
 
-    def allow_modify_log_data(self, export, password):
+    def allow_modify_log_settings(self, export, password):  # TDOD Duplicate
         """When dealing with a protected document you can use this method to enable / disable the option
         to change the settings of a log. This assumes you are in possession of the password.
 
@@ -1947,7 +2043,7 @@ class Log(DispatchWrapper):
         """
         self._dispatch.AllowUseFormula(export, password)
 
-    def allow_use_formula(self, export, password):
+    def allow_view_formula(self, export, password):
         """When dealing with a protected document you can use this method to enable / disable the option
         to see the formula used in a Formula Log. This assumes you are in possession of the password.
 

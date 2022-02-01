@@ -170,6 +170,11 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrChange(self.gr_log, "border_style", 1)
         self.assertAttrNotChanged(self.gr_log, "border_style", 5)
 
+    def test_border_width(self):
+        self.assertAttrEqual(self.gr_log, "border_width", 1)
+        self.assertAttrChange(self.gr_log, "border_width", 2)
+        self.assertAttrNotChanged(self.gr_log, "border_width", -1)
+
     def test_border_color(self):
         self.assertAttrEqual(self.gr_log, "border_color", 0x000000)
         self.assertAttrChange(self.gr_log, "border_color", 0x0000ff)
@@ -267,34 +272,42 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.gr_log.lock_log_data = False
     
     def test_data(self):
-        self.assertEqual(self.gr_log.data(0), 97.86750030517578)
-        self.assertEqual(self.gr_log.data(-1), self.gr_log.null_value)
+        self.assertEqual(self.gr_log.get_data(0), 97.86750030517578)
+        self.gr_log.set_data(0, 100.0)
+        self.assertEqual(self.gr_log.get_data(0), 100.0)
+        self.gr_log.set_data(0, 97.86750030517578)
+        self.assertEqual(self.gr_log.get_data(0), 97.86750030517578)
+        self.assertEqual(self.gr_log.get_data(-1), self.gr_log.null_value)
     
     def test_data_at_depth(self):
-        self.assertEqual(self.gr_log.data_at_depth(88.0), 97.86750030517578)
-        self.assertEqual(self.gr_log.data_at_depth(90.0), self.gr_log.null_value)
-        self.assertEqual(self.gr_log.data_at_depth(87.0), 98.1874008178711)
-    
+        self.assertEqual(self.gr_log.get_data_at_depth(88.0), 97.86750030517578)
+        self.assertEqual(self.gr_log.get_data_at_depth(87.0), 98.1874008178711)
+        self.gr_log.set_data_at_depth(88.0, 100.0)
+        self.assertEqual(self.gr_log.get_data_at_depth(88.0), 100.0)
+        self.gr_log.set_data_at_depth(88.0, 97.86750030517578)
+        self.assertEqual(self.gr_log.get_data_at_depth(88.0), 97.86750030517578)
+        self.assertEqual(self.gr_log.get_data_at_depth(90.0), self.gr_log.null_value)
+
     def test_data_depth(self):
         self.assertEqual(self.gr_log.data_depth(0), 88.0)
         self.assertIsNone(self.gr_log.data_depth(-1), "What is the behaviour of data_depth() with out-of-bound indices?")
     
     def test_insert_remove_data(self):
         self.gr_log.insert_data(0, 10.0)
-        self.assertEqual(self.gr_log.data(0), 10.0)
+        self.assertEqual(self.gr_log.get_data(0), 10.0)
         self.gr_log.remove_data(0)
-        self.assertEqual(self.gr_log.data(0), 97.86750030517578)
+        self.assertEqual(self.gr_log.get_data(0), 97.86750030517578)
     
     def test_insert_oob_data(self):
         with self.assertRaises(pywintypes.com_error):
             self.gr_log.insert_data(-1, 11.0)
     
     def test_insert_remove_data_at_depth(self):
-        original = self.gr_log.data_at_depth(87.05)
+        original = self.gr_log.get_data_at_depth(87.05)
         self.gr_log.insert_data_at_depth(87.05, 11.0)
-        self.assertAlmostEqual(self.gr_log.data_at_depth(87.05), 11.0)
+        self.assertAlmostEqual(self.gr_log.get_data_at_depth(87.05), 11.0)
         self.gr_log.remove_data_at_depth(87.05)
-        self.assertAlmostEqual(self.gr_log.data_at_depth(87.05), original)
+        self.assertAlmostEqual(self.gr_log.get_data_at_depth(87.05), original)
     
     def test_insert_data_at_depth_documentation(self):
         self.fail("It isn't clear which direction data gets pushed when a new data point is inserted.")
@@ -304,11 +317,8 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
     
     def test_insert_data_between_samples(self):
         self.gr_log.insert_data_at_depth(87.06, 12.0)
-        self.assertAlmostEqual(self.gr_log.data_at_depth(87.05), 12.0)
+        self.assertAlmostEqual(self.gr_log.get_data_at_depth(87.05), 12.0)
         self.gr_log.remove_data_at_depth(87.05)
-    
-    def test_setting_data(self):
-        self.fail("There are no methods for setting data by index or depth.")
 
     def test_formula(self):
         self.assertAttrEqual(self.formula_log, "formula", "{GR}/100")
@@ -457,6 +467,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrEqual(top_drill, "diameter", 300.0)
         self.engineering_log.insert_new_drill_item(20, 400.0)  # drill at 20m, diameter = 400
         self.assertAttrEqual(top_drill, "diameter", 300.0)
+        self.engineering_log.remove_drill_item(1)
 
     def test_nb_of_drill_item(self):
         self.assertAttrEqual(self.engineering_log, "nb_of_drill_item", 3)
