@@ -1,5 +1,5 @@
 EquipmentItem
-=========
+=============
 
 .. autoclass:: wellcad.com.EquipmentItem
    :members:

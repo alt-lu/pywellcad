@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'pywellcad'
-copyright = '2021, Advanced Logic Technology'
+copyright = '2021-2022, Advanced Logic Technology'
 author = 'Advanced Logic Technology'
 
 
@@ -37,6 +37,7 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+autodoc_mock_imports = ["win32com"]
 
 # -- Options for HTML output -------------------------------------------------
 
