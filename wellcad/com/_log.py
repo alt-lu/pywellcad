@@ -2,7 +2,6 @@ from ._dispatch_wrapper import DispatchWrapper
 from ._font import Font
 from ._drill_item import DrillItem
 from ._structure import Structure
-from ._breakout import Breakout
 from ._litho_bed import LithoBed
 from ._polar_and_rose_box import PolarAndRoseBox
 from ._interval_item import IntervalItem
@@ -1147,7 +1146,7 @@ class Log(DispatchWrapper):
         """
         self._dispatch.TraceSampleRate(rate)
 
-    def get_column_name(self):
+    def get_column_name(self, column):
         """Gets set the name of a Strata Log column.
 
         Parameters
@@ -1160,7 +1159,7 @@ class Log(DispatchWrapper):
         str
             The name of the column.
         """
-        return self._dispatch.GetColumnName
+        return self._dispatch.GetColumnName(column)
 
     def set_column_name(self, column, name):
         """Sets set the name of a Strata Log column.
@@ -1316,7 +1315,7 @@ class Log(DispatchWrapper):
 
     def attach_attribute_dictionary(self, attribute, file):
         """Attaches a new attribute library (\*.TAD file) to a
-        Structure or Breakout Log.
+        Breakout, Lineation or Structure Log.
 
         Parameters
         ----------
@@ -1328,8 +1327,8 @@ class Log(DispatchWrapper):
         self._dispatch.AttachAttributeDictionary(attribute, file)
 
     def insert_new_attribute(self, attribute_name):
-        """Inserts a new blank classification column to a
-        Structure or Breakout Log.
+        """Inserts a new blank classification column to a Breakout,
+        Lineation or Structure Log.
 
         Parameters
         ----------
@@ -1340,7 +1339,7 @@ class Log(DispatchWrapper):
 
     def get_attribute_name(self, index):
         """Gets the name of the attribute class (i.e. classification
-        column) in a Breakout Log or a Structure Log.
+        column) in a Breakout, Lineation or Structure Log.
 
         Parameters
         ----------
@@ -1351,12 +1350,17 @@ class Log(DispatchWrapper):
         -------
         str
             The name of the attribute class (classification column)
+
+        Raises
+        ------
+            If the column index points to a non-existent column (out
+            of index range) an exception will be raised.
         """
         return self._dispatch.GetAttributeName(index)
 
     def set_attribute_name(self, index, name):
         """Sets the name of the attribute class (i.e. classification
-        column) in a Breakout Log or a Structure Log.
+        column) in a Breakout, Lineation or Structure Log.
 
         Parameters
         ----------
@@ -1364,6 +1368,11 @@ class Log(DispatchWrapper):
             Zero based index of the column.
         name : str
             New name of the classification column.
+
+        Raises
+        ------
+            If the column index points to a non-existent column (out
+            of index range) an exception will be raised.
         """
         self._dispatch.SetAttributeName(index, name)
 
@@ -1375,6 +1384,12 @@ class Log(DispatchWrapper):
         ----------
         index : int
             Zero based index of the structure object to be retrieved.
+
+        Returns
+        -------
+        Structure or None
+            The structure at the specified index. If the index is outside the valid range no exception
+            will be raised and ``None`` will be returned.
         """
         return Structure(self._dispatch.Structure(index))
 
@@ -1387,52 +1402,15 @@ class Log(DispatchWrapper):
         depth : float
             The depth value in current depth units at which the
             structure object will be retrieved.
+
+        Returns
+        -------
+        Structure or None
+            The feature closest to the specified depth will be returned.
+            If the depth is outside the valid range no exception
+            will be raised and ``None`` will be returned.
         """
         return Structure(self._dispatch.StructureAtDepth(depth))
-
-    def breakout(self, index):
-        """Gets a breakout from the Breakout Log at the specified
-        index.
-
-        Parameters
-        ----------
-        index : int
-            Zero based index of the breakout to be retrieved.
-        """
-        return Breakout(self._dispatch.Breakout(index))
-
-    def breakout_at_depth(self, depth):
-        """Gets a breakout from the Breakout Log at the specified
-        depth in current depth units.
-
-        Parameters
-        ----------
-        depth : float
-            The depth value in current depth units at which the
-            breakout will be retrieved.
-        """
-        return Breakout(self._dispatch.BreakoutAtDepth(depth))
-
-    def insert_new_breakout_ex(self, depth, azimuth, tilt, length, opening):
-        """Sets a new breakout in a Breakout Log.
-
-        If the mirror option is active, a second breakout object is
-        added 180° degrees apart.
-
-        Parameters
-        ----------
-        depth : float
-            The depth value of the breakout in current depth units
-        azimuth : float
-            The azimuth angle of the breakout measured in degrees.
-        tilt : float
-            The tilt angle of the breakout measured in degrees.
-        length : float
-            The length of the breakout in meters.
-        opening : float
-            The opening (or aperture) angle of the breakout in degrees.
-        """
-        return Breakout(self._dispatch.InsertNewBreakoutEx(depth, azimuth, tilt, length, opening))
 
     def insert_new_structure_ex(self, depth, azimuth, dip, aperture):
         """Sets a new structure in a Structure Log.
@@ -1440,7 +1418,7 @@ class Log(DispatchWrapper):
         Parameters
         ----------
         depth : float
-            The depth value in the current units of the breakout to
+            The depth value in the current units of the breakout structure to
             be inserted.
         azimuth : float
             The azimuth angle of the structure measured in degrees.
@@ -1448,31 +1426,13 @@ class Log(DispatchWrapper):
             The tilt angle of the structure measured in degrees.
         aperture : float
             The aperture of the structure in meters.
+
+        Returns
+        -------
+        Structure
+            The newly created structure object.
         """
         return Structure(self._dispatch.InsertNewStructureEx(depth, azimuth, dip, aperture))
-
-    def remove_breakout(self, index):
-        """Removes a breakout from the Breakout Log at the specified
-        index.
-
-        Parameters
-        ----------
-        index : int
-            Zero based index of the breakout to be removed.
-        """
-        self._dispatch.RemoveBreakout(index)
-
-    def remove_breakout_at_depth(self, depth):
-        """Removes a breakout from the Breakout Log at the specified
-        depth in current depth units.
-
-        Parameters
-        ----------
-        depth : float
-            The depth value in current depth units at which the
-            breakout will be removed.
-        """
-        self._dispatch.RemoveBreakoutAtDepth(depth)
 
     def remove_structure(self, index):
         """Removes a structure from the Structure Log at the
@@ -1497,10 +1457,181 @@ class Log(DispatchWrapper):
         """
         self._dispatch.RemoveStructureAtDepth(depth)
 
+    def breakout(self, index):
+        """Gets a breakout structure from the Breakout Log at the specified
+        index.
+
+        Parameters
+        ----------
+        index : int
+            Zero based index of the breakout to be retrieved.
+
+        Returns
+        -------
+        Structure or None
+            The breakout at the specified index. If the index is
+            outside the valid range no exception will be raised and
+            ``None`` will be returned.
+
+        """
+        return Structure(self._dispatch.Breakout(index))
+
+    def breakout_at_depth(self, depth):
+        """Gets a breakout structure from the Breakout Log at the specified
+        depth in current depth units.
+
+        Parameters
+        ----------
+        depth : float
+            The depth value in current depth units at which the
+            breakout will be retrieved.
+
+        Returns
+        -------
+        Structure or None
+            The feature closest to the specified depth will be returned.
+            If the depth is outside the valid range no exception
+            will be raised and ``None`` will be returned.
+        """
+        return Structure(self._dispatch.BreakoutAtDepth(depth))
+
+    def insert_new_breakout_ex(self, depth, azimuth, tilt, length, opening):
+        """Sets a new breakout structure in a Breakout Log.
+
+        If the mirror option is active, a second breakout structure object is
+        added 180° degrees apart.
+
+        Parameters
+        ----------
+        depth : float
+            The depth value of the breakout structure in current depth units.
+        azimuth : float
+            The azimuth angle of the breakout structure measured in degrees.
+        tilt : float
+            The tilt angle of the breakout structure measured in degrees.
+        length : float
+            The length of the breakout structure in meters.
+        opening : float
+            The opening (or aperture) angle of the breakout structure in degrees.
+
+        Returns
+        -------
+        Structure
+            The newly created breakout structure.
+        """
+        return Structure(self._dispatch.InsertNewBreakoutEx(depth, azimuth, tilt, length, opening))
+
+    def remove_breakout(self, index):
+        """Removes a breakout structure from the Breakout Log at the specified
+        index.
+
+        Parameters
+        ----------
+        index : int
+            Zero based index of the breakout structure to be removed.
+        """
+        self._dispatch.RemoveBreakout(index)
+
+    def remove_breakout_at_depth(self, depth):
+        """Removes a breakout structure from the Breakout Log at the specified
+        depth in current depth units.
+
+        Parameters
+        ----------
+        depth : float
+            The depth value in current depth units at which the
+            breakout structure will be removed.
+        """
+        self._dispatch.RemoveBreakoutAtDepth(depth)
+    
+    def lineation(self, index):
+        """Gets a lineation pick from the Lineation Log at the specified
+        index.
+
+        Parameters
+        ----------
+        index : int
+            Zero based index of the lineation to be retrieved.
+
+        Returns
+        -------
+        Structure or None
+            The lineation at the specified index. If the index is
+            outside the valid range no exception will be raised and
+            ``None`` will be returned.
+        """
+        return Structure(self._dispatch.Lineation(index))
+
+    def lineation_at_depth(self, depth):
+        """Gets a lineation structure from the Lineation Log at the specified
+        depth in current depth units.
+
+        Parameters
+        ----------
+        depth : float
+            The depth value in current depth units at which the
+            lineation will be retrieved.
+
+        Returns
+        -------
+        Structure or None
+            The feature closest to the specified depth will be returned.
+            If the depth is outside the valid range no exception
+            will be raised and ``None`` will be returned.
+        """
+        return Structure(self._dispatch.LineationAtDepth(depth))
+
+    def insert_new_lineation_ex(self, depth, trend, plunge, eccentricity):
+        """Sets a new linear structure in a Lineation Log.
+
+        Parameters
+        ----------
+        depth : float
+            Depth of the mid-point of the fitted line in current depth units.
+        trend : float
+            Trend direction of the vector in degrees.
+        plunge : float
+            "Dip" angle of the vector in degrees.
+        eccentricity : float
+            Offset of the lineation from the center of the borehole.
+            A value between -1 and 1 can be set. An eccentricity of 0
+            corresponds to a line going straight through the center
+            of the borehole.
+
+        Returns
+        -------
+        Structure
+            The newly created lineation structure.
+        """
+        return Structure(self._dispatch.InsertNewLineationEx(depth, trend, plunge, eccentricity))
+
+    def remove_lineation(self, index):
+        """Removes a lineation from the Lineation Log at the
+        specified index.
+
+        Parameters
+        ----------
+        index : int
+            Zero based index of the lineation to be removed.
+        """
+        self._dispatch.RemoveLineation(index)
+
+    def remove_lineation_at_depth(self, depth):
+        """Removes a lineation from the Lineation Log at the
+        specified depth in current depth units.
+
+        Parameters
+        ----------
+        depth : float
+            The depth value in current depth units at which the
+            lineation will be removed.
+        """
+        self._dispatch.RemoveLineationAtDepth(depth)
+
     @property
     def length_unit(self):
         """float: The conversion factor (from meters) for the
-        breakout length measured in the breakout log
+        breakout structure length measured in the breakout log
 
         Set it to 0.001 when measured in mm and to 0.0254 when
         measured in inches."""

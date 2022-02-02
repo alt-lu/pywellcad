@@ -25,7 +25,6 @@ the interface to be more Pythonic.
    litho_pattern
    fossil_item
    structure
-   breakout
    marker_item
    polar_and_rose_box
    stacking_pattern_item

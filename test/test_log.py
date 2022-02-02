@@ -468,6 +468,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.engineering_log.insert_new_drill_item(20, 400.0)  # drill at 20m, diameter = 400
         self.assertAttrEqual(top_drill, "diameter", 300.0)
         self.engineering_log.remove_drill_item(1)
+        self.assertAttrEqual(self.engineering_log, "nb_of_drill_item", 3)
 
     def test_nb_of_drill_item(self):
         self.assertAttrEqual(self.engineering_log, "nb_of_drill_item", 3)

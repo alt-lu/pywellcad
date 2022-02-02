@@ -173,7 +173,7 @@ class Workspace(DispatchWrapper):
 
         Parameters
         ----------
-        config : str, optional
+        config_file_name : str, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
 
