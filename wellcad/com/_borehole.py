@@ -130,36 +130,47 @@ class Borehole(DispatchWrapper):
         """Page: A page object for the borehole document."""
         return Page(self._dispatch.Page)
 
-    def create_new_workspace(self, workspace_type, config=""):
+    def create_new_workspace(self, workspace_type, config=None):
         """Creates a new workspace and return the corresponding object.
 
         For a full description of the parameters to be used in the
         configuration file refer to the WellCAD help documentation.
 
-        Arguments:
-            workspace_type -- 1 = ISI workspace
-                              2 = Casing integrity
-                              3 = NMR
-        
-            config -- Path and name of the .ini file containing the
-                      workspace initialization parameters.
+        Parameters
+        ----------
+            workspace_type : int
+                Available workspace types are:
+                    * 1 = ISI workspace
+                    * 2 = Casing integrity
+                    * 3 = NMR
+            config : str
+                Path and name of the .ini file containing the
+                workspace initialization parameters.
+
+        Returns
+        -------
+        Workspace
+            The specified workspace object.
         """
+        return Workspace(self._dispatch.CreateNewWorkspace(workspace_type, config))
 
-        self._dispatch._FlagAsMethod("CreateNewWorkspace")
-        obworkspace = self._dispatch.CreateNewWorkspace(workspace_type, config)
-        return Workspace(obworkspace)
 
-    def get_workspace(self, workspace_id):
-        """Retrieve an object for a workspace in the document.
+    def workspace(self,index_or_name):
+        """ Retrieve a workspace (e.g. Image & Structure Processing Workspace)
+        that has been already setup and is part of the borehole document.
         
-        Arguments: 
-            workspace_id --- Zero based index or title of the workspace
-                             present in the borehole document.
-        """
+        Parameters
+        ----------
+        index_or_name : int or str
+            The name (string) or index (zero based index) of the
+            workspace to be retrieved.
 
-        self._dispatch._FlagAsMethod("CreateNewWorkspace")
-        obworkspace = self._dispatch.Workspace(workspace_id)
-        return Workspace(obworkspace)
+        Returns
+        -------
+        Workspace
+            The specified workspace object.
+        """
+        return Workspace(self._dispatch.Workspace(index_or_name))
 
     @property
     def odbc(self):
