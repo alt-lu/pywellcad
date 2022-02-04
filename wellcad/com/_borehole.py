@@ -15,7 +15,8 @@ class Borehole(DispatchWrapper):
                          "FilterImageLog", "ApplyConditionalTesting", "RQD", "GrainSizeSorting", "StackTraces", 
 						 "FilterFWSLog", "AverageFilterFWSLog", "FreqFilterFwsLog","ApplyStandOffCorrection",
  						 "CompensatedVelocity", "ApplySemblanceProcessing", "ProcessReflectedTubeWave","PickFirstArrival",
-						 "PickE1Arrival", "ExtractE1Amplitude", "AdjustPickToExtremum","ExtractWindowPeakAmplitude", )
+						 "PickE1Arrival", "ExtractE1Amplitude", "AdjustPickToExtremum","ExtractWindowPeakAmplitude",
+						 "ApplyNaturalGammaBoreholeCorrection", "ApplyTotalGammaCalibration", )
 
     @property
     def name(self):
@@ -2491,181 +2492,244 @@ class Borehole(DispatchWrapper):
 
 
 
-    def stack_spectra(self, log, prompt_user=True, config=""):
-        """Stacks multiple spectra to derive n average spectrum
+    def apply_natural_gamma_borehole_correction(self, log=None, prompt_user=None, config=None):
+        """Applies borehole corrections to FWS and Well logs
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
-        Returns:
-            Object of the stacked spectra in an FWS log type.
+                [BoreholeConditionCorrections]
+                DeadTime = 7.2 ' in us
+                EnableDeadTime = yes
+                EnableFactors = yes
+                FactorName1 = Water Factor
+                FactorName2 = Pipe Factor
+                Top1 = 0.0
+                Bot1 = 2.85
+                Factor1-1 = 1
+                Factor1-2 = 1.49
+                Top2 = 2.85
+                Bot2 = bot
+                Factor2-1 = 1.12
+                Factor2-2 = 1
 
+        Returns
+        -------
+        Log
+            A log containing the corrected count rates.
         """
 
-        self._dispatch._FlagAsMethod("StackTraces")
-        oblog = self._dispatch.StackTraces(True, log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.ApplyNaturalGammaBoreholeCorrection(log, prompt_user, config))
 
-    def borehole_correction(self, log, prompt_user=True, config=""):
-        """Applies corrections to FWS and Well logs
-        
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+    def apply_total_gamma_calibration(self, log=None, prompt_user=None, config=None):
+        """Applies a calibration factor or equation to the values in the specified Well Log
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+       Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Returns:
-            Object of the corrected log.
-            
+            .. code-block:: ini
+
+                [BoreholeConditionCorrections]
+                K-Factor=2*0.00001028
+
+        Returns
+        -------
+        Log
+            A log containing the modified gamma values.
         """
 
-        self._dispatch._FlagAsMethod("ApplyNaturalGammaBoreholeCorrection ")
-        oblog = self._dispatch.ApplyNaturalGammaBoreholeCorrection(log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.ApplyTotalGammaCalibration(log, prompt_user, config))
 
-    def gamma_calibration(self, log, k_factor, prompt_user=False):
-        """Multiples total gamma values with the k-factor.
-        
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+    def calculate_spectrum_total_count(self, log=None, prompt_user=None, config=None):
+        """Extracts the total count, min, max, average or median from each spectrum trace of the specified log
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            k_factor -- Calibration factir for GR measurement.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-                
-        """
-        config = "K-Factor=" + str(k_factor)
-        self._dispatch.ApplyTotalGammaCalibration(log, prompt_user, config)
+            .. code-block:: ini
 
-    def spectrum_statistics(self, log, prompt_user=True, config=""):
-        """Derives min, max and total counts from spectra in a FWS log type
-        
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
+                [SpectralGamma_Statistic]
+                ; WinLow, WinHigh expressed in channel number or keV according to Channel
+                Total = yes
+                Min = yes
+                Max = yes
+                Ave = yes
+                Median = yes
+                UseWindow = yes
+                Channel = yes
+                WinLow = 410
+                WinHigh = 2850
         """
 
         self._dispatch.CalculateSpectrumTotalCount(log, prompt_user, config)
 
-    def spectrometric_ratios(self, log_a, log_b, log_c, prompt_user=True, config=""):
+    def spectrometric_ratios(self, log_a=None, log_b=None, log_c=None, prompt_user=None, config=None):
         """Computes spectrometric ratios like U/Th or U/k
         
-        By default the ratios log_b/log_a, log_b/log_c and log_c/log_a
+        By default, the ratios log_b/log_a, log_b/log_c and log_c/log_a
         will be computed.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log_a : int or str, optional
+            Zero based index or title of the log to process.
+        log_b : int or str, optional
+            Zero based index or title of the log to process.
+        log_c : int or str, optional
+            Zero based index or title of the log to process.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log_a	-- Zero based index (integer) or title (string) of
-                          the log to process.
-            log_b	-- Zero based index (integer) or title (string) of
-                          the log to process.
-            log_c	-- Zero based index (integer) or title (string) of
-                          the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
+                [SpectrometricRatios]
+                ; ratio : A / B
+                A=K
+                B=U
         """
 
         self._dispatch.SpectrometricRatios(log_a, log_b, log_c, prompt_user, config)
 
-    def full_spectrum_analysis(self, log_spectrum, log_time, prompt_user=True, config=""):
-        """ Full spectrum analysis using a calibration from Medusa Systems
+    def process_medusa_spectrum_data(self, log_spectrum=None, log_time=None, prompt_user=None, config=None):
+        """Performs a full spectrum analysis using a calibration after Medusa
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log_spectrum : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process dialog box will be displayed.
+        log_time : int or str, optional
+            Zero based index or title of the log with the live time data.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log_spectrum -- Zero based index (integer) or title (string) of
-                                  log to process.
-            log_time -- Zero based index (integer) or title (string) of
-                           the sample time log.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
+                [SpectralGammaMedusaProcess]
+                CalibrationFilePath = C:\Temp\NSG1234.mcf
+                EnableFittedSpectrum = yes
+                EnableConcentrationErrors = yes
+                EnableStabilizationFactor = yes
+                DeadTime = 5 (in us/pulse)
+                HoleDiameter = 96 / Caliper (fixed value or data from log in mm)
+                CasingThickness = 8 / Thickness (fixed value or data from log mm)
+                CasingType = 0 (Steel) / 1 (PVC)
+                FluidDensity = 1.1 / RHOFL (fixed value or data from log in g/ccm)
+                FluidK = 0.0 / K (Potassium concentration in the fluid; fixed value or data from log in Bq/kg)
+                FluidU = 0.0 / U (eq Uranium concentration in the fluid; fixed value or data from log in Bq/kg)
+                FluidTh = 0.0 / Th (Thorium concentration in the fluid; fixed value or data from log in Bq/kg)
+                ToolPosition = 0 (Alongside) / 1 (Centered)
         """
 
         self._dispatch.ProcessMedusaSpectrumData(log_spectrum, log_time, prompt_user, config)
 
-    def process_spectrum(self, log, prompt_user=True, config=""):
+    def process_spectrum_data(self, log=None, prompt_user=None, config=None):
         """Performs a windows stripping based on a calibration model
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-        
+            .. code-block:: ini
+
+                [SpectralGamma]
+                OutputWindowCounts = yes / no
+                ProcessModel = "C:\Temp\Test.sgm"
         """
 
         self._dispatch.ProcessSpectrumData(log, prompt_user, config)
 
-    def compute_gr(self, log_k, log_u, log_th, prompt_user=True, config=""):
-        """Computes total gamma ray from K, U and Th isotope concentrations
+    def compute_gr(self, log_k=None, log_u=None, log_th=None, prompt_user=None, config=None):
+        """Computes total gamma ray from K, U and Th isotope concentrations using the MEDUSA
+        calibration file
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log_k : int or str, optional
+            Zero based index or title of the log containing the concentrations of K.
+        log_u : int or str, optional
+            Zero based index or title of the log containing the concentrations of U.
+        log_th : int or str, optional
+            Zero based index or title of the log containing the concentrations of Th.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log_k	-- Zero based index (integer) or title (string) of
-                          the log containing the concentrations of K.
-            log_u	-- Zero based index (integer) or title (string) of
-                          the log containing the concentrations of U.
-            log_th	-- Zero based index (integer) or title (string) of
-                          the log containing the concentrations of Th.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string. 
+            .. code-block:: ini
 
+                [SpectralGammaMedusaCGR]
+                CalibrationFilePath=C:\Tools\Calibrations\QL40-SGR-154904.mcf
+
+        Returns
+        -------
+        Log
+            A log containing the gamma ray values.
         """
-        self._dispatch._FlagAsMethod("ComputeGR")
-        oblog = self._dispatch.ComputeGR(log_k, log_u, log_th, prompt_user, config)
-        return Log(oblog)
+
+        return Log(self._dispatch.ComputeGR(log_k, log_u, log_th, prompt_user, config))
 
 
     def process_nmrsa_data(self, log=None, prompt_user=None, config=None):
