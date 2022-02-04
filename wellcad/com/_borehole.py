@@ -12,7 +12,7 @@ class Borehole(DispatchWrapper):
     _DISPATCH_METHODS = ("Log", "ApplyStructureTrueToApparentCorrection", "ApplyStructureApparentToTrueCorrection",
                          "RemoveStructuralDip", "ExtractStructureIntervalStatistic", "ColorClassification",
                          "RepresentativePicks", "ImageComplexityMap", "NormalizeImage", "OrientImageToNorth",
-                         "FilterImageLog", "ApplyConditionalTesting", "RQD", )
+                         "FilterImageLog", "ApplyConditionalTesting", "RQD", "GrainSizeSorting", )
 
     @property
     def name(self):
@@ -2674,59 +2674,72 @@ class Borehole(DispatchWrapper):
 
     # CoreCAD processes
 
-    def grainsize_statistics(self, log, prompt_user=True, config=""):
-        """Computes statistics from a grainsize distribution curve.
+    def extract_grain_size_statistics(self, log=None, prompt_user=None, config=None):
+        """Computes statistics from a grain size distribution curve.
 
-        For a full description of the method and processing parameters
-        please refer to the Automation chapter of the WellCAD help
-        documentation.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log containing the grain size values.
+            If not provided, a dialog box displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-        log -- Name or index of the log containing the
-               grainsize values.
-        prompt_user -- If set to False the processing parameters
-                       will be taken from the config file/string.
-        config -- Path and name of the configuration file or
-                  a parameter string.
+             .. code-block:: ini
 
+                [GrainSizeStatistics]
+                ; Method : 0 = Logarithmic (original Folk and Ward; default), 1 = Geometric (modified Folk and Ward),\
+                2 = Logarithmic method of moments, 3= Geometric method of moments
+                Mean = yes
+                Median = yes
+                Sorting = yes
+                Skewness = yes
+                Kurtosis = yes
+                Histo = yes
         """
 
-        self._dispatch.ExtractGrainSizeStatistics(log,
-                                                  prompt_user,
-                                                  config)
+        self._dispatch.ExtractGrainSizeStatistics(log, prompt_user, config)
 
-    def grainsize_sorting(self,
-                          log_min,
-                          log_max,
-                          prompt_user=True,
-                          config=""):
-        """Classifies grainsize values based on min and max logs.
-
-        For a full description of the method and processing parameters
-        please refer to the Automation chapter of the WellCAD help
-        documentation.	
+    def grain_size_sorting(self, log_min, log_max, prompt_user=None, config=None):
+        """Classifies grain size values based on min and max logs.
         
-        Arguments:
-        log_min -- Name or index of the log containing the logged
-                   minimum grainsize value.
-        log_max -- Name or index of the log containing the logged
-                   maximum grainsize value.
-        prompt_user -- If set to False the processing parameters
-                       will be taken from the config file/string.
-        config -- Path and name of the configuration file or
-                  a parameter string.
+        Parameters
+        ----------
+        log_min : int or str, optional
+            Zero based index or title of the log containing logged minimum grain size value.
+            If not provided, the method returns None.
+        log_max : int or str, optional
+            Zero based index or title of the log containing logged maximum grain size value.
+            If not provided, the method returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Returns:
-        Log object of the resulting classified log.
+             .. code-block:: ini
 
+                [GrainSizeSorting]
+                ; Method : 0 = Logarithmic (original Folk and Ward; default), 1 = Geometric (modified Folk and Ward),\
+                2 = Logarithmic method of moments, 3= Geometric method of moments
+                BlockedAverage = yes
+
+        Returns
+        -------
+        Log
+            A log containing the sorted values
         """
 
-        self._dispatch._FlagAsMethod("GrainSizeSorting")
-        oblog = self._dispatch.GrainSizeSorting(log_min,
-                                                log_max,
-                                                prompt_user,
-                                                config)
-        return Log(oblog)
+        return Log(self._dispatch.GrainSizeSorting(log_min, log_max, prompt_user, config))
 
     # Protection options
 
