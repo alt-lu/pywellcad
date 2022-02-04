@@ -2743,49 +2743,28 @@ class Borehole(DispatchWrapper):
 
     # Protection options
 
-    def allow_protection(self, enable, password):
-        """Changes the protection status of a document.
+    def enable_protection(self, enable, password):
+        """Changes the protection status of a document using a password
 
-        Arguments:
-            enable -- Set to True to protect the borehole document.
-            password -- String of the password used to protect
-                        the borehole document.
-
+        Parameters
+        ----------
+        enable : bool
+            Set to True to protect the borehole document.
+        password : str
+            The password used to allow this option.
         """
 
         self._dispatch.EnableProtection(enable, password)
 
-    def enable_protection(self, password):
-        """Enables the document protection.
-
-        Arguments:
-            password -- String of the password used to protect
-                        the borehole document.
-
-        """
-
-        self._dispatch.EnableProtection(True, password)
-
-    def disable_protection(self, password):
-        """Disables the document protection.
-
-        Arguments:
-            password -- String of the password used to protect
-                        the borehole document.
-
-        """
-
-        self._dispatch.EnableProtection(False, password)
-
     def allow_insert_log(self, enable, password):
         """Changes the protection status for inserting new logs.
 
-        Arguments:
-            enable -- Set to True to allow adding new annotations
-                      to the borehole document.
-            password -- String of the password used to protect
-                        the borehole document.
-
+        Parameters
+        ----------
+        enable : bool
+            Set to True to allow adding new logs to the borehole document.
+        password : str
+            The password used to allow this option.
         """
 
         self._dispatch.AllowInsertLog(enable, password)
@@ -2793,25 +2772,25 @@ class Borehole(DispatchWrapper):
     def allow_save_template(self, enable, password):
         """Changes the protection status for saving layout templates.
 
-        Arguments:
-            enable -- Set to True to allow saving layout templates
-                      of the borehole document.
-            password -- String of the password used to protect
-                        the borehole document.
-
+        Parameters
+        ----------
+        enable : bool
+            Set to True to allow saving layout templates of the borehole document.
+        password : str
+            The password used to allow this option.
         """
 
         self._dispatch.AllowSaveTemplate(enable, password)
 
-    def allow_file_export(self, enable, password):
+    def allow_export_file(self, enable, password):
         """Changes the protection status for exporting data.
 
-        Arguments:
-            enable -- Set to True to allow the export of data
-                      from the borehole document.
-            password -- String of the password used to protect
-                        the borehole document.
-
+        Parameters
+        ----------
+        enable : bool
+            Set to True to allow the export of data from the borehole document.
+        password : str
+            The password used to allow this option.
         """
 
         self._dispatch.AllowExportFile(enable, password)
@@ -2819,12 +2798,12 @@ class Borehole(DispatchWrapper):
     def allow_modify_annotation(self, enable, password):
         """Changes the protection status to modify annotations.
 
-        Arguments:
-            enable -- Set to True to allow editing existing annotations
-                      in the borehole document.
-            password -- String of the password used to protect
-                        the borehole document.
-
+        Parameters
+        ----------
+        enable : bool
+            Set to True to allow editing existing annotations in the borehole document.
+        password : str
+            The password used to allow this option.
         """
 
         self._dispatch.AllowModifyAnnotation(enable, password)
@@ -2832,25 +2811,25 @@ class Borehole(DispatchWrapper):
     def allow_insert_annotation(self, enable, password):
         """Changes the protection status for inserting annotations.
 
-        Arguments:
-            enable -- Set to True to allow adding new annotations
-                      to the borehole document.
-            password -- String of the password used to protect
-                        the borehole document.
-
+        Parameters
+        ----------
+        enable : bool
+            Set to True to allow adding new annotations in the borehole document.
+        password : str
+            The password used to allow this option.
         """
 
         self._dispatch.AllowInsertAnnotation(enable, password)
 
-    def allow_modify_header(self, enable, password):
+    def allow_modify_headers_content(self, enable, password):
         """Changes the protection status of the header content.
 
-        Arguments:
-            enable -- Set to True to allow edition of the
-                      document header data.
-            password -- String of the password used to protect
-                        the borehole document.
-
+        Parameters
+        ----------
+        enable : bool
+            Set to True to allow edition of the document header data.
+        password : str
+            The password used to allow this option.
         """
 
         self._dispatch.AllowModifyHeadersContent(enable, password)
