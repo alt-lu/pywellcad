@@ -2458,219 +2458,333 @@ class Borehole(DispatchWrapper):
         self._dispatch.ProcessNMRSAData(log, prompt_user, config)
 
 
-    def water_salinity(self, log, prompt_user=True, config=""):
-        """Salinity estimation from fluid conductivity or resisitivity.
+    def water_salinity(self, log=None, prompt_user=None, config=None):
+        """Salinity estimation from fluid conductivity.
 
-        The log's unit will be used to distinguish between conductivity
-        (S/m, S/cm, uS/cm) and resistivity (ohm.m, ohm.cm) as input.
-        For a full description of the method and processing parameters
-        please refer to the Automation chapter of the WellCAD help
-        documentation.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the fluid conductivity log to process.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-        log -- Name or index of the well or mud log containing the
-               conductivity or resisitivity values.
-        prompt_user -- If set to False the processing parameters
-                       will be taken from the config file/string.
-        config -- Path and name of the configuration file or
-                  a parameter string.
+            .. code-block:: ini
 
-        Returns:
-        Log object of the resulting salinity log.
+                [WaterSalinity]
+                Temperature = log name or constant value
+                TemperatureUnit = degC / degF / degK
 
+        Returns
+        -------
+        Log
+            A log of the resulting salinity.
         """
 
-        self._dispatch._FlagAsMethod("WaterSalinity")
-        oblog = self._dispatch.WaterSalinity(log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.WaterSalinity(log, prompt_user, config))
 
-    def water_resistivity(self, log, prompt_user=True, config=""):
-        """Temperature correction for fluid conductivity or resisitivity.
+    def water_resistivity(self, log=None, prompt_user=None, config=None):
+        """Temperature correction for fluid conductivity or resistivity.
 
-        For a full description of the method and processing parameters
-        please refer to the Automation chapter of the WellCAD help
-        documentation.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log containing the conductivity or resistivity values.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-        log -- Name or index of the well or mud log containing the
-               conductivity or resisitivity values.
-        prompt_user -- If set to False the processing parameters
-                       will be taken from the config file/string.
-        config -- Path and name of the configuration file or
-                  a parameter string.
+             .. code-block:: ini
 
+                [WaterResistivity]
+                Temperature = log name or constant value
+                TemperatureUnit = degC / degF / degK
+                RefTemperature = log name or constant value
+                RefTemperatureUnit = degC / degF / degK
+                Method = 0 (Arp) / 1 (Hilchie)
+
+        Returns
+        -------
+        Log
+            A log of the corrected conductivity or resistivity.
         """
 
-        self._dispatch.WaterResistivity(log, prompt_user, config)
+        return Log(self._dispatch.WaterResistivity(log, prompt_user, config))
 
-    def shale_volume(self, log, prompt_user=True, config=""):
+    def shale_volume(self, log=None, prompt_user=None, config=None):
         """Estimates the shale volume from Gamma Ray or SP data.
 
-        For a full description of the method and processing parameters
-        please refer to the Automation chapter of the WellCAD help
-        documentation.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the well or mud log containing the Gamma Ray or SP values.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-        log -- Name or index of the well or mud log containing the
-               Gamma Ray or SP values.
-        prompt_user -- If set to False the processing parameters
-                       will be taken from the config file/string.
-        config -- Path and name of the configuration file or
-                  a parameter string.
+             .. code-block:: ini
 
-        Returns:
-        Log object of the resulting shale volume log.
+                [ShaleVolume]
+                Equation = 0
+                ; 0 = Linear (default), 1 = Larionov (Tertiary), 2 = Steiber, 3 = Clavier, 4 = Larionov (older rocks)
+                Shale=150
+                ShaleValueType=1
+                ; ...Type: 0 = value, 1 = minmax, 2 = avginterval
+                ShaleTopDepth=0
+                ShaleBotDepth=0
+                Sandstone=75
+                SandstoneValueType=1
+                ; ...Type: 0 = value, 1 = minmax, 2 = avginterval
+                SandstoneTopDepth=0
+                SandstoneBotDepth=0
 
+        Returns
+        -------
+        Log
+            A log of the resulting shale volume.
         """
 
-        self._dispatch._FlagAsMethod("ShaleVolume")
-        oblog = self._dispatch.ShaleVolume(log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.ShaleVolume(log, prompt_user, config))
 
-    def porosity_sonic(self, log, prompt_user=True, config=""):
+    def porosity_sonic(self, log=None, prompt_user=None, config=None):
         """Computes porosity from transit time data.
 
-        For a full description of the method and processing parameters
-        please refer to the Automation chapter of the WellCAD help
-        documentation.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the well or mud log containing the formation resistivity (Rt) values.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-        log -- Name or index of the well or mud log containing the
-               formation resistivty (Rt) values.
-        prompt_user -- If set to False the processing parameters
-                       will be taken from the config file/string.
-        config -- Path and name of the configuration file or
-                  a parameter string.
+            .. code-block:: ini
 
-        Returns:
-        Log object of the resulting porosity log.
+                [PorositySonic]
+                ; Method : 0 = Wylie, 1 = WylieCompaction, 2 = AbbreviatedRaymerHunt, 3 = RaymerHunt
+                ; Slowness units: us/ft, us/m, ft/us, m/s
+                Method = 1
+                MatrixSlowness = log name or constant value
+                MatrixSlownessUnit = us/ft
+                FluidSlowness= = log name or constant value
+                FluidSlownessUnit = us/ft
+                Compaction= = log name or constant value
+                C = 0.67
 
+        Returns
+        -------
+        Log
+            A log of the resulting porosity.
         """
 
-        self._dispatch._FlagAsMethod("PorositySonic")
-        oblog = self._dispatch.PorositySonic(log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.PorositySonic(log, prompt_user, config))
 
-    def porosity_archie(self, log, prompt_user=True, config=""):
+    def porosity_archie(self, log=None, prompt_user=None, config=None):
         """Computes porosity from formation resistivity data.
 
-        For a full description of the method and processing parameters
-        please refer to the Automation chapter of the WellCAD help
-        documentation.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the well or mud log containing the formation resistivity (Rt) values.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-        log -- Name or index of the well or mud log containing the
-               formation resistivty (Rt) values.
-        prompt_user -- If set to False the processing parameters
-                       will be taken from the config file/string.
-        config -- Path and name of the configuration file or
-                  a parameter string.
+            .. code-block:: ini
 
-        Returns:
-        Log object of the resulting porosity log.
+                [PorosityArchie]
+                ; Method : 0 = Standard, 1 = FreshWater, 2 = shale, 3= shaleAndFreshWater
+                ; Rw and Rsh units: ohm.m, ohm.ft
+                Method = 1
+                Vsh = log name or constant value
+                Rw = log name or constant value
+                RwUnit=ohm.m
+                Rsh = 30.0
+                RshUnit=ohm.m
+                CementationFactor = 1.0
+                CementationExponent = 2.0
+                Cs = 1.0
 
+        Returns
+        -------
+        Log
+            A log of the resulting porosity.
         """
 
-        self._dispatch._FlagAsMethod("PorosityArchie")
-        oblog = self._dispatch.PorosityArchie(log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.PorosityArchie(log, prompt_user, config))
 
-    def porosity_density(self, log, prompt_user=True, config=""):
+    def porosity_density(self, log=None, prompt_user=None, config=None):
         """Computes porosity from density data.
 
-        For a full description of the method and processing parameters
-        please refer to the Automation chapter of the WellCAD help
-        documentation.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the well or mud log containing the  density values.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-        log -- Name or index of the well or mud log containing the
-               density values.
-        prompt_user -- If set to False the processing parameters
-                       will be taken from the config file/string.
-        config -- Path and name of the configuration file or
-                  a parameter string.
-        
-        Returns:
-        Log object of the resulting porosity log.
+            .. code-block:: ini
 
+                [PorosityDensity]
+                ; Method : 0 = Standard, 1 = Shale
+                ; MatrixDensity, FluidDensity, ShaleVolume : value or log
+                ; Density units: g/cc or kg/m3
+                MatrixDensity=2.7
+                MatrixDensityUnit=g/cc
+                FluidDensity=1.0
+                FluidDensityUnit=g/cc
+                ShaleVolume=0
+                ShaleDensity=1.5
+                ShaleDensityUnit=g/cc
+
+        Returns
+        -------
+        Log
+            A log of the resulting porosity.
         """
 
-        self._dispatch._FlagAsMethod("PorosityDensity")
-        oblog = self._dispatch.PorosityDensity(log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.PorosityDensity(log, prompt_user, config))
 
-    def porosity_neutron(self, log, prompt_user=True, config=""):
+    def porosity_neutron(self, log=None, prompt_user=None, config=None):
         """Applies a shale correction to neutron porosity data.
 
-        For a full description of the method and processing parameters
-        please refer to the Automation chapter of the WellCAD help
-        documentation.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the well or mud log containing the neutron porosity values.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-        log -- Name or index of the well or mud log containing the
-               neutron porosity values.
-        prompt_user -- If set to False the processing parameters
-                       will be taken from the config file/string.
-        config -- Path and name of the configuration file or
-                  a parameter string.
-        
-        Returns:
-        Log object of the corrected porosity log.
+            .. code-block:: ini
 
+                [PorosityNeutron]
+                ; Vsh : log name
+                ; ShaleNPhi = value
+                Vsh=VSh
+                ShaleNPhi=50
+
+        Returns
+        -------
+        Log
+            A log of the resulting corrected porosity.
         """
 
-        self._dispatch._FlagAsMethod("PorosityNeutron")
-        oblog = self._dispatch.PorosityNeutron(log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.PorosityNeutron(log, prompt_user, config))
 
-    def permeability(self, log, prompt_user=True, config=""):
-        """Estimates permeabilty from porosity data.
+    def permeability(self, log=None, prompt_user=None, config=None):
+        """Estimates permeability from porosity data.
 
-        Porosity values should be between 0 and 1.
-        For a full description of the method and processing parameters
-        please refer to the Automation chapter of the WellCAD help
-        documentation.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the well or mud log containing the neutron porosity values.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-        log -- Name or index of the well or mud log containing the
-               porosity values.
-        prompt_user -- If set to False the processing parameters
-                       will be taken from the config file/string.
-        config -- Path and name of the configuration file or
-                  a parameter string.
-        
-        Returns:
-        Log object of the resulting permeability log.
+            .. code-block:: ini
 
+                [Permeability]
+                CementationFactor=1.0
+
+        Returns
+        -------
+        Log
+            A log of the resulting permeability.
         """
 
-        self._dispatch._FlagAsMethod("Permeability")
-        oblog = self._dispatch.Permeability(log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.Permeability(log, prompt_user, config))
 
-    def hydraulic_conductivity(self, log, prompt_user=True, config=""):
+    def hydraulic_conductivity(self, log=None, prompt_user=None, config=None):
         """Computes the hydraulic conductivity from permeability data.
 
-        For a full description of the method and processing parameters
-        please refer to the Automation chapter of the WellCAD help
-        documentation.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the well or mud log containing the permeability values.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-        log -- Name or index of the log containing the
-               permeability values.
-        prompt_user -- If set to False the processing parameters
-                       will be taken from the config file/string.
-        config -- Path and name of the configuration file or
-                  a parameter string.
-        
-        Returns:
-        Log object of the resulting log.
+            .. code-block:: ini
 
+                [HydraulicConductivity]
+                ; Density, Viscosity, DensityTemperature, ViscosityTemperature : log name or value
+                ; Temperature units : degC, degF, degK
+                ; Permeability units : m2, Darcy, mD, sq.ft
+                ; Density units : kg/m3, g/m3, g/cc, lb/in3, lb/ft3
+                ; Viscosity units : Pa.s, cP, p, dyn.s/cm2
+                Density=1000
+                DensityUnit= kg/m3
+                Viscosity=0.000890439
+                ViscosityUnit=Pa.s
+                DensityTemperature=25
+                DensityTemperatureUnit=degC
+                ViscosityTemperature=25
+                ViscosityTemperatureUnit=degC
+
+        Returns
+        -------
+        Log
+            A Log object of the resulting hydraulic conductivity.
         """
 
-        self._dispatch._FlagAsMethod("HydraulicConductivity")
-        oblog = self._dispatch.HydraulicConductivity(log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.HydraulicConductivity(log, prompt_user, config))
 
     # CoreCAD processes
 
