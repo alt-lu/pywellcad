@@ -2438,24 +2438,156 @@ class Borehole(DispatchWrapper):
         return Log(oblog)
 
 
-    def process_nmr(self, log, prompt_user=True, config=""):
-        """Performs a post-processing of NMRSA's BMR tool raw data
-        
-         A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+    def process_nmrsa_data(self, log=None, prompt_user=None, config=None):
+        """Performs a post-processing of NMRSA's BMR tool raw data.
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path and name of the configuration file or a parameter string.  The configuration file or
+            string can contain the following options:
 
+            .. code-block:: ini
+
+                [NMRSA]
+                UseDefaultOutputs = yes / no
+                MasterCalibrationFile=
+                ProcessingConfigurationFile=
+                DepthRange=Maximum / UserDefined / Zones /LogZones
+                TopDepth=20
+                BottomDepth=22
+                LogZones : top1, bot1, top2, bot2, ... topN, botN
+                LogZonesDepthRange=logname, depthsectionName1, depthsectionName2, ....depthsectionname3
         """
 
         self._dispatch.ProcessNMRSAData(log, prompt_user, config)
+
+    def nmr_total_porosity(self, log=None, prompt_user=None, config=None):
+        """Computes the total porosity from a T2 distribution.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path and name of the configuration file or a parameter string.  The configuration file
+            or string can contain the following options:
+
+            .. code-block:: ini
+
+                [NMRTotalPorosity]
+                MaxCutoffValue=-1
+                UseTimeMaxCutoff= yes / no
+
+                DepthRange=Maximum / UserDefined / Zones /LogZones
+                TopDepth=20
+                BottomDepth=22
+                LogZones : top1, bot1, top2, bot2, ... topN, botN
+                LogZonesDepthRange=logname, depthsectionName1, depthsectionName2, ....depthsectionname3
+
+        Returns
+        -------
+        Log
+            The resulting log object
+        """
+
+        return Log(self._dispatch.NMRTotalPorosity(log, prompt_user, config))
+
+    def nmr_permeability(self, log=None, prompt_user=None, config=None):
+        """Computes the permeability from a T2 distribution.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path and name of the configuration file or a parameter string.  The configuration file
+            or string can contain the following options:
+
+            .. code-block:: ini
+
+            [NMRPermeability]
+            T2DistributionTraceUnit= seconds / milliseconds
+            UseTimeMaxCutoff= yes / no
+            MaxCutoffValue=-1
+            DisplayTIMModel= yes / no
+            VariableCforTIMModel=1
+            ExponentMforTIMModel=4
+            BFVCutoffForTIMModel=2
+            BFVCutoffForTIMModel=0.3
+            UseTimeMaxForFFVCutoff= yes / no
+            FFVCutoffForTIMModel=0
+            DisplaySDRModel= yes / no
+            VariableCforSDRModel=4
+            ExponentMforSDRModel=4
+            ExponentNforSDRModel=2
+            DisplayT2LogMean= yes / no
+            DepthRange=Maximum / UserDefined / Zones /LogZones
+            TopDepth=20
+            BottomDepth=22
+            LogZones : top1, bot1, top2, bot2, ... topN, botN
+            LogZonesDepthRange=logname, depthsectionName1, depthsectionName2, ....depthsectionname3
+        """
+
+        self._dispatch.NMRPermeability(log, prompt_user, config)
+
+    def nmr_fluid_volumes(self, log=None, prompt_user=None, config=None):
+        """Computes the fluid volumes from a T2 distribution.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path and name of the configuration file or a parameter string.  The configuration file
+            or string can contain the following options:
+
+            .. code-block:: ini
+
+            [NMRFluidVolumes]
+            LithoDatabase=
+            UseLithoDatabaseAssociatedColor= yes/no
+            Components=
+            Cutoff=
+            DepthRange=Maximum / UserDefined / Zones /LogZones
+            TopDepth=20
+            BottomDepth=22
+            LogZones : top1, bot1, top2, bot2, ... topN, botN
+            LogZonesDepthRange=logname, depthsectionName1, depthsectionName2, ....depthsectionname3
+
+        Returns
+        -------
+        Log
+            The resulting log object
+        """
+
+        return Log(self._dispatch.NMRFluidVolumes(log, prompt_user, config))
 
 
     def water_salinity(self, log=None, prompt_user=None, config=None):
