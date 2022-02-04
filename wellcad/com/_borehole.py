@@ -12,7 +12,10 @@ class Borehole(DispatchWrapper):
     _DISPATCH_METHODS = ("Log", "ApplyStructureTrueToApparentCorrection", "ApplyStructureApparentToTrueCorrection",
                          "RemoveStructuralDip", "ExtractStructureIntervalStatistic", "ColorClassification",
                          "RepresentativePicks", "ImageComplexityMap", "NormalizeImage", "OrientImageToNorth",
-                         "FilterImageLog", "ApplyConditionalTesting", "RQD", "GrainSizeSorting", )
+                         "FilterImageLog", "ApplyConditionalTesting", "RQD", "GrainSizeSorting", "StackTraces", 
+						 "FilterFWSLog", "AverageFilterFWSLog", "FreqFilterFwsLog","ApplyStandOffCorrection",
+ 						 "CompensatedVelocity", "ApplySemblanceProcessing", "ProcessReflectedTubeWave","PickFirstArrival",
+						 "PickE1Arrival", "ExtractE1Amplitude", "AdjustPickToExtremum","ExtractWindowPeakAmplitude", )
 
     @property
     def name(self):
@@ -1856,8 +1859,8 @@ class Borehole(DispatchWrapper):
         oblog = self._dispatch.CasedHoleNormalization(log, prompt_user, config)
         return Log(oblog)
 
-    def correct_bad_traces(self, log=None):
-        """Replaces NULL data traces in Image, RGB and FWS logs.
+	 def correct_bad_traces(self, log=None):
+        """Replaces NO DATA traces in a FWS log.
         
         Parameters
         ----------
@@ -1869,396 +1872,623 @@ class Borehole(DispatchWrapper):
 
         return self._dispatch.CorrectBadTraces(log)
 
-    def stack_fws_traces(self, log, prompt_user=True, config=""):
-        """Stacks multiple FWS traces to create and average trace
+    def stack_traces(self, is_spectrum=None, log=None, prompt_user=None, config=None):
+        """Stacks multiple FWS traces to create and average trace.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        is_spectrum : bool, optional
+            Whether the log is a spectrum or not.
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
+                [StackTraces]
+                NumberOfStacks = 5
+
+        Returns
+        -------
+        Log
+            The resulting log.
         """
 
-        self._dispatch._FlagAsMethod("StackTraces")
-        oblog = self._dispatch.StackTraces(False, log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.StackTraces(is_spectrum, log, prompt_user, config))
 
-    def reverse_fws_amplitude(self, log):
-        """Inverts the amplitudes in a FWS log
+    def reverse_amplitude(self, log=None):
+        """Inverts the amplitudes in a FWS log.
 
-        Arguments:
-            log -- Zero based index (integer) or title (string) of
-                   the log to process.
-
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, a dialog box displaying a list of available logs will be displayed.
         """
 
         self._dispatch.ReverseAmplitude(log)
 
-    def filter_fws(self, log, prompt_user=True, config=""):
-        """Average, weighted average and frequency filter for FWS logs
+    def filter_fws_log(self, log=None, prompt_user=None, config=None):
+        """Average, weighted average and frequency filter for FWS logs.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
-        Returns:
+                [FilterFWSLog]
+                ;  FilterType : MovingAverage, WeightedAverage, Frequency
+                ; Filter frequencies : in kHz
+                ; Filter width : in us
+                FilterType = MovingAverage
+                FilterWidth = 25.0
+                LowPass = 5.0
+                LowCut = 10.0
+                HighPass = 25.0
+                HighCut = 30.0
+
+        Returns
+        -------
+        Log
+            The resulting log.
+        """
+
+        return Log(self._dispatch.FilterFWSLog(log, prompt_user, config))
+
+    def average_filter_fws_log(self, log=None, filter_width=None, filter_type=None):
+        """Applies a moving average filter to the traces of an FWS log.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.  If not provided, the process returns None.
+        filter_width : float, optional
+            Length of the filter window in us.  If not provided, default value will be used.
+        filter_type : int, optional
+            If not provided, default value will be used.
+            Type of the filter :
+                * 0 = moving average
+                * 1 = weighted average
+
+        Returns
+        -------
+        Log
+            The resulting log.
+        """
+
+        return Log(self._dispatch.AverageFilterFWSLog(log, filter_width, filter_type))
+
+    def freq_filter_fws_log(self, log, low_cut, low_pass, high_pass, high_cut):
+        """Applies a frequency filter to the traces of an FWS log.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.  If not provided, the process returns None.
+        low_cut : float
+            The low cut-off frequency of filter in kHz. If not provided, default value will be used.
+        low_pass : float
+            The low pass frequency of filter in kHz. If not provided, default value will be used.
+        high_pass : float
+            The high pass frequency of filter in kHz. If not provided, default value will be used.
+        high_cut : float
+            The high cut-off frequency of filter in kHz. If not provided, default value will be used.
+
+        Returns
+        -------
+        Log
             Object of the filtered FWS log.
-
         """
 
-        self._dispatch._FlagAsMethod("FilterFWSLog")
-        oblog = self._dispatch.FilterFWSLog(log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.FreqFilterFwsLog(log, low_cut, low_pass, high_pass, high_cut))
 
-    def filter_fws_average(self, log, filter_width):
-        """Applies a moving average filter to the traces of an FWS log
+    def apply_stand_off_correction(self, log=None, prompt_user=None, config=None):
+        """Corrects intercept times for the stand-off of tool and formation.
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            filter_width -- Length of the filter window in us.
-        
-        Returns:
-            Object of the filtered FWS log.
-            
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process dialog settings will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [ApplyStandOffCorrection]
+                ; LogUnit : s, ms, msec, us, usec, sec
+                ; ToolSpacingUnit, ToolDiameterUnit, HoleDiameterUnit : m, mm, inch, cm, ft
+                ; FluidVelocityUnit : us/ft, us/m, ft/us, m/s
+                ; VelocityUnit : us/ft, us/m, ft/us, m/s
+                ; HoleDiameter, FluidVelocity : log name or constant
+                LogUnit=us
+                ToolSpacing=0.6
+                ToolSpacingUnit=m ; m, mm, inch, cm, ft
+                ToolDiameter=50
+                ToolDiameterUnit=mm
+                HoleDiameter=100
+                HoleDiameterUnit=mm
+                FluidVelocity=1500
+                FluidVelocityUnit=m/s
+                VelocityUnit=m/s
+
+        Returns
+        -------
+        Log
+            The resulting log.
         """
 
-        config = "FilterType=MovingAverage, FilterWidth=" + str(max(1, filter_width))
-        self._dispatch._FlagAsMethod("FilterFWSLog")
-        oblog = self._dispatch.FilterFWSLog(log, False, config)
-        return Log(oblog)
+        return Log(self._dispatch.ApplyStandOffCorrection(log, prompt_user, config))
 
-    def filter_fws_weighted(self, log, filter_width):
-        """Applies a weighted average filter to the traces of an FWS log
+    def compensated_velocity(self, log=None, prompt_user=None, config=None):
+        """Slowness or velocity computed from two receiver arrival times.
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            filter_width -- Length of the filter window in us.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log containing the travel times to the first receiver.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Returns:
-            Object of the filtered FWS log.
-        
+            .. code-block:: ini
+
+                [FwsCompensatedVelocity]
+                ; RX1Log, RX2Log : log name
+                ; RX1LogUnit, RX2LogUnit : s, ms, msec, us, usec, sec
+                ; SpacingUnit : m, mm, inch, ft, cm
+                ; VelocityUnit : us/ft, us/m, ft/us, m/s
+                RX1Log =RX1 - dt
+                RX2Log = RX2 - dt
+                RX1LogUnit = us
+                RX2LogUnit = us
+                Spacing = 0.2
+                SpacingUnit = m
+                VelocityUnit =us/m
+
+        Returns
+        -------
+        Log
+            The resulting log.
         """
 
-        config = "FilterType=WeightedAverage , FilterWidth=" + str(max(1, filter_width))
-        self._dispatch._FlagAsMethod("FilterFWSLog")
-        oblog = self._dispatch.FilterFWSLog(log, False, config)
-        return Log(oblog)
+        return Log(self._dispatch.CompensatedVelocity(log, prompt_user, config))
 
-    def filter_fws_frequency(self, log, low_pass, low_cut, high_pass, high_cut):
-        """Applies a frequency filter to the traces of an FWS log
+    def apply_semblance_processing(self, prompt_user=None, config=None):
+        """Performs a velocity analysis for the multiple receivers.
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            low_pass -- Low pass frequency of filter in kHz.
-            low_cut -- Low cut-off frequency of filter in kHz.
-            high_pass -- High pass frequency of filter in kHz.
-            high_cut -- High cut-off frequency of filter in kHz.
+        Parameters
+        ----------
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file.
+            The configuration file can contain the following options:
 
-        Returns:
-            Object of the filtered FWS log.
+            .. code-block:: ini
 
+                [ApplySemblanceProcessing]
+                Rx1_Log = RX1
+                Rx1_Offset = 0.0
+                Rx1_TxDistance = 0.6
+                Rx1_Unit = m
+                Rx2_Log = RX2
+                Rx2_Offset = 0.0
+                Rx2_TxDistance = 0.8
+                Rx2_Unit = m
+                Rx3_Log= ...
+
+                [FwsVelocityAnalysis]
+                EnableFilter=false
+                FreqFilterLowPass=2.5 ; in kHz
+                FreqFilterLowPass=5.0
+                FreqFilterHighPass=30.0
+                FreqFilterHighCut=35.0
+                ToolDiameter=50.0
+                ToolDiameterUnit=mm ;mm, cm, inch
+                BoreholeDiameter=100.0
+                BoreholeDiameterUnit=mm ;mm, cm, inch
+                FluidSlowness=666.67
+                FluidSlownessUnit=us/m ; us/ft, us/m, ft/us, m/s, us/m
+
+        Returns
+        -------
+        Log
+            The log containing the semblance results.
         """
 
-        config = "FilterType=Frequency,\
-                 LowCut=" + str(min(low_cut, low_pass)) \
-                 + ",LowPass=" + str(max(low_cut, low_pass)) \
-                 + ",HighPass=" + str(min(high_cut, high_pass)) \
-                 + ",HighCut=" + str(max(high_cut, high_pass))
-        self._dispatch._FlagAsMethod("FilterFWSLog")
-        oblog = self._dispatch.FilterFWSLog(log, False, config)
-        return Log(oblog)
+        return Log(self._dispatch.ApplySemblanceProcessing(prompt_user, config))
 
-    def correct_standoff(self, log, prompt_user=True, config=""):
-        """Corrects intercept times for the stand-off of tool and formation
-        
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+    def process_reflected_tube_wave(self, log=None, prompt_user=None, config=None):
+        """Extracts the cumulative energy from reflected tube wave arrivals.
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process dialog settings will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Return:
-            Object of the resulting log
+            .. code-block:: ini
 
+                [ProcessReflectedTubeWave]
+                ; Side : both,  upper, lower
+                Side = both
+                Offset = 25.0 'measured in us
+                Blanking = 50.0 'measured in us
+                FluidSlowness = 696.0 'measured in us/m
+                TxFrequency = 15000.0 'measured in Hz
+
+        Returns
+        -------
+        Log
+            The resulting log containing the cumulative energy.
         """
 
-        self._dispatch._FlagAsMethod("ApplyStandOffCorrection")
-        oblog = self._dispatch.ApplyStandOffCorrection(log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.ProcessReflectedTubeWave(log, prompt_user, config))
 
-    def compensated_velocity(self, log, prompt_user=True, config=""):
-        """Slowness or velocity computed from two receiver arrival times
+    def pick_first_arrival(self, log=None, prompt_user=None, config=None):
+        """Picks the first arrival time using the standard threshold or advanced method.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.  If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file.
+            The configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
+                [FwsFirstArrival]
+                ;Method=Standard Threshold Pickup Algorithm
+                Method=Advanced Threshold Pickup Algorithm
+
+                [Standard Threshold Pickup Algorithm]
+                Blanking=100.0
+                Threshold=15.0
+                BackInterpolation=yes
+                LockToSampling=yes
+                ; the next two are advanced settings
+                BaseLine=0.0
+                AutoAdjustThreshold=no
+
+                [Advanced Threshold Pickup Algorithm]
+                Blanking=0.0
+                Threshold=3.0
+                LargeWidth=120.0
+                SmallWidth=40.0
+
+        Returns
+        -------
+        Log
+            The resulting log containing the first arrival times.
         """
 
-        self._dispatch._FlagAsMethod("CompensatedVelocity")
-        oblog = self._dispatch.CompensatedVelocity(log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.PickFirstArrival(log, prompt_user, config))
 
-    def semblance_processing(self, prompt_user=True, config=""):
-        """Performs a vlocity analysis for the multiple receivers
-        
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+    def cement_bond(self, log=None, prompt_user=None, config=None):
+        """Determines the cement bond based on the Standard Gate Method.
 
-        Arguments:
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-        
-        Returns:
-            Object of the resulting depth-slowness-semblance log
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        """
+            .. code-block:: ini
 
-        self._dispatch._FlagAsMethod("ApplySemblanceProcessing")
-        oblog = self._dispatch.ApplySemblanceProcessing(prompt_user, config)
-        return Log(oblog)
-
-    def reflected_tubewave(self, log, prompt_user=True, config=""):
-        """Extracts the cumulative energy from reflected tube waves
-
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
-        Returns:
-            Object of the log containing the cumulative energy.
-
-        """
-        self._dispatch._FlagAsMethod("ProcessReflectedTubeWave")
-        oblog = self._dispatch.ProcessReflectedTubeWave(log, prompt_user, config)
-        return Log(oblog)
-
-    def first_arrival(self, log, prompt_user=True, config=""):
-        """Picks the intercept time of the first arrival
-
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-        
-        Returns:
-            Object of the log containing the first arrival times.
-
-        """
-
-        self._dispatch._FlagAsMethod("PickFirstArrival")
-        oblog = self._dispatch.PickFirstArrival(log, prompt_user, config)
-        return Log(oblog)
-
-    def cement_bond(self, log, prompt_user=True, config=""):
-        """Determines the cement bond from first arrival amplitudes
-
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
+                [CementBondProcess]
+                ; Logs : comma-separated FWS log names of the receivers to be processed
+                Logs=WVFS1,WVFS2,WVFS3
+                AreRadiiSectors=no
+                EnableT0Gate=yes
+                EnableTXGate=no
+                T0GateStart=237.4
+                T0GateLength=40
+                TXGateBlanking=0
+                TXGateThreshold=15
+                EnableCalibration=no
+                BLGateStart=50
+                BLGateLength=25
+                FreePipeTargetAmplitude=100
+                FreePipeTargetAmplitudeUnits=mV
+                FreePipeTopDepth=0
+                FreePipeBotDepth=0
         """
 
         self._dispatch.CementBond(log, prompt_user, config)
 
-    def e1_arrival(self, log, prompt_user=True, config=""):
-        """Determines the arrival time of the E1 amplitude 
+    def pick_e1_arrival(self, fws_log=None, dt_log=None, prompt_user=None, config=None):
+        """Determines the arrival time of the E1 amplitude.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        fws_log : int or str, optional
+            Zero based index or title of the FWS log to process.
+            If not provided, the process dialog box will be displayed.
+        dt_log : int or str, optional
+            Zero based index or title of the arrival time log to process.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
-        Returns:
-            Object of the log containing the E1 arrival times
+                [PickE1Arrival]
+                PickPositivPolarity = yes
+                FilterWidth = 5
 
+        Returns
+        -------
+        Log
+            The resulting log containing the E1 arrival times.
         """
 
-        self._dispatch._FlagAsMethod("PickE1Arrival")
-        oblog = self._dispatch.PickE1Arrival(log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.PickE1Arrival(fws_log, dt_log, prompt_user, config))
 
-    def e1_amplitude(self, fws_log, arrival_log, prompt_user=True):
-        """Uses the E1 arrival time to extract the E1 amplitude
+    def extract_e1_amplitude(self, fws_log=None, arrival_log=None, prompt_user=None):
+        """Uses the E1 arrival time to extract the E1 amplitude.
 
-        A full description of the method is given in the Automation
-        Module chapter of the WellCAD help documentation. 
+        Parameters
+        ----------
+        fws_log : int or str, optional
+            Zero based index or title of the log to process.
+        arrival_log : int, str or float, optional
+            int, str : Zero based index or title of the log containing the first E1 arrival times.
+            float : constant E1 arrival time
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
 
-        Arguments:
-            fws_log	-- Zero based index (integer) or title (string) of
-                          the log to process.
-            arrival_log -- Index or title of the E1 arrival time log
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-        
-        Returns:
-            Object of the log containing the E1 amplitude.
-
+        Returns
+        -------
+        Log
+            The resulting log containing the E1 amplitude.
         """
 
-        self._dispatch._FlagAsMethod("ExtractE1Amplitude")
-        oblog = self._dispatch.ExtractE1Amplitude(fws_log, arrival_log, prompt_user)
-        return Log(oblog)
+        return Log(self._dispatch.ExtractE1Amplitude(fws_log, arrival_log, prompt_user))
 
-    def adjust_to_extremum(self, fws_log,
-                           arrival_log,
-                           prompt_user=True,
-                           config=""):
-        """Traveltime pick shifted to the nearest amplitude extremum
+    def adjust_pick_to_extremum(self, fws_log=None, arrival_log=None, prompt_user=None, config=None):
+        """Adjusts the pick given in arrival_log to the next maximum or minimum amplitude in fws_log.
 
-        A full description of the method is given in the Automation
-        Module chapter of the WellCAD help documentation. 
+        Parameters
+        ----------
+        fws_log : int or str, optional
+            Zero based index or title of the fws log.
+            If not provided, the process dialog box will be displayed.
+        arrival_log : int or str, optional
+            Zero based index or title of the arrival time log.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            fws_log	-- Zero based index (integer) or title (string) of
-                          the log to process.
-            arrival_log -- Index or title of the arrival time log
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-        Returns:
-            Object of the log containing the E1 amplitude.
+            .. code-block:: ini
 
+                [AdjustPickToExtremum]
+                PickPositivPolarity = yes
+                FilterWidth = 5
+
+        Returns
+        -------
+        Log
+            Object of the log containing the pick times shifted to the nearest amplitude extremum.
         """
 
-        self._dispatch._FlagAsMethod("AdjustPickToExtremum")
-        oblog = self._dispatch.AdjustPickToExtremum(fws_log,
-                                                    arrival_log,
-                                                    prompt_user,
-                                                    config)
-        return Log(oblog)
+        return Log(self._dispatch.AdjustPickToExtremum(fws_log,arrival_log, prompt_user, config))
 
-    def window_amplitude(self, log, prompt_user=True, config=""):
-        """Extracts the max amplitude from a given time window
+    def extract_window_peak_amplitude(self, log=None, prompt_user=None, config=None):
+        """Extracts the maximum amplitude found in a time window of a FWS log trace.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
-        Returns:
-            Object of the amplitude log.
+                [ExtractWindowPeakAmplitude]
+                ; WindowStart : value or log name, units : us
+                ; WindowLength : value, units : us
+                ; PickType : 0 = peak, 1 = max, 2 = average
+                WindowStart=0
+                WindowLength=15
+                PickMax=yes
+                PickPos=yes
+                PickType=1
+                EnableResampling=yes
 
+        Returns
+        -------
+        Log
+            The resulting log containing the amplitude.
         """
-        self._dispatch._FlagAsMethod("ExtractWindowPeakAmplitude")
-        oblog = self._dispatch.ExtractWindowPeakAmplitude(log, prompt_user, config)
-        return Log(oblog)
 
-    def mechanical_properties(self, p_slowness, s_slowness, density=""):
-        """Computes a set of rock mechanical parameters from the input data
+        return Log(self._dispatch.ExtractWindowPeakAmplitude(log, prompt_user, config))
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+    def calculate_mechanical_properties(self, p_slowness=None, s_slowness=None, density=None):
+        """Computes a set of rock mechanical parameters from the input data.
 
-        Arguments:
-            p-slowness	-- Zero based index (integer) or title (string) of
-                              the log containing the p-slowness data.
-            s-slowness	-- Zero based index (integer) or title (string) of
-                              the log containing the s-slowness data.
-            density	-- Zero based index (integer) or title (string) of
-                          the log containing the density data.
-
+        Parameters
+        ----------
+        p_slowness : int or str, optional
+            Zero based index or title of the log containing the p-slowness data.
+            If not provided, the process dialog box will be displayed.
+        s_slowness : int or str, optional
+            Zero based index or title of the log containing the s-slowness data.
+            If not provided, the process dialog box will be displayed.
+        density :int or str, optional
+            Zero based index or title of the log containing the density data.
         """
 
         self._dispatch.CalculateMechanicalProperties(p_slowness, s_slowness, density)
 
-    def integrated_traveltime(self, log, prompt_user=True, config=""):
-        """Integrated traveltime from slowness or velocity data
+    def integrated_travel_time(self, log=None, prompt_user=None, config=None):
+        """Computes the integrated travel time from slowness or velocity data.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
-        Returns:
-            Object of the integrated traveltime log.
+                [IntegratedTravelTime]
+                TimeOffset = 0 'in us
+                TWT = Yes/No
 
+        Returns
+        -------
+        Log
+            The resulting log containing the integrated times.
         """
 
-        self._dispatch._FlagAsMethod("IntegratedTravelTime")
-        oblog = self._dispatch.IntegratedTravelTime(log, prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.IntegratedTravelTime(log, prompt_user, config))
+
+    def bond_index(self, log=None, prompt_user=None, config=None):
+        """Computes the bond index of the cement behind the casing.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [FwsBondIndex]
+                CementAmplitude = 2 'in mV
+                FreePipeAmplitude = 62.2 'in mV
+
+        Returns
+        -------
+        Log
+            The resulting log containing the bond index.
+        """
+
+        return Log(self._dispatch.BondIndex(log, prompt_user, config))
+
+    def compressive_strength(self, log=None, prompt_user=None, config=None):
+        """Computes the compressive strength of the cement behind a casing.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.  A cement bond amplitude log (Well or Mud log type)
+            or amplitude map (Image log) can be used.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [FwsCompressiveStrength]
+                CasingOD = 7 ' in inch
+                CasingWeight = 23 ' in lbs/ft
+
+        Returns
+        -------
+        Log
+            The resulting log containing the compressive strength.
+        """
+
+        return Log(self._dispatch.CompressiveStrength(log, prompt_user, config))
+
 
 
     def stack_spectra(self, log, prompt_user=True, config=""):
