@@ -28,10 +28,6 @@ class TestBoreholeImageAndStructure(unittest.TestCase, ExtraAsserts, SamplePath)
     def test_image_complexity_map_duplicate_entry(self):
         self.fail("Wellcad documentation for ImageComplexityMap has duplicate entry")
 
-    def test_correct_dead_sensor(self):
-        self.obi_borehole.correct_dead_sensor(prompt_user=True)
-        self.fail("correct_dead_sensor doesn't do anything, not even opening a dialog box")
-
     def test_adjust_image_brightness_and_contrast_auto(self):
         self.obi_borehole.adjust_image_brightness_and_contrast(log="CORE", prompt_user=False)
 

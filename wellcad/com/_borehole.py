@@ -13,10 +13,11 @@ class Borehole(DispatchWrapper):
                          "RemoveStructuralDip", "ExtractStructureIntervalStatistic", "ColorClassification",
                          "RepresentativePicks", "ImageComplexityMap", "NormalizeImage", "OrientImageToNorth",
                          "FilterImageLog", "ApplyConditionalTesting", "RQD", "GrainSizeSorting", "StackTraces", 
-						 "FilterFWSLog", "AverageFilterFWSLog", "FreqFilterFwsLog","ApplyStandOffCorrection",
- 						 "CompensatedVelocity", "ApplySemblanceProcessing", "ProcessReflectedTubeWave","PickFirstArrival",
-						 "PickE1Arrival", "ExtractE1Amplitude", "AdjustPickToExtremum","ExtractWindowPeakAmplitude",
-						 "ApplyNaturalGammaBoreholeCorrection", "ApplyTotalGammaCalibration", )
+                         "FilterFWSLog", "AverageFilterFWSLog", "FreqFilterFwsLog","ApplyStandOffCorrection",
+                         "CompensatedVelocity", "ApplySemblanceProcessing", "ProcessReflectedTubeWave", "PickFirstArrival",
+                         "PickE1Arrival", "ExtractE1Amplitude", "AdjustPickToExtremum","ExtractWindowPeakAmplitude",
+                         "ApplyNaturalGammaBoreholeCorrection", "ApplyTotalGammaCalibration", "CorrectDeadSensor", 
+                         "CalculateFluidVelocity", "CalculateApparentMetalLoss",)
 
     @property
     def name(self):
@@ -916,6 +917,34 @@ class Borehole(DispatchWrapper):
         """
         self._dispatch.CorrectBadTraces(log)
 
+    def stack_traces(self, is_spectrum=None, log=None, prompt_user=None, config=None):
+        """Stacks multiple FWS traces to create and average trace.
+        Parameters
+        ----------
+        is_spectrum : bool, optional
+            Whether the log is a spectrum or not.
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+                [StackTraces]
+                NumberOfStacks = 5
+        Returns
+        -------
+        Log
+            The resulting log.
+        """
+
+        return Log(self._dispatch.StackTraces(is_spectrum, log, prompt_user, config))
+
     def apply_conditional_testing(self, log_if=None, log_then=None, prompt_user=None, config=None):
         """Applies conditional testing (If-Then-Else) to image log
         values.
@@ -1611,278 +1640,16 @@ class Borehole(DispatchWrapper):
         """
         return Log(self._dispatch.RepresentativePicks(log, prompt_user, config))
 
+
+
     def correct_dead_sensor(self, log=None, prompt_user=None, config=None):
-        """Corrects the Null and invalid data columns in Image Logs.
+        """Corrects the Null and invalid data columns in Image logs.
 
         Parameters
         ----------
-        log : str or int, optional
-            Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
-            displaying a list of available logs will be displayed.
-        prompt_user : bool, optional
-            Whether dialog boxes are displayed to interact with
-            the user. If set to  ``False`` the processing parameters
-            will be retrieved from the specified configuration
-            file. If no configuration file has been specified,
-            default values will be used.
-        config : str, optional
-            Path to a configuration file or a parameter string. The
-            configuration file can contain the following options:
-            
-            .. code-block:: ini
-
-                [DeadSensor]
-                Method = Automatic / Range / Columns
-                ReplaceBy = 2 / Null / Average / Median / Interpolate / LogName
-                ‘ If Method = Automatic
-                WindowHeight = 0
-                Discrimination = 0.125
-                MinDataHeight = 0
-                ‘ If Method = Range
-                WindowHeight = 0
-                Low = 0
-                High = 0
-                ‘ If Method = Columns
-                Columns = 1, 2, 15-20, 5
-        """
-        self._dispatch.CorrectDeadSensor(log, prompt_user, config)
-
-    def shift_correction(self, log, prompt_user=True, config=""):
-        """Corrects the drift of data (e.g. MFC) in Image logs
-        
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
-        """
-        self._dispatch._FlagAsMethod("ShiftCorrection")
-        oblog = self._dispatch.ShiftCorrection(log, prompt_user, config)
-        return Log(oblog)
-
-    def fluid_velocity(self, log, prompt_user=True, config=""):
-        """Estimates the borehole fluid velocity from ATV travel times
-        
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
-        """
-        self._dispatch._FlagAsMethod("CalculateFluidVelocity")
-        oblog = self._dispatch.CalculateFluidVelocity(log, prompt_user, config)
-        return Log(oblog)
-
-    def centralize(self, log, prompt_user=True, config=""):
-        """Removes tool decentralization effects from ATV travel times 
-
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
-        """
-        self._dispatch._FlagAsMethod("Centralize")
-        oblog = self._dispatch.Centralize(log, prompt_user, config)
-        return Log(oblog)
-
-    def acoustic_caliper(self, log, prompt_user=True, config=""):
-        """Computes borehole diameter and radius from ATV travel times
-        
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
-        """
-
-        self._dispatch.CalculateAcousticCaliper(log, prompt_user, config)
-
-    def casing_thickness(self, log, prompt_user=True, config=""):
-        """Computes the thickness of a casing based on ATV travel times
-
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-        
-        """
-        self._dispatch.CalculateCasingThickness(log, prompt_user, config)
-
-    def metal_loss(self, log, prompt_user=True, config=""):
-        """Metal loss computation from inner radius data of a pipe 
-
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-        
-        """
-
-        self._dispatch._FlagAsMethod("CalculateApparentMetalLoss")
-        oblog = self._dispatch.CalculateApparentMetalLoss(log, prompt_user, config)
-        return Log(oblog)
-
-    def radius_to_from_diameter(self, log, prompt_user=True, config=""):
-        """Converts Image log data between radius and diameter
-
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
-        """
-
-        self._dispatch._FlagAsMethod("RadiusToFromDiameter")
-        oblog = self._dispatch.RadiusToFromDiameter(log, prompt_user, config)
-        return Log(oblog)
-
-    def radius_to_diameter(self, log):
-        """Converts radius data in an Image log to diameter values
-    
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the Image log to process.
-        
-        """
-        prompt_user = False
-        config = "Method=TwoTimesRadius"
-        self._dispatch._FlagAsMethod("RadiusToFromDiameter")
-        oblog = self._dispatch.RadiusToFromDiameter(log, prompt_user, config)
-        return Log(oblog)
-
-    def diameter_to_radius(self, log):
-        """Converts diameter data in an Image log to radius values
-
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the Image log to process.
-
-        """
-        prompt_user = False
-        config = "Method=HalfDiameter"
-        self._dispatch._FlagAsMethod("RadiusToFromDiameter")
-        oblog = self._dispatch.RadiusToFromDiameter(log, prompt_user, config)
-        return Log(oblog)
-
-    def outer_inner_radius_diameter(self, log, prompt_user=True, config=""):
-        """Adds or subtracts thickness from inner radius or diameter data
-
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
-        """
-        self._dispatch._FlagAsMethod("OuterInnerRadiusDiameter")
-        oblog = self._dispatch.OuterInnerRadiusDiameter(log, prompt_user, config)
-        return Log(oblog)
-
-    def casing_normalization(self, log, prompt_user=True, config=""):
-        """Subtracts a trace average (or other) value from an Image log
-
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
-        """
-
-        self._dispatch._FlagAsMethod("CasedHoleNormalization")
-        oblog = self._dispatch.CasedHoleNormalization(log, prompt_user, config)
-        return Log(oblog)
-
-	 def correct_bad_traces(self, log=None):
-        """Replaces NO DATA traces in a FWS log.
-        
-        Parameters
-        ----------
-        log	: str or int, optional
-            Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
-            displaying a list of available logs will be displayed.
-        """
-
-        return self._dispatch.CorrectBadTraces(log)
-
-    def stack_traces(self, is_spectrum=None, log=None, prompt_user=None, config=None):
-        """Stacks multiple FWS traces to create and average trace.
-
-        Parameters
-        ----------
-        is_spectrum : bool, optional
-            Whether the log is a spectrum or not.
         log : int or str, optional
             Zero based index or title of the log to process.
-            If not provided, the process returns None.
+            If not provided, the process returns ''None''.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with the user.
             If set to ``False`` the processing parameters will be retrieved from the specified
@@ -1891,23 +1658,335 @@ class Borehole(DispatchWrapper):
         config : str, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
+            .. code-block:: ini
+
+                [DeadSensor]
+                ; Method : Automatic, Range, Columns
+                ; ReplaceBy : Null, Average, Median, Interpolate, LogName or a numerical value
+                Method = Automatic
+                ReplaceBy = Average
+                ; If Method = Automatic
+                WindowHeight = 0
+                Discrimination = 0.125
+                MinDataHeight = 0
+                ; If Method = Range
+                WindowHeight = 0
+                Low = 0
+                High = 0
+                ; If Method = Columns
+                ; Columns : single index value or range like 15-20
+                Columns = 1
+        Returns
+        -------
+        Log
+            A log with the corrected data.
+        """
+        return Log(self._dispatch.CorrectDeadSensor(log, prompt_user, config))
+
+    def shift_correction(self, log=None, prompt_user=None, config=None):
+        """Corrects the drift of data (e.g. MFC) in Image logs.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process returns ''None''.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
             .. code-block:: ini
 
-                [StackTraces]
-                NumberOfStacks = 5
+                [ShiftCorrection]
+                ; Zone1 : name, top, bottom, value
+                OutputCorrections = yes / no
+                ExtendTrends = yes / no
+                Zone1=ref1, 25.0, 26.0, 101.2
+                Zone2=ref2, 45.0, 47.0, 125.3
+
+        Returns
+        -------
+        Log
+            A log that has been corrected.
+        """
+        return Log(self._dispatch.ShiftCorrection(log, prompt_user, config))
+
+    def calculate_fluid_velocity(self, log=None, prompt_user=None, config=None):
+        """Estimates the fluid velocity from travel time measurements and given calibration points.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+
+                [CalculateFluidVelocity]
+                ; If the AutoFill option is used the CalibrationPoints are not used.
+                ; ToolRadius : in mmm
+                ; TimeWindow : log name or value
+                ; CalibrationPoint1 : depth, diameter in mm
+                ; AutoFillFrom : depth value or 'Top'
+                 ; AutoFillTo : depth value or 'Bottom'
+                TravelTimeUnit = 0.1
+                ToolRadius = 19
+                TimeWindow = TimeWndLog / 74
+                CalibrationPoint1 = 20.44, 96
+                CalibrationPoint2 = 36.85, 96
+                CalibrationPoint3 = ...
+                ExtendTrends = yes / no
+                AutoFillFrom = 0 / Top
+                AutoFillTo = 0 / Bottom
+                AutoFillCaliper = 0 / Log Name
+                AutoFillStepSize = 1.0
+
+        Returns
+        -------
+        Log
+            A log giving the fluid velocity.
+        """
+        return Log(self._dispatch.CalculateFluidVelocity(log, prompt_user, config))
+
+    def centralize(self, log=None, prompt_user=None, config=None):
+        """Corrects travel time or multi-finger-caliper data for de-centralization effects
+        and outputs a new image log.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process returns ''None''.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+
+                [Centralize]
+                ; UseRange : use clipping range
+                UseRange = yes / no
+                CaliperLow = 0
+                CaliperHigh = 0
+                OutputEccentricity = yes / no
+                OutputEccentricityDir = yes / no
+
+        Returns
+        -------
+        Log
+            A log with the data corrected for decentralization.
+        """
+        return Log(self._dispatch.Centralize(log, prompt_user, config))
+
+    def calculate_acoustic_caliper(self, log=None, prompt_user=None, config=None):
+        """Calculates borehole radius and caliper values from acoustic travel time measurements.
+
+       Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+
+                [CalculateAcousticCaliper]
+                ; CaliperUnit : mm, cm, in
+                ; FluidVelocityUnit : m/s, km/s, m/ms, m/us, ft/s, ft/ms, ft/us, s/km, s/m, us/m, s/ft, us/ft
+                ; ToolRadius : in mm
+                TravelTimeUnit = 0.1
+                CaliperUnit = mm
+                ToolRadius = 19
+                TimeWindow = TimeWndLog / 74
+                FluidVelocity = VelocityLog / 1440
+                FluidVelocityUnit= m/s
+                CurveOutput = yes / no
+                ImageOutput  = yes / no
+        """
+        self._dispatch.CalculateAcousticCaliper(log, prompt_user, config)
+
+    def calculate_casing_thickness(self, log=None, prompt_user=None, config=None):
+        """Calculates thickness values for a casing pipe from acoustic thickness travel time measurements.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+
+                [CalculateCasingThickness]
+                ; ThicknessUnit : mm, cm, in
+                ; SteelVelocityUnit : m/s, km/s, m/ms, m/us, ft/s, ft/ms, ft/us, s/km, s/m, us/m, s/ft, us/ft
+                ; CurveOutput : output min, max, average thickness
+                ; ImageOutput  : output the thickness as an image log
+                TravelTimeUnit = 0.01
+                SteelVelocity = VelocityLog / 5200
+                SteelVelocityUnit= m/s
+                CurveOutput = yes / no
+                ImageOutput = yes / no
+        """
+        self._dispatch.CalculateCasingThickness(log, prompt_user, config)
+
+    def calculate_apparent_metal_loss(self, log=None, prompt_user=None, config=None):
+        """Calculates an apparent metal loss value for each trace of radius values stored in an image log.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+
+                [CalculateApparentMetalLoss]
+                ; The units of the internal / external pipe radius values must be the same as the unit
+                ; of the radius values in the image log.
+                InternalPipeRadius = 1.9
+                ExternalPipeRadius = 2.2
+        Returns
+        -------
+        Log
+            A log giving the metal loss.
+        """
+        return Log(self._dispatch.CalculateApparentMetalLoss(log, prompt_user, config))
+
+    def radius_to_from_diameter(self, log=None, prompt_user=None, config=None):
+        """Converts values data in an Image log from radius to diameter values or vice versa.
+
+        Parameters
+        ----------
+        log : int or str
+            Zero based index or title of the log to process.
+            If not provided, the process returns ''None''.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+
+                [RadiusToFromDiameter]
+                ;  Method : TwoTimesRadius, OppositeValues, HalfDiameter
+                Method = TwoTimesRadius
+        Returns
+        -------
+        Log
+            A log giving diameter/radius.
+        """
+        return Log(self._dispatch.RadiusToFromDiameter(log, prompt_user, config))
+
+    def outer_inner_radius_diameter(self, log=None, prompt_user=None, config=None):
+        """The process takes an Image, Well or Mud log as input and computes from radius/diameter
+        and thickness values an outer radius/diameter value.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process returns ''None''.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+
+                [OuterInnerRadiusDiameter]
+                ; InputType : InnerRadius, OuterRadius, InnerDiameter, OuterDiameter
+                ; OutputType : InnerRadius, OuterRadius, InnerDiameter, OuterDiameter
+                ; Thickness = log name or value
+                Thickness = THK
+                InputType = InnerRadius
+                OutputType = OuterDiameter
+        Returns
+        -------
+        Log
+            A log giving the outer radius/diameter.
+        """
+        return Log(self._dispatch.OuterInnerRadiusDiameter(log, prompt_user, config))
+
+    def cased_hole_normalization(self, log=None, prompt_user=None, config=None):
+        """Subtracts the trace average, median, min, max or a custom value from all data points
+        of the same trace.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process returns ''None''.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+
+                [Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+
+                [CasedHoleNormalization]
+                ; Method : Mean, Median, Min, Max, Other
+                ; The Value parameter is used when the Method has been set to Other
+                ; Value : log name or constant numerical value
+                Method = Mean
+                Value = 10.5
 
         Returns
         -------
         Log
             The resulting log.
         """
-
-        return Log(self._dispatch.StackTraces(is_spectrum, log, prompt_user, config))
+        return Log(self._dispatch.CasedHoleNormalization(log, prompt_user, config))
 
     def reverse_amplitude(self, log=None):
         """Inverts the amplitudes in a FWS log.
-
         Parameters
         ----------
         log : int or str, optional
@@ -1916,44 +1995,6 @@ class Borehole(DispatchWrapper):
         """
 
         self._dispatch.ReverseAmplitude(log)
-
-    def filter_fws_log(self, log=None, prompt_user=None, config=None):
-        """Average, weighted average and frequency filter for FWS logs.
-
-        Parameters
-        ----------
-        log : int or str, optional
-            Zero based index or title of the log to process.
-            If not provided, the process returns None.
-        prompt_user : bool, optional
-            Whether dialog boxes are displayed to interact with the user.
-            If set to ``False`` the processing parameters will be retrieved from the specified
-            configuration.  If no configuration has been specified, default values will be used.
-            Default is True.
-        config : str, optional
-            Path to a configuration file or a parameter string. The
-            configuration file can contain the following options:
-
-            .. code-block:: ini
-
-                [FilterFWSLog]
-                ;  FilterType : MovingAverage, WeightedAverage, Frequency
-                ; Filter frequencies : in kHz
-                ; Filter width : in us
-                FilterType = MovingAverage
-                FilterWidth = 25.0
-                LowPass = 5.0
-                LowCut = 10.0
-                HighPass = 25.0
-                HighCut = 30.0
-
-        Returns
-        -------
-        Log
-            The resulting log.
-        """
-
-        return Log(self._dispatch.FilterFWSLog(log, prompt_user, config))
 
     def average_filter_fws_log(self, log=None, filter_width=None, filter_type=None):
         """Applies a moving average filter to the traces of an FWS log.
@@ -2654,7 +2695,7 @@ class Borehole(DispatchWrapper):
             .. code-block:: ini
 
                 [SpectralGammaMedusaProcess]
-                CalibrationFilePath = C:\Temp\NSG1234.mcf
+                CalibrationFilePath = C:\\Temp\\NSG1234.mcf
                 EnableFittedSpectrum = yes
                 EnableConcentrationErrors = yes
                 EnableStabilizationFactor = yes
@@ -2667,7 +2708,7 @@ class Borehole(DispatchWrapper):
                 FluidU = 0.0 / U (eq Uranium concentration in the fluid; fixed value or data from log in Bq/kg)
                 FluidTh = 0.0 / Th (Thorium concentration in the fluid; fixed value or data from log in Bq/kg)
                 ToolPosition = 0 (Alongside) / 1 (Centered)
-        """
+                """
 
         self._dispatch.ProcessMedusaSpectrumData(log_spectrum, log_time, prompt_user, config)
 
