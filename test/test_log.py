@@ -24,25 +24,49 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.gr_litho_interval_log = cls.borehole.log("Lithology from GR Classification")
         cls.ole_log = cls.borehole.insert_new_log(22)
         cls.polar_and_rose_log = cls.borehole.insert_new_log(20)
+        cls.comment_log = cls.borehole.log("Description")
+        cls.fws_log = cls.borehole.log("Sonic")
 
         cls.geotech_borehole = cls.app.open_borehole(str(cls.sample_path / "Geotech Plot.WCL"))
         cls.depth_log = cls.geotech_borehole.log("Elev.")
-        cls.engineering_borehole = cls.app.open_borehole(
-            str(cls.sample_path / "Engineering Log and Borehole Volume.wcl"))
+        cls.marker_log = cls.geotech_borehole.log("Sample No.")
+
+        cls.engineering_borehole = cls.app.open_borehole(str(cls.sample_path / "Engineering Log and Borehole Volume.wcl"))
         cls.engineering_log = cls.engineering_borehole.log("Well Sketch")
 
         cls.volume_analysis_borehole = cls.app.open_borehole(str(cls.sample_path / "Volume Analysis.wcl"))
         cls.formula_log = cls.volume_analysis_borehole.log("GR percent")
+        cls.analysis_log = cls.volume_analysis_borehole.log("Volume")
 
         cls.fmi_borehole = cls.app.open_borehole(str(cls.sample_path / "FMI and Net Sand Estimation.wcl"))
         cls.structure_log = cls.fmi_borehole.log("Structure")
+        cls.image_log = cls.fmi_borehole.log("FMI Image")
+
 
         cls.breakout_borehole = cls.app.open_borehole(str(cls.fixture_path / "Breakout Picking.WCL"))
         cls.breakout_log = cls.breakout_borehole.log("Breakouts")
 
+        cls.lineation_borehole = cls.app.open_borehole(str(cls.fixture_path / "Lineation Example.WCL"))
+        cls.lineation_log = cls.lineation_borehole.log("Lineations")
+        cls.rgb_log = cls.lineation_borehole.log("OPTV (High side)")
+
+        cls.litho_borehole = cls.app.open_borehole(str(cls.sample_path / "Core Description.wcl"))
+        cls.core_desc_log = cls.litho_borehole.log("Bio qualifier")
+        cls.strata_log = cls.litho_borehole.log("Depo")
+        cls.stacking_pattern_log = cls.litho_borehole.log("Stacking")
+        cls.litho_log = cls.litho_borehole.log("lithology")
+        cls.litho_dict = str(cls.fixture_path / "litho_dict.LTH")
+
+        cls.corrosion_borehole = cls.app.open_borehole(str(cls.sample_path / "ABI 43 Corrosion Plot.wcl"))
+        cls.cross_section_log = cls.corrosion_borehole.log("Cross Section")
+
+        cls.nmr_borehole = cls.app.open_borehole(str(cls.sample_path / "NMR Demo.WCL"))
+        cls.percentage_log = cls.nmr_borehole.log("Fluid Volumes")
+
     @classmethod
     def tearDownClass(cls):
         cls.app.quit(False)
+
 
     def test_file_export_to_csv(self):
         self.assertTrue(self.gr_log.file_export(r"C:\Temp", "Test Export", "csv"))
@@ -261,6 +285,9 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertEqual(self.gr_log.maj_grid_spacing, 40.0)
         self.gr_log.min_grid_spacing = 0.0
 
+    def test_typo_in_wellcad_help(self):
+        self.fail("MajGridSpacing is spelled MajGridSpcaing, NbOfData is spelled NbData")
+
     def test_lock_log_data(self):
         self.assertFalse(self.gr_log.lock_log_data)
         self.gr_log.lock_log_data = True
@@ -392,7 +419,169 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrEqual(self.sonic_e1_mud_log, "style", 1)
         self.assertAttrChange(self.sonic_e1_mud_log, "style", 3)
         self.assertAttrNotChanged(self.sonic_e1_mud_log, "style", 0)
-    
+
+    def test_litho_dictionary(self):
+        original_dict = self.litho_log.litho_dictionary
+        self.assertIsInstance(original_dict, wellcad.com.LithoDictionary)
+        new_dict = self.litho_log.attach_litho_dictionary(self.litho_dict)
+        self.assertIsInstance(new_dict, wellcad.com.LithoDictionary)
+        self.litho_log.litho_dictionary = original_dict._dispatch  # Property '<unknown>.LithoDictionary' can not be set.
+
+    def test_component_name(self):
+        self.assertEqual(self.analysis_log.get_component_name(0), "VXBW.ELA")
+        self.analysis_log.set_component_name(0, "test")
+        self.assertEqual(self.analysis_log.get_component_name(0), "test")
+        self.analysis_log.set_component_name(0, "VXBW.ELA")
+        self.assertEqual(self.analysis_log.get_component_name(0), "VXBW.ELA")
+
+    def test_insert_delete_fossil_item(self):
+        self.core_desc_log.insert_new_fossil_item(top_depth=10.0, bottom_depth=11.0, litho_code="a cool litho code", abundance=5.0, dominance=0, position=0.5)
+        self.core_desc_log.insert_new_fossil_item(top_depth=14.0, bottom_depth=15.0, litho_code="a nice litho code", abundance=5.0, dominance=0, position=0.5)
+        fossil_item1 = self.core_desc_log.fossil_item(0)
+        fossil_item2 = self.core_desc_log.fossil_item_at_depth(15.0)
+        self.assertAttrEqual(fossil_item1, "symbol_code", "a cool litho code")
+        self.assertAttrEqual(fossil_item2, "symbol_code", "a nice litho code")
+        self.core_desc_log.remove_fossil_item(0)
+        self.core_desc_log.remove_fossil_item_at_depth(15.0)
+        
+    def test_insert_delete_litho_bed(self):
+        self.litho_log.insert_new_litho_bed(top_depth=10.0, bottom_depth=12.0, litho_code="a cool litho code", value=0.2, position=0.5)
+        self.litho_log.insert_new_litho_bed(top_depth=14.0, bottom_depth=16.0, litho_code="a nice litho code", value=0.2, position=0.5)
+        litho_bed1 = self.litho_log.get_litho_bed(0)
+        litho_bed2 = self.litho_log.get_litho_bed_at_depth(15.0)
+        self.assertAttrEqual(litho_bed1, "litho_code", "a cool litho code")
+        self.assertAttrEqual(litho_bed2, "litho_code", "a nice litho code")
+        self.litho_log.remove_litho_bed(0)
+        self.litho_log.remove_litho_bed_at_depth(15.0)
+
+    def test_set_litho_bed(self):
+        litho_bed1 = self.litho_log.get_litho_bed(0)
+        litho_bed2 = self.litho_log.get_litho_bed(1)
+        self.assertIsInstance(litho_bed1, wellcad.com.LithoBed)
+        self.litho_log.set_litho_bed(0, litho_bed2._dispatch) # TODO 'The property or the method is not allowed on this instance of the object.'
+        self.litho_log.set_litho_bed_at_depth(10522, litho_bed2._dispatch)  # TODO same
+
+    def test_insert_delete_trace(self):
+        """For each log that has an insert_trace methode, we test the following:
+            - adding a trace at the beginning or end
+            - check the No-data value
+            - removing the first or last trace
+            - removing a trace in the middle (has different behaviour depending on the log)
+            - if removing doesn't really remove the trace, what is the value that is set instead"""
+
+        self.assertAttrEqual(self.analysis_log, "nb_of_data", 1869)
+        self.analysis_log.insert_trace(1869)
+        self.assertAttrEqual(self.analysis_log, "nb_of_data", 1870)
+        self.assertEqual(self.analysis_log.get_trace_data(1869, 0), -999.25)
+        self.analysis_log.remove_trace(1869)
+        self.assertAttrEqual(self.analysis_log, "nb_of_data", 1869)
+        self.analysis_log.remove_trace(10)  # trace is not really removed but values are set to No-data
+        self.assertAttrEqual(self.analysis_log, "nb_of_data", 1869)
+        self.assertEqual(self.analysis_log.get_trace_data(10, 0), 0)  # replacement data is not -999.25 like above
+
+        self.assertAttrEqual(self.image_log, "nb_of_data", 1026)
+        self.image_log.insert_trace(0)
+        self.assertAttrEqual(self.image_log, "nb_of_data", 1027)
+        self.assertEqual(self.image_log.get_trace_data(1869, 0), 65535)
+        self.image_log.remove_trace(0)
+        self.assertAttrEqual(self.image_log, "nb_of_data", 1026)
+        self.image_log.remove_trace(10)  # trace is not really removed but values are set to No-data
+        self.assertAttrEqual(self.image_log, "nb_of_data", 1026)
+        self.assertEqual(self.image_log.get_trace_data(10, 0), 65535)
+
+        self.assertAttrEqual(self.fws_log, "nb_of_data", 381)
+        self.fws_log.insert_trace(10)
+        self.assertAttrEqual(self.fws_log, "nb_of_data", 382)
+        self.assertEqual(self.fws_log.get_trace_data(10, 0), -999.0)
+        self.fws_log.remove_trace(10)  # trace should be entirely removed (not the case for image log traces and others)
+        self.assertAttrEqual(self.fws_log, "nb_of_data", 381)
+            
+
+    def test_trace_at_depth(self):
+        """For each log that has an insert_trace_at_depth methode, we test the following:
+            - adding a trace at the beginning or end
+            - check the No-data value
+            - removing the first or last trace
+            - removing a trace in the middle (has different behaviour depending on the log)
+            - if removing doesn't really remove the trace, what is the value that is set instead"""
+        self.assertAttrEqual(self.analysis_log, "nb_of_data", 1869)
+        self.analysis_log.insert_trace_at_depth(13.87)
+        self.assertAttrEqual(self.analysis_log, "nb_of_data", 1870)
+        self.assertEqual(self.analysis_log.get_trace_data_at_depth(13.8, 0), -999.25)
+        self.analysis_log.remove_trace_at_depth(13.87)
+        self.assertAttrEqual(self.analysis_log, "nb_of_data", 1869)
+        self.analysis_log.remove_trace_at_depth(50.0)  # trace is not really removed but values are set to No-data
+        self.assertAttrEqual(self.analysis_log, "nb_of_data", 1869)
+        self.assertEqual(self.analysis_log.get_trace_data_at_depth(50.0, 0), 0)  # replacement data is not -999.25 like above
+
+        self.assertAttrEqual(self.image_log, "nb_of_data", 1026)
+        self.image_log.insert_trace_at_depth(2118.1)
+        self.assertAttrEqual(self.image_log, "nb_of_data", 1027)
+        self.assertEqual(self.image_log.get_trace_data_at_depth(1869, 0), 65535)
+        self.image_log.remove_trace_at_depth(2118.05)
+        self.assertAttrEqual(self.image_log, "nb_of_data", 1026)
+        self.image_log.remove_trace_at_depth(2119.0)  # trace is not really removed but values are set to No-data
+        self.assertAttrEqual(self.image_log, "nb_of_data", 1026)
+        self.assertEqual(self.image_log.get_trace_data_at_depth(2119.0, 0), 65535)
+
+        self.assertAttrEqual(self.fws_log, "nb_of_data", 381)
+        self.fws_log.insert_trace_at_depth(52.0)  # replaces existing trace
+        self.assertAttrEqual(self.fws_log, "nb_of_data", 381)
+        self.fws_log.insert_trace_at_depth(52.05)  # adds a new trace
+        self.assertAttrEqual(self.fws_log, "nb_of_data", 382)
+        self.assertEqual(self.fws_log.get_trace_data_at_depth(52.0, 0), -999.0)
+        self.fws_log.remove_trace_at_depth(52.0)  # trace should be entirely removed (not the case for image log traces and others)
+        self.assertAttrEqual(self.fws_log, "nb_of_data", 381)
+
+        self.assertAttrEqual(self.percentage_log, "nb_of_data", 289)
+        self.percentage_log.insert_trace_at_depth(18.10)  # adds a new trace
+        self.assertAttrEqual(self.percentage_log, "nb_of_data", 290)
+        self.percentage_log.insert_trace_at_depth(18.10)  # replaces existing trace
+        self.assertAttrEqual(self.percentage_log, "nb_of_data", 290)
+        self.assertEqual(self.percentage_log.get_trace_data_at_depth(18.10, 0), -999.0)
+        self.percentage_log.remove_trace_at_depth(18.10)  # trace should be entirely removed (not the case for image log traces and others)
+        self.assertAttrEqual(self.percentage_log, "nb_of_data", 289)
+
+    def test_no_access_to_trace_by_index_for_percentage_logs(self):
+        self.fail("Traces in percentage logs can only be accessed by depth, while in FWS, image and analysis logs both are possible.")
+
+    def test_no_access_to_trace_for_rgb_logs(self):
+        self.fail("There is no way to add or remove trace for RGB logs, should insert and remove work here ?")
+
+    def test_trace_data(self):
+        self.assertEqual(self.percentage_log.get_trace_data(0, 0), 0.14799758791923523)
+        self.percentage_log.set_trace_data(0, 0, 0.25)
+        self.assertEqual(self.percentage_log.get_trace_data(0, 0), 0.25)
+        self.percentage_log.set_trace_data(0, 0, 0.14799758791923523)
+
+    def test_trace_data_at_depth(self):
+        self.assertEqual(self.fws_log.get_trace_data_at_depth(50.0, 0), 0.146484375)
+        self.fws_log.set_trace_data_at_depth(50.0, 0, 0.25)
+        self.assertEqual(self.fws_log.get_trace_data_at_depth(50.0, 0), 0.25)
+        self.fws_log.set_trace_data_at_depth(50.0, 0, 0.146484375)
+
+    def test_trace_sample_rate(self):
+        self.assertAttrEqual(self.fws_log, "trace_sample_rate", 3.5)
+        self.assertAttrChange(self.fws_log, "trace_sample_rate", 10)
+
+    def test_trace_offset(self):
+        self.assertAttrEqual(self.fws_log, "trace_offset", 0.0)
+        self.assertAttrChange(self.fws_log, "trace_offset", 5)
+
+
+    def test_trace_length(self):
+        self.assertAttrEqual(self.percentage_log, "trace_length", 3)
+        self.assertAttrEqual(self.analysis_log, "trace_length", 7)
+        self.assertAttrEqual(self.fws_log, "trace_length", 255)
+        self.assertAttrEqual(self.image_log, "trace_length", 360)
+        self.assertAttrEqual(self.rgb_log, "trace_length", 360)
+
+        self.assertAttrChange(self.percentage_log, "trace_length", 5)
+        self.assertAttrChange(self.analysis_log, "trace_length", 10)
+        self.assertAttrChange(self.fws_log, "trace_length", 300)
+        # self.assertAttrChange(self.image_log, "trace_length", 360)
+        # self.assertAttrChange(self.rgb_log, "trace_length", 360)
+
     def test_insert_new_ole_box_from_file(self):
         self.ole_log.insert_new_ole_box_from_file(str(pathlib.Path(__file__).parent / "fixtures" / "test_img.jpg"),
                                                   True, 0, 10)
@@ -590,6 +779,79 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrEqual(breakout2, "azimuth", 50.0)
         self.breakout_log.remove_breakout(0)
         self.breakout_log.remove_breakout_at_depth(15.0)
+
+    def test_insert_delete_lineation(self):
+        self.lineation_log.insert_new_lineation_ex(depth=10.0, trend=20.0, plunge=3.0, eccentricity=0.0)
+        self.lineation_log.insert_new_lineation_ex(depth=15.0, trend=20.0, plunge=3.0, eccentricity=-0.8)
+        lineation1 = self.lineation_log.lineation(0)
+        lineation2 = self.lineation_log.lineation_at_depth(15.0)
+        self.assertAttrEqual(lineation1, "eccentricity", 0.0)
+        self.assertAttrEqual(lineation2, "eccentricity", -0.800000011920929)
+        self.lineation_log.remove_lineation(0)
+        self.lineation_log.remove_lineation_at_depth(15.0)
+
+    def test_column_name(self):
+        self.assertEqual(self.strata_log.get_column_name(0), "Depo")
+        self.strata_log.set_column_name(0, "new column name")
+        self.assertEqual(self.strata_log.get_column_name(0), "new column name")
+        self.strata_log.set_column_name(0, "Depo")
+
+    def test_strata_column(self):
+        column = self.strata_log.strata_column(0)
+        comment_box = column.comment_box(0)
+        self.assertEqual(comment_box.text, "Distributary Mouth Bar")
+        self.assertIsInstance(column, wellcad.com.Log)
+
+    def test_remove_strata_column(self):
+        self.fail("There is no way to programmatically add a strata column")
+        self.strata_log.remove_strata_column(0)
+
+    def test_insert_delete_comment_box(self):
+        self.comment_log.insert_new_comment_box(top_depth=10.0, bottom_depth=12.0, text="kind text")
+        self.comment_log.insert_new_comment_box(top_depth=14.0, bottom_depth=16.0, text="mean text")
+        comment_box1 = self.comment_log.comment_box(0)
+        comment_box2 = self.comment_log.comment_box_at_depth(15.0)
+        self.assertAttrEqual(comment_box1, "text", "kind text")
+        self.assertAttrEqual(comment_box2, "text", "mean text")
+        self.comment_log.remove_comment_box(0)
+        self.comment_log.remove_comment_box_at_depth(15.0)
+
+    def test_insert_delete_marker(self):
+        self.marker_log.insert_new_marker(depth=10.0, name="a name", comment="a comment", contact="a contact style")
+        self.marker_log.insert_new_marker(depth=15.0, name="an other name", comment="an other comment", contact="an other contact style")
+        marker1 = self.marker_log.marker(3)
+        marker2 = self.marker_log.marker_by_name("an other name")
+        self.assertAttrEqual(marker1, "comment", "a comment")
+        self.assertAttrEqual(marker2, "comment", "an other comment")
+        self.marker_log.remove_marker(3)
+        self.marker_log.remove_marker(3)
+
+    def test_font(self):
+        font = self.comment_log.font
+        self.assertIsInstance(font, wellcad.com.Font)
+        new_font = font
+        new_font.italic = True
+        self.comment_log.font = new_font  # Fails, for the moment you need to use new_font._dispatch for it to work
+
+    def test_insert_delete_cross_box(self):
+        self.cross_section_log.insert_new_cross_box(top_depth=10.0, bottom_depth=12.0)
+        self.cross_section_log.insert_new_cross_box(top_depth=14.0, bottom_depth=16.0)
+        cross_box1 = self.cross_section_log.cross_box(0)
+        cross_box2 = self.cross_section_log.cross_box_at_depth(15.0)
+        self.assertAttrEqual(cross_box1, "top_depth", 10.0)
+        self.assertAttrEqual(cross_box2, "top_depth", 14.0)
+        self.cross_section_log.remove_cross_box(0)
+        self.cross_section_log.remove_cross_box_at_depth(15.0)
+
+    def test_insert_delete_stack_item(self):
+        self.stacking_pattern_log.insert_new_stack_item(top_depth=10.0, bottom_depth=12.0, top_width=0.1, bottom_width=0.9)
+        self.stacking_pattern_log.insert_new_stack_item(top_depth=14.0, bottom_depth=16.0, top_width=0.1, bottom_width=0.9)
+        stack_item1 = self.stacking_pattern_log.stack_item(0)
+        stack_item2 = self.stacking_pattern_log.stack_item_at_depth(15.0)
+        self.assertAttrEqual(stack_item1, "top_depth", 10.0)
+        self.assertAttrEqual(stack_item2, "top_depth", 14.0)
+        self.stacking_pattern_log.remove_stack_item(0)
+        self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
 
 if __name__ == '__main__':

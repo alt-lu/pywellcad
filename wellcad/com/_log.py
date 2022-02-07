@@ -465,7 +465,7 @@ class Log(DispatchWrapper):
         value : float
             The value you want to set the data to.
         """
-        return self._dispatch.SetData(index, value)
+        self._dispatch.SetData(index, value)
 
     def get_data_at_depth(self, depth):
         """Gets the log data value at the specified depth.
@@ -496,7 +496,7 @@ class Log(DispatchWrapper):
         value : float
             The value you want to set the data to.
         """
-        return self._dispatch.SetDataAtDepth(depth, value)
+        self._dispatch.SetDataAtDepth(depth, value)
 
     def data_depth(self, index):
         """Gets the log data depth for the specified index.
@@ -607,6 +607,8 @@ class Log(DispatchWrapper):
 
     def interval_item(self, index):
         """Gets an interval item object from an Interval Log.
+
+        Items are ordered by ascending top depth.
 
         Parameters
         ----------
@@ -812,10 +814,17 @@ class Log(DispatchWrapper):
     def fossil_item(self, index):
         """Gets a Fossil Item object from the CoreDesc Log at the specified index.
 
+        Items are ordered by ascending top depth.
+
         Parameters
         ----------
         index : int
             Zero based index of the item to be retrieved.
+
+        Returns
+        -------
+        FossilItem or None
+            The FossilItem at the desired index or none if index is out of range.
         """
         return FossilItem(self._dispatch.FossilItem(index))
 
@@ -826,6 +835,11 @@ class Log(DispatchWrapper):
         ----------
         depth : float
             depth value in current depth units at which the item will be retrieved
+
+        Returns
+        -------
+        FossilItem or None
+            The FossilItem at the desired depth or None if depth is out of range.
         """
         return FossilItem(self._dispatch.FossilItemAtDepth(depth))
 
@@ -849,6 +863,11 @@ class Log(DispatchWrapper):
             major = 2
         position : float
             A value between 0 and 1 determining the horizontal position of the symbol within the log column.
+
+        Returns
+        -------
+        FossilItem
+            The newly created FossilItem.
         """
         return FossilItem(self._dispatch.InsertNewFossilItem(top_depth, bottom_depth, litho_code, abundance, dominance, position))
 
@@ -878,6 +897,8 @@ class Log(DispatchWrapper):
 
     def get_litho_bed(self, index):
         """Gets a LithoBed object at the specified index from a Lithology Log.
+
+        Items are ordered by ascending top depth.
 
         Parameters
         ----------
@@ -984,49 +1005,81 @@ class Log(DispatchWrapper):
     def insert_trace(self, index):
         """Inserts a new data trace into an Image, FWS or Analysis Log at the specified index.
 
+        Columns for the newly inserted trace are filled with No-Data
+        value. Edit them with set_trace_data or set_trace_data_at_depth.
+
         Parameters
         ----------
         index : int
             Zero based index at which the trace should be added.
-            Must be lower or equal the number of data traces within the log.
-            If necessary, existing traces will be shifted.
+            Index zero represents the deepest trace.
+            The maximum allowed index is (number of traces + 1).
+            For Image and Analysis logs, existing traces will be shifted upwards depth wise.
         """
         self._dispatch.InsertTrace(index)
 
     def insert_trace_at_depth(self, depth):
-        """Inserts a new data trace into an Image, FWS or Analysis Log at the specified depth.
+        """Inserts a new data trace into an Image, FWS or Analysis or Percent Log at the specified depth.
+
+        Columns for the newly inserted trace are filled with No-Data
+        value. Edit them with set_trace_data or set_trace_data_at_depth.
 
         Parameters
         ----------
         depth : float
-            The depth value in current depth units at which the new data trace will be inserted.
-            If necessary existing traces will be shifted.
-            The function fails if the specified depth lies without the constant sample rate of the log
-            (use InsertTrace instead).
+            The depth value in current depth units at which the new
+            data trace will be inserted.
+            For Image and Analysis logs:
+            Insertion depth is rounded to the nearest sample.
+            Value must be within the depth range of the existing
+            traces or contiguous to that range (± 1.5 * sampling rate).
+            If necessary existing traces will be shifted upwards.
+            For Percent and FWS logs, if there is already data at that
+            depth, it is replaced with No-Data value, otherwise a trace
+            is inserted at the desired depth without shifting other
+            traces depth wise.
+
         """
         self._dispatch.InsertTraceAtDepth(depth)
 
     def remove_trace(self, index):
-        """Remove an entire data trace from an Image, FWS, Analysis or Percentage Log.
-        Removing a trace from a log means setting all trace values to NULL.
+        """Remove an entire data trace from an Image, FWS, Analysis
+        or Percentage Log.
+
+        For Image logs, if the trace is the first or
+        the last, it is removed. Otherwise, it sets all values of that
+        trace to No-Data value.
+        For Analysis, it is the same as for Image logs, but the
+        replacement value is 0.
+        For FWS logs, it removes the trace and shifts down all above
+        traces.
 
         Parameters
         ----------
         index : int
-            Zero based index of the trace to be set to NULL.
+            Zero based index of the trace (0 = bottom depth).
         """
         self._dispatch.RemoveTrace(index)
 
     def remove_trace_at_depth(self, depth):
-        """Remove an entire data trace from an Image, FWS, Analysis or Percentage Log.
-        Removing a trace from a log means setting all trace values to NULL.
+        """Remove an entire data trace from an Image, FWS, Analysis or
+        Percentage Log.
+
+        For Image logs, if the trace is the first or
+        the last, it is removed. Otherwise, it sets all values of that
+        trace to No-Data value.
+        For Analysis, it is the same as for Image logs, but the
+        replacement value is 0.
+        For FWS logs and Percent, it removes the trace and shifts down
+        all above traces.
 
         Parameters
         ----------
         depth : float
-            The depth value in current depth units at which the trace will be set to NULL.
+            The depth value in current depth units at which the trace
+            will be removed or set to No-Data value.
         """
-        self._dispatch.InsertTraceAtDepth(depth)
+        self._dispatch.RemoveTraceAtDepth(depth)
 
     def get_trace_data(self, depth_index, trace_index):
         """Gets the data value at the specified row index and position within the trace
@@ -1035,14 +1088,18 @@ class Log(DispatchWrapper):
         Parameters
         ----------
         depth_index : int
-            zero based index of the depth (0 = bottom depth).
+            zero based index of the depth (0 = bottom depth for FWS,
+            Image, RGB and Analysis logs, top depth for Percent logs).
         trace_index : int
             zero based index of the column.
 
         Returns
         -------
         float
-            The data value at the specified depth.
+            The data value at the specified index and column.
+            The current No-Data value (e.g. -999) will be returned if
+            the depth or trace index refers to a non-existent (out of
+            index range) data point.
         """
         return self._dispatch.GetTraceData(depth_index, trace_index)
 
@@ -1078,7 +1135,10 @@ class Log(DispatchWrapper):
         Returns
         -------
         float
-            The data value at the specified depth.
+            The data value at the specified depth and column.
+            The current No-Data value (e.g. -999) will be returned if
+            the depth or trace index refers to a non-existent (out of
+            index range) data point.
         """
         return self._dispatch.GetTraceDataAtDepth(depth, trace_position)
 
@@ -1100,51 +1160,42 @@ class Log(DispatchWrapper):
 
     @property
     def trace_length(self):
-        """Gets the length of a data trace in Image, RGB and FWS Logs."""
+        """int: The length of a data trace in Image, RGB and FWS Logs.
+
+        For FWS, Analysis and Percent logs:
+        If trace_length is set to a lower value than the current one,
+        all the trace columns past the desired length are discared.
+        If trace_length is set to a higher value than the current one,
+        additional columns are filled with No-data values.
+        For Image and RGB logs:
+        If trace_length is set to a lower value than the current one,
+        trace value are resampled and averaged.
+        If trace_length is set to a higher value than the current one,
+        TODO determine behaviour here.
+        """
         return self._dispatch.TraceLength
 
     @trace_length.setter
     def trace_length(self, length):
-        """Sets  the length of a data trace in Image, RGB and FWS Logs.
-
-        Parameters
-        ----------
-        length : str
-            numerical value corresponding to the length of the trace
-        """
-        self._dispatch.TraceLength(length)
+        self._dispatch.TraceLength = length
 
     @property
     def trace_offset(self):
-        """Gets the offset of a data trace in the FWS Log."""
+        """float: The offset of a data trace in the FWS Log."""
         return self._dispatch.TraceOffset
 
     @trace_offset.setter
     def trace_offset(self, offset):
-        """Sets the offset of a data trace in the FWS Log.
-
-        Parameters
-        ----------
-        offset : float
-            numerical value representing the offset
-        """
-        self._dispatch.TraceOffset(offset)
+        self._dispatch.TraceOffset = offset
 
     @property
     def trace_sample_rate(self):
-        """Gets the trace sample interval in Image, RGB and FWS Logs."""
+        """float: The trace sample interval for a FWS Logs."""
         return self._dispatch.TraceSampleRate
 
     @trace_sample_rate.setter
     def trace_sample_rate(self, rate):
-        """Sets the trace sample interval in Image, RGB and FWS Logs.
-
-        Parameters
-        ----------
-        rate : float
-            numerical value representing the sample rate or interval
-        """
-        self._dispatch.TraceSampleRate(rate)
+        self._dispatch.TraceSampleRate = rate
 
     def get_column_name(self, column):
         """Gets set the name of a Strata Log column.
@@ -1180,6 +1231,11 @@ class Log(DispatchWrapper):
         ----------
         index : int
             Zero based index at which the box will be retrieved.
+
+        Returns
+        -------
+        CommentBox or None
+            The CommentBox at the desired index or None if index is out of range.
         """
         return CommentBox(self._dispatch.CommentBox(index))
 
@@ -1190,6 +1246,11 @@ class Log(DispatchWrapper):
         ----------
         depth : float
             The depth value in current depth units at which the comment box will be retrieved.
+
+        Returns
+        -------
+        CommentBox or None
+            The CommentBox at the desired depth or None if depth is out of range.
         """
         return CommentBox(self._dispatch.CommentBoxAtDepth(depth))
 
@@ -1204,6 +1265,11 @@ class Log(DispatchWrapper):
             The bottom of the box in current depth units.
         text : str
             The text to be displayed in the new box.
+
+        Returns
+        -------
+        CommentBox
+            The newly created CommentBox.
         """
         return CommentBox(self._dispatch.InsertNewCommentBox(top_depth, bottom_depth, text))
 
@@ -1295,8 +1361,13 @@ class Log(DispatchWrapper):
         ----------
         index : int
             Zero based index  of the column to be returned.
+
+        Returns
+        -------
+        Log
+            A comment log object.
         """
-        return self._dispatch.StrataColumn(index)
+        return Log(self._dispatch.StrataColumn(index))
 
     def remove_strata_column(self, index):
         """Removes the the specified column from a Strata Log at the specified index.
@@ -1312,6 +1383,10 @@ class Log(DispatchWrapper):
     def font(self):
         """Gets the font used in a Comment Log as Font Object."""
         return Font(self._dispatch.Font)
+
+    @font.setter
+    def font(self, font):
+        self._dispatch.Font = font
 
     def attach_attribute_dictionary(self, attribute, file):
         """Attaches a new attribute library (\*.TAD file) to a
@@ -1353,7 +1428,8 @@ class Log(DispatchWrapper):
 
         Raises
         ------
-            If the column index points to a non-existent column (out
+        pywintypes.com_error
+            If the column index points to a non existent column (out
             of index range) an exception will be raised.
         """
         return self._dispatch.GetAttributeName(index)
@@ -1371,7 +1447,8 @@ class Log(DispatchWrapper):
 
         Raises
         ------
-            If the column index points to a non-existent column (out
+        pywintypes.com_error
+            If the column index points to a non existent column (out
             of index range) an exception will be raised.
         """
         self._dispatch.SetAttributeName(index, name)
@@ -1747,7 +1824,12 @@ class Log(DispatchWrapper):
         Parameters
         ----------
         index : int
-            Zero based index of the box to be retrieve.
+            Zero based index of the box to be retrieved.
+
+        Returns
+        -------
+        CrossSectionBox or None
+            The CrossSectionBox at the desired index or None if index is out of range.
         """
         return CrossSectionBox(self._dispatch.CrossBox(index))
 
@@ -1758,6 +1840,11 @@ class Log(DispatchWrapper):
         ----------
         depth : float
             The depth of the box to be retrieved in current depth units.
+
+        Returns
+        -------
+        CrossSectionBox or None
+            The CrossSectionBox at the desired index or None if the index is out of range.
         """
         return CrossSectionBox(self._dispatch.CrossBoxAtDepth(depth))
 
@@ -1770,6 +1857,11 @@ class Log(DispatchWrapper):
             The top depth value of the cross section box in current depth units.
         bottom_depth : float
             The bottom depth value of the cross section box in current depth units.
+
+        Returns
+        -------
+        CrossSectionBox
+            The newly created CrossSectionBox.
         """
         return CrossSectionBox(self._dispatch.InsertNewCrossBox(top_depth, bottom_depth))
 
@@ -1793,8 +1885,6 @@ class Log(DispatchWrapper):
         """
         self._dispatch.RemoveCrossBoxAtDepth(depth)
 
-    # Stacking Pattern Log
-
     def insert_new_stack_item(self, top_depth, bottom_depth, top_width, bottom_width):
         """Inserts a new data interval into a Stacking Pattern Log.
 
@@ -1808,16 +1898,28 @@ class Log(DispatchWrapper):
            Width value at the top of the new interval.
         bottom_width : float
             Width value at the bottom of the new interval.
+
+        Returns
+        -------
+        StackingPatternItem
+            The newly created StackingPatternItem.
         """
         return StackingPatternItem(self._dispatch.InsertNewStackItem(top_depth, bottom_depth, top_width, bottom_width))
 
     def stack_item(self, index):
         """Gets a Stack Item object from the Stacking Pattern Log at the specified depth index.
 
+        Items are ordered by ascending top depth.
+
         Parameters
         ----------
         index : int
-            Zero based index of the item to be retrieve.
+            Zero based index of the item to be retrieved.
+
+        Returns
+        -------
+        StackingPatternItem or None
+            The StackingPatternItem at the desired index or None if the index is out of range.
         """
         return StackingPatternItem(self._dispatch.StackItem(index))
 
@@ -1828,6 +1930,11 @@ class Log(DispatchWrapper):
         ----------
         depth : float
             The depth of the item to be retrieved in current depth units.
+
+        Returns
+        -------
+        StackingPatternItem or None
+            The StackingPatternItem at the desired depth or None if depth is out of range.
         """
         return StackingPatternItem(self._dispatch.StackItemAtDepth(depth))
 

@@ -2709,7 +2709,6 @@ class Borehole(DispatchWrapper):
                 FluidTh = 0.0 / Th (Thorium concentration in the fluid; fixed value or data from log in Bq/kg)
                 ToolPosition = 0 (Alongside) / 1 (Centered)
                 """
-
         self._dispatch.ProcessMedusaSpectrumData(log_spectrum, log_time, prompt_user, config)
 
     def process_spectrum_data(self, log=None, prompt_user=None, config=None):
