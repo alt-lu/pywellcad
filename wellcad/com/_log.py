@@ -115,7 +115,13 @@ class Log(DispatchWrapper):
 
     @property
     def left_position(self):
-        """float: The left position of the log column as a fraction of the document width."""
+        """float: The position of the left side of the log column as a fraction
+        of the document width.
+        
+        In the case that this is set to be a value higher than
+        ``right_position``, the two attributes will swap. Values will be
+        clamped in the range [0.0, 1.0].
+        """
         return self._dispatch.LeftPosition
 
     @left_position.setter
@@ -124,7 +130,13 @@ class Log(DispatchWrapper):
 
     @property
     def right_position(self):
-        """float: The right position of the log column as a fraction of the document width."""
+        """float: The position of the right side of the log column as a
+        fraction of the document width.
+        
+        In the case that this is set to be a value lower than
+        ``left_position``, the two attributes will swap. Values will be
+        clamped in the range [0.0, 1.0].
+        """
         return self._dispatch.RightPosition
 
     @right_position.setter
@@ -133,6 +145,9 @@ class Log(DispatchWrapper):
 
     def set_position(self, left, right):
         """Sets the position and width of the log.
+
+        Values given outside the range of [0.0, 1.0] will be clamped. If
+        ``left`` > ``right``, the arguments are swapped.
 
         Parameters
         ----------

@@ -74,18 +74,15 @@ class TestDepth(unittest.TestCase, SamplePath, ExtraAsserts):
 
         self.depth.set_position(left, right)
 
-    def test_confusing_swap(self):
+    def test_left_position_greater_than_right(self):
         left = self.depth.left_position
         right = self.depth.right_position
 
-        # This is very confusing behaviour
         self.depth.left_position = 0.5
-        self.depth.right_position = 0.7
-        self.assertAlmostEqual(self.depth.left_position, 0.5)
-        self.assertAlmostEqual(self.depth.right_position, 0.7)
+        self.assertAlmostEqual(self.depth.left_position, right)
+        self.assertAlmostEqual(self.depth.right_position, 0.5)
 
-        self.depth.left_position = left
-        self.depth.right_position = right
+        self.depth.set_position(left, right)
 
     def test_out_of_bounds_position(self):
         left = self.depth.left_position

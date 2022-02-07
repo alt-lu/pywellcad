@@ -147,18 +147,15 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
 
         self.gr_log.set_position(left, right)
 
-    def test_confusing_swap(self):
+    def test_left_position_greater_than_right(self):
         left = self.gr_log.left_position
         right = self.gr_log.right_position
 
-        # This is very confusing behaviour
         self.gr_log.left_position = 0.5
-        self.gr_log.right_position = 0.7
-        self.assertAlmostEqual(self.gr_log.left_position, 0.5)
-        self.assertAlmostEqual(self.gr_log.right_position, 0.7)
+        self.assertAlmostEqual(self.gr_log.left_position, right)
+        self.assertAlmostEqual(self.gr_log.right_position, 0.5)
 
-        self.gr_log.left_position = left
-        self.gr_log.right_position = right
+        self.gr_log.set_position(left, right)
 
     def test_out_of_bounds_position(self):
         left = self.gr_log.left_position

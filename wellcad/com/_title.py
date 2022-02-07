@@ -34,8 +34,14 @@ class Title(DispatchWrapper):
 
     @property
     def left_position(self):
-        """float: The left position of any group or log title as a
-        fraction of the document width (value between 0 and 1)."""
+        """float: The position of the left side of a title for a log or group,
+        as a fraction of the document width.
+
+        If set for a group title, the logs that are a part of the group will
+        be moved/scaled accordingly. In the case that this is set to be a value
+        higher than ``right_position``, the two attributes will swap. Values
+        will be clamped in the range [0.0, 1.0].
+        """
         return self._dispatch.LeftPosition
 
     @left_position.setter
@@ -44,8 +50,14 @@ class Title(DispatchWrapper):
 
     @property
     def right_position(self):
-        """float: The right position of any group or log title in
-        percent of the document width (value between 0 and 1)."""
+        """float: The position of the right side of a title for a log or group,
+        as a fraction of the document width.
+
+        If set for a group title, the logs that are a part of the group will
+        be moved/scaled accordingly. In the case that this is set to be a value
+        lower than ``left_position``, the two attributes will swap. Values
+        will be clamped in the range [0.0, 1.0].
+        """
         return self._dispatch.RightPosition
 
     @right_position.setter

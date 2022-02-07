@@ -83,8 +83,13 @@ class Depth(DispatchWrapper):
 
     @property
     def left_position(self):
-        """float: The left position of the master depth column border
-        relative to the document width (value between 0 and 1)."""
+        """float: The position of the left side of the master depth column as a
+        fraction of the document width.
+        
+        In the case that this is set to be a value higher than
+        ``right_position``, the two attributes will swap. Values will be
+        clamped in the range [0.0, 1.0].
+        """
         return self._dispatch.LeftPosition
 
     @left_position.setter
@@ -93,8 +98,13 @@ class Depth(DispatchWrapper):
 
     @property
     def right_position(self):
-        """float: The right position of the master depth column border
-        relative to the document width (value between 0 and 1)."""
+        """float: The position of the right side of the master depth column as
+        a fraction of the document width.
+        
+        In the case that this is set to be a value lower than
+        ``left_position``, the two attributes will swap. Values will be
+        clamped in the range [0.0, 1.0].
+        """
         return self._dispatch.RightPosition
 
     @right_position.setter
@@ -116,20 +126,21 @@ class Depth(DispatchWrapper):
     def unit(self, unit):
         self._dispatch.Unit = unit
 
+    def set_position(self, left, right):
+        """Sets the position and width of the master depth column.
 
+        Values given outside the range of [0.0, 1.0] will be clamped. If
+        ``left`` > ``right``, the arguments are swapped.
 
-    def set_position(self, left_pos, right_pos):
-        """Set the left and right position of the master depth
-        column border relative to the document width (value between 0 and 1).
-        
         Parameters
         ----------
-        left_pos : float
-            A value between 0 and 1 indicating the left depth
-            column border relative to the document width.
-        right_pos : float
-            A value between 0 and 1 indicating the right
-            depth column border relative to the document width.
+        left : float
+            The position of the left side of the depth column as a fraction of
+            the document width.
+
+        right : float
+            The position of the right side of the depth column as a fraction of
+            the document width.
         """
-        self._dispatch.SetPosition(left_pos, right_pos)
+        self._dispatch.SetPosition(left, right)
 
