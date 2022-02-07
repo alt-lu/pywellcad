@@ -1098,7 +1098,7 @@ class Log(DispatchWrapper):
 
     def get_trace_data(self, depth_index, trace_index):
         """Gets the data value at the specified row index and position within the trace
-         (column index) of an Analysis, Percentage, FWS, Image or RGB Log.
+        (column index) of an Analysis, Percentage, FWS, Image or RGB Log.
 
         Parameters
         ----------
@@ -1120,7 +1120,7 @@ class Log(DispatchWrapper):
 
     def set_trace_data(self, depth_index, trace_index, value):
         """Sets the data value at the specified row index and position within the trace
-         (column index) of an Analysis, Percentage, FWS, Image or RGB Log.
+        (column index) of an Analysis, Percentage, FWS, Image or RGB Log.
 
         Parameters
         ----------
@@ -1159,7 +1159,7 @@ class Log(DispatchWrapper):
 
     def set_trace_data_at_depth(self, depth, trace_position, value):
         """set the data value at the specified depth and position within
-         the trace of an Analysis, Percentage, FWS, Image or RGB Log
+        the trace of an Analysis, Percentage, FWS, Image or RGB Log
 
         Parameters
         ----------
@@ -2246,7 +2246,7 @@ class Log(DispatchWrapper):
 
     def allow_export_litho_dictionary(self, export, password):
         """When dealing with a protected document you can use this method to enable / disable the option
-         to export the symbol dictionary (\*.LTH) of a log. This assumes you are in possession of the password.
+        to export the symbol dictionary (\*.LTH) of a log. This assumes you are in possession of the password.
 
         Parameters
         ----------
@@ -2259,7 +2259,7 @@ class Log(DispatchWrapper):
 
     def allow_modify_log_data(self, export, password):
         """When dealing with a protected document you can use this method to enable / disable the option
-         to edit the data of a log. This assumes you are in possession of the password.
+        to edit the data of a log. This assumes you are in possession of the password.
 
         Parameters
         ----------
@@ -2311,7 +2311,7 @@ class Log(DispatchWrapper):
 
     def allow_view_log_history(self, export, password):
         """When dealing with a protected document you can use this method to enable / disable the option
-         to view the log history. This assumes you are in possession of the password.
+        to view the log history. This assumes you are in possession of the password.
 
         Parameters
         ----------

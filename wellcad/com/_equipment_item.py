@@ -124,8 +124,8 @@ class EquipmentItem(DispatchWrapper):
     def name(self):
         """str: The name of the equipment item.
 
-         It is the same name as shown in the first column of the
-         tabular editor."""
+        It is the same name as shown in the first column of the
+        tabular editor."""
         return self._dispatch.Name
 
     @property
@@ -154,7 +154,7 @@ class EquipmentItem(DispatchWrapper):
     @property
     def thickness(self):
         """float: The thickness of a hollow item in the same units as
-         the drill diameter."""
+        the drill diameter."""
         return self._dispatch.Thickness
 
     @thickness.setter
