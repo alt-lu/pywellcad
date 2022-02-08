@@ -17,65 +17,13 @@ obj_wcad = wellcad.Application()
 ### borehole object testing ###
 obj_bhole = obj_wcad.get_active_borehole()
 
-# General document handling
-try: 
-    doc_name = obj_bhole.name
-    obj_bhole.name = "Master Test 3"
-except:
-    PrintException("Get/Set Name")
-
-
-try:
-    doc_name = f"{obj_bhole.version_major}.{obj_bhole.version_minor}b{obj_bhole.version_build}"
-    obj_bhole.name = doc_name
-except:
-    PrintException("Get Versions")
-    
-
-try:
-    obj_bhole.auto_update = False
-    is_auto_update = obj_bhole.auto_update
-    obj_bhole.auto_update = True
-except:
-    PrintException("AutoUpdate")
-    
-    
-try:
-    obj_bhole.refresh_window()
-except:
-    PrintException("RefreshWindow")
-    
+# General document handling     
 
 try:
     obj_bhole.set_draft_mode(2)
 except:
     PrintException("SetDraftMode")
     
-    
-try:
-    obj_bhole.minimize_document_window()
-except:
-    PrintException("MinimizeWindow")
-    
-    
-try:
-    obj_bhole.maximize_document_window()
-except:
-    PrintException("MaximizeWindow")
-    
-    
-try:
-    bot_depth = obj_bhole.bottom_depth
-except:
-    PrintException("GetBottomDepth")
-    
-
-try:
-    top_depth = obj_bhole.top_depth
-except:
-    PrintException("GetTopDepth")
-    
-
 try:
     obj_bhole.set_visible_depth_range(1.0, 10.0)
 except:
@@ -115,36 +63,9 @@ except:
     
 # General log handling
 try:
-    nb_of_logs = obj_bhole.nb_of_logs
-except:
-    PrintException("Nb Of Logs") 
- 
-
-try:
-    obj_log = obj_bhole.get_log("GR")
-    obj_log = obj_bhole.get_log(0)
-except:
-    PrintException("Get Log") 
-
-
-try:
     obj_log = obj_bhole.convert_log_to("GR", 3, False)
 except:
     PrintException("Convert Log To") 
-
-
-try:
-    obj_log = obj_bhole.insert_new_log(1)
-except:
-    PrintException("Insert New Log")
-
-
-try:
-    obj_log_orig = obj_bhole.get_log("GR")
-    obj_log_copy = obj_bhole.copy_log(obj_log_orig)
-except:
-    PrintException("Add Log")     
-
 
 try:
     obj_bhole.clear_log_contents(obj_bhole.nb_of_logs-1) 
@@ -156,12 +77,6 @@ try:
     obj_bhole.remove_log(obj_bhole.nb_of_logs-1)
 except:
     PrintException("Remove Log")
-  
-  
-try:
-    obj_bhole.apply_template(r"C:\Temp\Well1.wdt",False) 
-except:
-    PrintException("Apply Template")   
 
 
 # Common log edition

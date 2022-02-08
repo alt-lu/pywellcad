@@ -12,112 +12,107 @@ class Borehole(DispatchWrapper):
     _DISPATCH_METHODS = ("Log", "ApplyStructureTrueToApparentCorrection", "ApplyStructureApparentToTrueCorrection",
                          "RemoveStructuralDip", "ExtractStructureIntervalStatistic", "ColorClassification",
                          "RepresentativePicks", "ImageComplexityMap", "NormalizeImage", "OrientImageToNorth",
-                         "FilterImageLog", "ApplyConditionalTesting", "RQD", "GrainSizeSorting", "StackTraces", 
-                         "FilterFWSLog", "AverageFilterFWSLog", "FreqFilterFwsLog","ApplyStandOffCorrection",
-                         "CompensatedVelocity", "ApplySemblanceProcessing", "ProcessReflectedTubeWave", "PickFirstArrival",
-                         "PickE1Arrival", "ExtractE1Amplitude", "AdjustPickToExtremum","ExtractWindowPeakAmplitude",
-                         "ApplyNaturalGammaBoreholeCorrection", "ApplyTotalGammaCalibration", "CorrectDeadSensor", 
-                         "CalculateFluidVelocity", "CalculateApparentMetalLoss",)
+                         "FilterImageLog", "ApplyConditionalTesting", "RQD", "GrainSizeSorting", "StackTraces",
+                         "FilterFWSLog", "AverageFilterFWSLog", "FreqFilterFwsLog", "ApplyStandOffCorrection",
+                         "CompensatedVelocity", "ApplySemblanceProcessing", "ProcessReflectedTubeWave",
+                         "PickFirstArrival", "PickE1Arrival", "ExtractE1Amplitude", "AdjustPickToExtremum",
+                         "ExtractWindowPeakAmplitude", "ApplyNaturalGammaBoreholeCorrection",
+                         "ApplyTotalGammaCalibration", "CorrectDeadSensor", "CalculateFluidVelocity",
+                         "CalculateApparentMetalLoss", "GetLog", "CreateNewWorkspace",  "Workspace", "FileExport",
+                         "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",)
 
     @property
     def name(self):
-        """Returns the title of a borehole document."""
+        """str: The title of a borehole document."""
         return self._dispatch.Name
 
     @name.setter
     def name(self, name):
-        """Sets the title of a borehole document.
-        
-        Arguments:
-            name -- String specifying the new name of the document.
-        """
-
         self._dispatch.Name = name
 
     @property
     def version_major(self):
-        """Returns the major version number of WellCAD."""
+        """int: The major version number of WellCAD."""
         return self._dispatch.VersionMajor
 
     @property
     def version_minor(self):
-        """Returns the major version number of WellCAD."""
+        """int: The minor version number of WellCAD."""
         return self._dispatch.VersionMinor
 
     @property
     def version_build(self):
-        """Returns the build number of WellCAD."""
+        """int: The build number of WellCAD."""
         return self._dispatch.VersionBuild
 
     @property
+    def top_depth(self):
+        """float: The top depth of a borehole in units of the master depth axis."""
+        return self._dispatch.TopDepth
+
+    @property
+    def bottom_depth(self):
+        """float: The bottom depth of a borehole in units of the master depth axis."""
+        return self._dispatch.BottomDepth
+
+    @property
+    def nb_of_logs(self):
+        """int: The number of logs in a borehole."""
+        return self._dispatch.NbOfLogs
+
+    @property
     def auto_update(self):
-        """Returns True if the auto update of the document is enabled."""
+        """bool: The auto update status of the borehole."""
         return self._dispatch.AutoUpdate
 
     @auto_update.setter
     def auto_update(self, flag):
-        """Sets the auto update status of the borehole document.
-        
-        Arguments:
-            flag -- set to True to enable the auto update or tp False
-                    to disable the automatic refresh.
-
-        """
-
         self._dispatch.AutoUpdate = flag
 
     def refresh_window(self):
         """Performs a one time refresh of the borehole view"""
         self._dispatch.RefreshWindow()
 
-    def set_draft_mode(self, display_mode=0):
+    def set_draft_mode(self, display_mode=None):
         """Toggles the view of the borehole document.
-        
-        A borehole document can be displayed in the following modes:
-        0 - Page Layout
-        1 - Draft and fit
-        2 - Draft
 
-        Arguments:
-            display_mode -- Integer specifying the document viewing mode
+        Parameters
+        ----------
+        display_mode : int, optional
+            The document viewing mode.  A borehole document can be displayed in the following modes:
+
+                * 0 = Page Layout
+                * 1 = Draft and fit
+                * 2 = Draft
         """
-
         self._dispatch.SetDraftMode(display_mode)
 
-    def minimize_document_window(self):
+    def minimize_window(self):
         """Shrinks the document window to an icon.
-        
+
         Works only if document windows are not tabbed.
         """
-
         self._dispatch.MinimizeWindow()
 
-    def maximize_document_window(self):
+    def maximize_window(self):
         """Enlarges the document window to fit the WellCAD frame.
-        
+
         Works only if document windows are not tabbed.
         """
-
         self._dispatch.MaximizeWindow()
 
-    @property
-    def bottom_depth(self):
-        """Returns the bottom of the document in actual depth units."""
-        return self._dispatch.BottomDepth
-
-    @property
-    def top_depth(self):
-        """Returns the top of the document in actual depth units."""
-        return self._dispatch.TopDepth
-
-    def set_visible_depth_range(self, top_depth, bottom_depth):
+    def set_visible_depth_range(self, top_depth=None, bottom_depth=None):
         """Adjusts the depth range displayed in a borehole view.
-        
-        Arguments:
-            top_depth -- Depth at which the data display should start.
-            bottom_depth -- Depth at which the data display terminates.
-        """
 
+        Parameters
+        ----------
+        top_depth : float
+            The top depth of the visible depth range.
+            If not provided, the current top depth of the document will be used
+        bottom_depth : float
+            The bottom depth of the visible depth range.
+            If not provided, the current bottom depth of the document will be used
+        """
         self._dispatch.SetVisibleDepthRange(top_depth, bottom_depth)
 
     @property
@@ -135,775 +130,1065 @@ class Borehole(DispatchWrapper):
         """Page: A page object for the borehole document."""
         return Page(self._dispatch.Page)
 
-    def create_new_workspace(self, workspace_type, config=None):
-        """Creates a new workspace and return the corresponding object.
-
-        For a full description of the parameters to be used in the
-        configuration file refer to the WellCAD help documentation.
+    def create_new_workspace(self, workspace_type, config):
+        """Creates a new workspace object.
 
         Parameters
         ----------
-            workspace_type : int
-                Available workspace types are:
-                    * 1 = ISI workspace
-                    * 2 = Casing integrity
-                    * 3 = NMR
-            config : str
-                Path and name of the .ini file containing the
-                workspace initialization parameters.
+        workspace_type : int
+            * 1 = ISI workspace
+            * 2 = Casing integrity
+            * 3 = NMR
+        config : str
+            Path to a configuration file containing the workspace initialization parameters. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [ISIWorkspace]
+                Name= workspace name
+                Log= log name
+                Caliper=100
+                DepthOfImage=0
+                CaliperUnit=mm / inch
+                ApertureUnit=mm / inch/10
+                LengthUnit=m / mm / cm / ft / inch / inch/10
+                RunApparentToTrue=yes
+                Azimuth= log name
+                Tilt= log name
+                ImageOrientation=North / High Side
+                RunRecalculateAzimuth=yes
+                RotationAngle=-12
+                NavigationLog=ICM (log name or nothing)
+                ' RGB OTV image
+                ImageType= 0,
+                'Greyscale OTV image.
+                ImageType=1
+                ' Diamond-drilled hole, ATV image
+                ImageType=2
+                'RC-drilled hole, ATV image
+                ImageType=3
+                'FMI image
+                ImageType=4
+                ICMPalette=0,0,0,255,56,255,0,0,12,64,224,208,21,50,205,50,31,255,255,0,39,255,215,0,47,255,104,32
+                [CasingIntegrityWorkspace]
+                Name= workspace name
+                Log= log name
+                LogUnit=mm / inch
+                DataType=radius / diameter
+                DrillerCasingTable=C:/Temp/Table.txt
+                DrillerCasingTableDepthUnit=meters / feet
+                DrillerCasingTableWeightUnit=lbs/ft / kg/m
+                DrillerCasingTableODUnit=inch / mm
+                [NMRWorkspace]
+                Name= workspace name
+                T2Distribution= log name
+                TraceUnitOfT2Distribution=milliseconds / seconds
+                DefaultLithoDatabase=C:/Program Files/Advanced Logic Technology/WellCAD/Dictionaries/NMR Volumes.lth
+                FluidVolumeComponents=Bound Water, Moveable Water
+                FluidVolumeLithoUseAssociatedColor=no
+                DefaultCutoffValues=33
+                LastDefaultCutoffValueMax=yes
+                DisplayPermeabilityTIMModel=yes
+                PermeabilityTIMModelVariableC=1 (i.e. premultiplier)
+                PermeabilityTIMModelExponentM=4
+                PermeabilityTIMModelExponentN=2
+                PermeabilityTIMModelBFVandFFVLimit= Bound Water
+                DisplayPermeabilitySDRModel=yes
+                PermeabilitySDRModelVariableC=1 (i.e. premultiplier)
+                PermeabilitySDRModelExponentM=4
+                PermeabilitySDRModelExponentN=2
+                DisplayDryMatrixDensity=no
+                BulkDensity=Bulk_Density
 
         Returns
         -------
         Workspace
-            The specified workspace object.
+            The new workspace object.
         """
         return Workspace(self._dispatch.CreateNewWorkspace(workspace_type, config))
 
+    def workspace(self, workspace_id):
+        """Gets an existing workspace object in the document.
 
-    def workspace(self,index_or_name):
-        """ Retrieve a workspace (e.g. Image & Structure Processing Workspace)
-        that has been already setup and is part of the borehole document.
-        
         Parameters
         ----------
-        index_or_name : int or str
-            The name (string) or index (zero based index) of the
-            workspace to be retrieved.
-
+        workspace_id : int or str
+            The zero based index or the name of the workspace
         Returns
         -------
-        Workspace
-            The specified workspace object.
+        Workspace or None
+            The workspace object with the specified index or name, or ``None``
+            if the index is out of bounds or if name does not match any of the workspace name.
         """
-        return Workspace(self._dispatch.Workspace(index_or_name))
+        return Workspace(self._dispatch.Workspace(workspace_id))
 
     @property
     def odbc(self):
         """Odbc: An ODBC object that allows interaction with a database."""
         return Odbc(self._dispatch.ODBC)
 
-    def connect_to(self, server_name, server_address, port_number="1600"):
-        """Connect WellCAD to the ALT logging system.
-        
-        Arguments:
-            server_name -- Must be set to 'TFD'.
-            server_address -- IP address of the computer to connect to.
-            port_number -- Part number used (default is 1600).
-        
+    def connect_to(self, server_name, server_address, port_number):
+        """Connects the current borehole document to an external data source provider.
+
+        Parameters
+        ----------
+        server_name : str
+            The name of the server (TFD is currently the only one supported)
+        server_address : str
+            The IP address of the computer to connect to.
+        port_number : int
+            The part number to connect to.
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
         """
 
         self._dispatch.ConnectTo(server_name, server_address, port_number)
 
     def disconnect_from(self, server_name, server_address):
-        """Cuts the connection between WellCAD and the logging system.
-        
-        Arguments:
-            server_name -- Must be set to 'TFD'.
-            server_address -- IP address of the computer to connect to.
-        """
-
-        self._dispatch.DisconnectFrom(server_name, server_address)
-
-    def save_as(self, file_name):
-        """Saves the borehole document as WCL file.
-        
-        Arguments:
-            file_name -- Path and file name (e.g. C:\Temp\Well1.wcl)
-
-        Returns:
-            True if the saving process was successfull. 
-        """
-
-        return self._dispatch.SaveAs(file_name)
-
-    def file_export(self,
-                    file_name,
-                    prompt_user=True,
-                    config="",
-                    logfile=""):
-        """Exports the document to the specified file.
-        
-        Supported file formats are LAS, DLIS, EMF, CGM, JPG, PNG, TIF,
-        BMP, WCL and PDF. Please refer to the WellCAD help file for a
-        desciption of the export parameters to be used in the
-        configuration file and parameter string.
-
-        Arguments:
-            file_name -- Path and name of the file to export.
-            prompt_user -- If set to False no dialog box will be
-                           displayed.
-            config -- Path and name of the .ini file containing the
-                      export parameters.
-            logfile -- Path and name of the file to log error messages.
-            
-        """
-        self._dispatch.FileExport(file_name,
-                                  prompt_user,
-                                  config,
-                                  logfile)
-
-    def print(self,
-              enable_dialog,
-              top_depth,
-              bottom_depth,
-              nb_of_copies):
-        """Sends the current document to the printer.
-
-        If the print dialog box is displayed the user can select the
-        printer otherwise the printer installed as default is used.
-        
-        Arguments:
-            enable_dialog -- Displays the print dialog box if True.
-            top_depth -- Start depth of the interval to print.
-            bottom_depth -- Base of the printed depth interval.
-            nb_of_copies -- Defines the number of copies to be printed.
-        """
-
-        self._dispatch.DoPrint(self,
-                               enable_dialog,
-                               top_depth,
-                               bottom_depth,
-                               nb_of_copies)
-
-    # Methods for general log handling
-
-    @property
-    def nb_of_logs(self):
-        """Number of logs present in the borehole document."""
-        return self._dispatch.NbOfLogs
-
-    def log(self, index_or_name):
-        """Gets a log by name or by index.
+        """Cuts the connection between the borehole document and the external data source provider.
 
         Parameters
         ----------
-        index_or_name : int or str
-            The index or the name of the log
+        server_name : str
+            The name of the server (TFD is currently the only one supported)
+        server_address : str
+            The IP address of the computer connected to.
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+        """
+        self._dispatch.DisconnectFrom(server_name, server_address)
+
+    def save_as(self, path):
+        """Saves the borehole document as WCL file.
+
+        Parameters
+        ----------
+        path : str, optional
+            The file path to the WellCAD borehole document file to save. If no
+            file path is provided, the user will be prompted to select a file
+            using a standard File Save As dialog box.
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+        """
+        return self._dispatch.SaveAs(path)
+
+    def file_export(self, file_name=None, prompt_user=None, config=None, log_file=None):
+        """Exports the document to the specified file.
+
+        Supported file formats are LAS, DLIS, EMF, CGM, JPG, PNG, TIF,
+        BMP, WCL and PDF. Please refer to the WellCAD help file for a
+        description of the export parameters to be used in the
+        configuration file and parameter string.
+
+        Parameters
+        ----------
+        file_name : str, optional
+            The path and name of the file to export.
+            If not provided, the dialog will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [LASExport]
+                ; LAS files
+                ; For compatibility with older versions of WellCAD:
+                NbEndDepthDigits = 4
+                NbSmpRateDigits = 4
+                LASVersion = 2 / 3
+                Log1 = Depth,Auto,Auto (Log name, Precision, Column width)
+                Log2 = GR, 0, 10
+                'Log3 = … (if no Log is specified all logs will be exported)
+                MaxDepthRange = yes / no
+                TopDepth = 0.0
+                BottomDepth = 150.0
+                SamplingRate = 0.1
+                EnableHeader = yes / no
+                EnableWrap = yes / no
+                NullValue = -999.25
+                Delimiter = 0 (Comma) /1 (Tab) / 2 (Space)
+                CheckConstSmpRate = yes (optional)
+                LimitLineLength = no (optional)
+                ShortMnemonics = no (optional)
+                AlignColumns = yes (optional)
+                ForceDecimalPoint = yes (optional)
+                SignificantDigits = 7 (optional)
+                [DLISExport]
+                ; DLIS files
+                ; If no Log is specified all logs will be exported
+                Log1 = GR
+                Log2 = RHO
+                [ImageExport]
+                ; JPG, PNG, BMP, GIF, TIF files
+                MaxDepthRange = yes / no
+                TopDepth= 0.0
+                BottomDepth= 10.0
+                Resolution=300
+                [EMFExport]
+                ; EMF files
+                MaxDepthRange = yes / no
+                TopDepth= 0.0
+                BottomDepth= 10.0
+                [CGMExport]
+                ; CGM files
+                MaxDepthRange = yes / no
+                TopDepth= 0.0
+                BottomDepth= 10.0
+                [PDFExport]
+                ; PDF files
+                MaxDepthRange = yes / no
+                TopDepth= 0.0
+                BottomDepth= 10.0
+                ; Single page
+                PageStyle=Single
+                ShowProgress=TRUE
+                OpenPDFFile=TRUE
+                ; Standard page
+                PageStyle=Standard
+                Orientation=Portrait / Landscape
+                PaperSize=A4
+                ShowProgress=TRUE
+                OpenPDFFile=TRUE
+                ; Custom page
+                PageStyle=Custom
+                Orientation=Portrait
+                'Orientation=Landscape
+                PaperWidth=2100
+                PaperLength=2970
+                ShowProgress=TRUE
+                OpenPDFFile=TRUE
+                [WCLExport]
+                ; WCL files
+                Format = 5.0
+        log_file : str, optional
+            Path and name of the file to log error messages.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+        """
+        return self._dispatch.FileExport(file_name, prompt_user, config, log_file)
+
+    def do_print(self, enable_dialog=None, top_depth=None, bottom_depth=None, nb_of_copies=None):
+        """Sends the current document to the printer.
+        If the print dialog box is displayed the user can select the
+        printer otherwise the printer installed as default is used.
+
+        Parameters
+        ----------
+        enable_dialog : bool, optional
+            Whether to display the print dialog box or not.
+        top_depth : float, optional
+            The start depth of the interval to print
+            If not provided, the current top depth of the document will be used.
+        bottom_depth : float, optional
+            The bottom depth of the printed depth interval.
+            If not provided, the current bottom depth of the document will be used.
+        nb_of_copies : int, optional
+            The number of copies to be printed.
+        """
+        self._dispatch.DoPrint(self, enable_dialog, top_depth, bottom_depth, nb_of_copies)
+
+    # Methods for general log handling
+
+    def log(self, index_or_name):
+        """Gets an existing log object in the document.
+
+        Parameters
+        ----------
+        index_or_name :  int or str
+            The zero based index or the name of the log.
+        Returns
+        -------
+        Log
+            The log object with the specified index or name, or ``None``
+            if the index is out of bounds or if name does not match any of the log name.
+        """
+        return Log(self._dispatch.Log(index_or_name))
+
+    def get_log(self, index_or_name):
+        """Gets an existing log object in the document.
+
+        Parameters
+        ----------
+        index_or_name :  int or str
+            The zero based index or the name of the log.
+        Returns
+        -------
+        Log
+            The log object with the specified index or name, or ``None``
+            if the index is out of bounds or if name does not match any of the log name.
+        """
+        return Log(self._dispatch.GetLog(index_or_name))
+
+    def title(self, name):
+        """Gets the title object for the specified name.
+
+        Parameters
+        ----------
+        name : str, optional
+            The name of the log or the name of a title box.
+        Returns
+        -------
+        Title
+            The Title object if found, otherwise "None"
+        """
+        return Title(self._dispatch.Title(name))
+
+    def insert_new_log(self, log_type):
+        """Creates a new log and log object.
+
+        Parameters
+        ----------
+            log_type : int, optional
+                The type of log.  Allowed values are :
+
+                    * 1 = Well Log
+                    * 2 = Formula Log
+                    * 3 = Mud Log
+                    * 4 = FWS Log
+                    * 5 = Image Log
+                    * 6 = Structure Log
+                    * 7 = Litho Log
+                    * 8 = Comment Log
+                    * 9 = Engineering Log
+                    * 10 = RGB Log
+                    * 13 = Interval Log
+                    * 14 = Analysis Log
+                    * 15 = Percent Log
+                    * 16 = CoreDesc Log
+                    * 17 = Depth Log
+                    * 18 = Strata Log
+                    * 19 = Stacking Pattern Log
+                    * 20 = Polar and Rose Log
+                    * 21 = Cross Section Log
+                    * 22 = OLE Log
+                    * 23 = Shading Log
+                    * 24 = Marker Log
+                    * 25 = Breakout Log
+                    * 26 = Bio Log
+                    * 27 = Lineation Log
+        Returns
+        -------
+        Log
+            A log object.
+        """
+        return Log(self._dispatch.InsertNewLog(log_type))
+
+    def convert_log_to(self, log, log_type, prompt_user=None, config=None):
+        """New log object by converting one log type into another.
+
+        Please refer to the WellCAD documentation about which log type
+        conversions are possible.
+
+        Parameters
+        ----------
+        log : str or int
+            The title or the zero based index of the log to convert.
+        log_type : int
+            The type of log to be created.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [ConvertLog]
+                ; Analysis, Percentage Log to Litho log
+                ; ComponentNames : list of component names to convert, if not specified all components are taken
+                ComponentNames=A,B
+                ; Bio Log to Bio Log
+                ; TaxonNames : list of taxon names to convert, if not specified all taxons are taken
+                TaxonNames=A,B
+                ; Image, RGB Log to WellLog
+                StartIndex=0
+                Increment=1
+                ; Breakout Log to Breakout, Mud Log
+                FilterOnAttributes= yes / no
+                AttributeName1=Type
+                AttributeList1=RF,MB,…
+                AttributeName2=Condition
+                AttributeList2=Open,Loose,…
+                FilterOnAzimuth= yes / no
+                AzimuthLow=0
+                AzimuthHigh=360
+                FilterOnTilt= yes / no
+                TiltLow=30
+                TiltHigh=90
+                FilterOnLength= yes / no
+                LengthLow=0
+                LengthHigh=100
+                FilterOnOpening= yes / no
+                OpeningLow=0
+                OpeningHigh=45
+                ; Comment Log to Litho Log
+                LithoDatabase=C:/Default.lth
+                ; CoreDesc Log to Interval Log
+                ; CoreDescItemNames : list of symbol codes to convert
+                CoreDescItemNames=AX3, AX5, BZ5
+                ; Structure Log to Structure, Mud Log
+                FilterOnAttributes=TRUE
+                AttributeName1=Type
+                AttributeList1=RF,MB
+                AttributeName2=Condition
+                AttributeList2=Open,Loose
+                FilterOnAzimuth= yes / no
+                AzimuthLow=0
+                AzimuthHigh=360
+                FilterOnTilt= yes / no
+                DipLow=30
+                DipHigh=90
+                FilterOnOpening= yes / no
+                ApertureLow=0
+                ApertureHigh=100
+                ; Structure, Breakout Log to Marker Log
+                DisplayIndex= yes / no
+                DisplayAzimuth= yes / no
+                DisplayTilt= yes / no
+                DisplayAttributes= yes / no
+                ; Interval Log to Mud Log
+                ; ConvertValue : 0=Min, 1=Max, 2=Ave
+                ; AttachDepthTo : 1=attach to top, 2=middle, 3=bottom
+                ConvertValue=0
+                AttachDepthTo=2
+                ; Mud Log to Well Log
+                ; Interpolation : 0 = No Interpolation, 1 = Prev. Data, 2 = Interpol.
+                CreateNewLog= yes / no
+                SamplingRate=0.1
+                MaximumGap=10.0
+                Interpolation=0
+                Tolerance=0.1
+                CircularData = yes / no
+                DataUnit = degrees / radians
+                ; Mud Log to Depth Log
+                ; ConversionType : 1=from m, 2=from ft, 3=from sec; 4=msec, 5=usec
+                ConversionType=1
+                ; Mud Log to Litho Log
+                ; <ClassifierName>=<LithoName> (classification name and corresponding litho code)
+                LithoDatabase=C:/Default.lth
+                className1 = Coal
+                className2 = Limestone
+                ; Percent Log to Analysis Log
+                SamplingRate=0.1
+                ; RGB Log to Image Log (int, float 2 and float 4)
+                ; Color : 0=all, 1=red, 2=green, 3=blue
+                Color=0
+                ; Stack Log to Well Log
+                SamplingRate=0.1
+                ; Strata Log to Comment, Litho Log
+                ; ColumnNames : list of column titles
+                ColumnNames=columnname1, columname4
+                ; VSP Log to Well Log
+                ; TraceNames : list of trace titles
+                TraceNames=
+                ; Well Log to Depth Log
+                ; ConversionType : 1=from m, 2=from ft, 3=from sec; 4=msec, 5=usec
+                ConversionType=1
+                ; Well Log to Litho Log
+                ; <ClassifierName>=<LithoName> (classification name and corresponding litho code)
+                ; SplitLithoLog : creates one litho column per litho type
+                LithoDatabase=C:/Default.lth
+                className1 = Coal
+                className2 = Limestone
+                SplitLithoLog= yes / no
+                ; Litho Log to Strata Log
+                ; SplitColumns : creates one column per litho type
+                SplitColumns= yes / no (creates one column per litho type)
+                ; Litho Log to Litho Log
+                ; LithoBedNames : list of litho codes to convert, if not specified all components are taken
+                LithoBedNames=sst,lst,dst
 
         Returns
         -------
         Log
-            The Log object.
+            The object of the new log.
         """
-        return Log(self._dispatch.Log(index_or_name))
+        return Log(self._dispatch.ConvertLogTo(log, log_type, prompt_user, config))
 
-    def title(self, log_name):
-        """Gets the title object for the specified log.
+    def add_log(self, log):
+        """Adds the log object passed as argument of the function into the calling borehole document.
 
         Parameters
         ----------
-        log_name : str
-            The name of the log to get the title for.
-
+        log : Log
+            An object of the log to copy.
         Returns
         -------
-        Title
-            The Title object.
+        Log
+            A copy of the log.
         """
-        return Title(self._dispatch.Title(log_name))
-
-    def insert_new_log(self, log_type):
-        """Creates a new log and log object.
-        
-        The log type that will be created depends on the
-        log_type parameter which can take the following values:
-        1 - Well Log
-        2 - Formula Log
-        3 - Mud Log
-        4 - FWS Log
-        5 - Image Log
-        6 - Structure Log
-        7 - Litho Log
-        8 - Comment Log
-        9 - Engineering Log
-        10 - RGB Log
-        13 - Interval Log
-        14 - Analysis Log
-        15 - Percent Log
-        16 - CoreDesc Log
-        17 - Depth Log
-        18 - Strata Log
-        19 - Satcking Pattern Log
-        20 - Polar and Rose Log
-        21 - Cross Section Log
-        22 - OLE Log
-        23 - Shading Log
-        24 - Marker Log
-        25 - Breakout Log
-        26 - Bio Log
-        
-        Arguments:
-            log_type -- Integer specifying the type of log. 
-
-        Returns:
-            A log object.
-        """
-
-        obLog = self._dispatch.InsertNewLog(log_type)
-        return Log(obLog)
-
-    def convert_log_to(self,
-                       log,
-                       log_type,
-                       prompt_user=True,
-                       config=""):
-        """New log object by converting one log type into another.
-        
-        Please refer to the WellCAD documentation about which log type
-        conversions are possible. Dialog boxes will be displayed if
-        available when the bPromptUser flag is set to True. If set to
-        False default parameters will be used or the conversion
-        parameters will be taken from a configuration file or parameter
-        string. The Automation Module chapter of the WellCAD help file
-        provides a description of the file format and all parameters to
-        be used in the configuration file / parameter string. 
-
-        Arguments:
-            log 		-- Title (string) or zero based index (Integer)
-                              of the log to convert.
-            log_type 	-- Integer specifying the type of log to be created.
-            prompt_user -- (Optional) If set to True dialog boxes
-                           will be displayed.
-            config		-- (Optional) Path and filename of the
-                           configuration file or parameter string.  
-
-        Returns:
-            The object of the new log.
-        """
-
-        self._dispatch._FlagAsMethod("ConvertLogTo")
-        obLog = self._dispatch.ConvertLogTo(log, log_type, prompt_user, config)
-        return Log(obLog)
-
-    def copy_log(self, oblog):
-        """Copy and pastes a log.
-        
-        Copies a log within the same or between two borehole documents.
-
-        Arguments:
-            oblog -- An object of the log to copy.
-
-        Returns:
-            An object of the copied log.
-        """
-
-        self._dispatch._FlagAsMethod("AddLog")
-        oblog_copy = self._dispatch.AddLog(oblog.dispatch)
-        return Log(oblog_copy)
+        return Log(self._dispatch.AddLog(log._dispatch))
 
     def remove_log(self, log):
         """Deletes the specified log from the borehole document.
-        
-        Arguments:
-            log -- Zero based index (integer) or title (string)
-                   of the log to delete.
-        """
 
+        Parameters
+        ----------
+        log : str or int
+            The title or the zero based index of the log to remove.
+        """
         self._dispatch.RemoveLog(log)
 
     def clear_log_contents(self, log):
         """Removes the data from a log and leaves the log empty.
-        
-        Arguments:
-            log -- Zero based index (integer) or title (string).
-        """
 
+        Parameters
+        ----------
+        log : str or int
+            The title or the zero based index of the log to remove.
+        """
         self._dispatch.ClearLogContents(log)
 
-    def apply_template(self,
-                       path,
-                       prompt_if_not_found=True,
-                       create_new_logs=False,
-                       create_new_layers=False,
-                       apply_annotation_settings=False,
-                       replace_header=False,
-                       keep_charts=True,
-                       new_charts=False,
-                       overwrite_workspaces=False,
-                       new_workspaces=False,
-                       config=""):
+    def apply_template(self, path, prompt_if_not_found=None, create_new_logs=None, create_new_layers=None,
+                       apply_annotation_settings=None, replace_header=None, keep_charts=None, new_charts=None,
+                       overwrite_workspaces=None, new_workspaces=None, delete_non_associated_logs=None, config=None):
         """Loads and applies a document layout template (.WDT)
 
-        For a more detailed description of all available parameters
-        in the configuration file refer to the WellCAD help file.
-        
-        Arguments:
-            path -- Path and name of the .WDT file.
-            prompt_if_not_found -- If True a dialog box will be
-                                  displayed for each log not found.
-            create_new_layers -- If True new annotation layers will be
-                                 loaded from the template.
-            apply_annotation_settings -- Loads the layout settings for
-                                         operational symbols.
-            replace_header -- If True the current document header will
-                              be replaced.
-            keep_charts -- If True cross-plot charts will be kept in
-                           the document.
-            new_charts -- If True cross-plot charts will be loaded from
-                          the template.
-            overwrite_workspaces -- If True work spaces in the document
-                                    will be overwritten.
-            new_workspaces -- If True work spaces will be loaded from
-                              the template.
-            config -- Path and name of the configuraion file
-                      or parameter string.
+        Parameters
+        ----------
+        path : str
+            The path and name of the template WDT file.
+        prompt_if_not_found : bool, optional
+            If True, a dialog box will be displayed for each log not found. Default : True.
+        create_new_logs : bool, optional
+            If True, new logs will be loaded from the template. Default : False.
+        create_new_layers : bool, optional
+            If True, new annotation layers will be loaded from the template. Default : False.
+        apply_annotation_settings : bool, optional
+            If True, settings  will be applied to annotations. Default : False.
+        replace_header : bool, optional
+            If True, the current document header will be replaced. Default : True.
+        keep_charts : bool, optional
+            If True, cross-plot charts will be kept in the document. Default : True.
+        new_charts : bool, optional
+            If True, cross-plot charts will be loaded from the template. Default : False.
+        overwrite_workspaces : bool
+            If True, work spaces in the document will be overwritten. Default : False.
+        new_workspaces : bool, optional
+            If True, work spaces will be loaded from the template. Default : False.
+        delete_non_associated_logs : bool, optional
+            If True, only logs from the template will be kept in the document. Default : True.
+        config : str, optional
+            Path and filename of the configuration file or parameter string.
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
         """
-
-        self._dispatch.ApplyTemplate(path,
-                                     prompt_if_not_found,
-                                     create_new_logs,
-                                     create_new_layers,
-                                     apply_annotation_settings,
-                                     replace_header,
-                                     keep_charts,
-                                     new_charts,
-                                     overwrite_workspaces,
-                                     new_workspaces,
-                                     config)
+        return self._dispatch.ApplyTemplate(path, prompt_if_not_found, create_new_logs, create_new_layers,
+                                            apply_annotation_settings, replace_header, keep_charts, new_charts,
+                                            overwrite_workspaces, new_workspaces, delete_non_associated_logs, config)
 
     # Common log edition
 
-    def slice_log(self,
-                  log,
-                  slice_depth,
-                  create_top=True,
-                  create_bottom=True,
-                  keep_original=True):
-        """Cuts the specified log at the given depth.
+    def slice_log(self, log, slice_depth, create_top=None, create_bottom=None, keep_original=None):
+        """Allows the separation of the log data into a top and bottom section. New logs can be created \
+        holding the data of the top and bottom parts of the data set.
 
-        Arguments:
-            log -- Zero based index (integer) or title (string) of the
-                   log to slice.
-            slice_depth -- Depth at which the cut will be made.
-            create_top -- If set to True the upper part of the log will
-                          be kept in the document. 
-            create_bottom -- If set to True the lower part of the log
-                             will remain in the document.
-            keep_original -- If set to True the original log will
-                             remain in the document.
+        Parameters
+        ----------
+        log : str or int
+            The title or the zero based index of the log to slice.
+        slice_depth : float
+            The depth at which the slice will be made.
+        create_top : bool, optional
+            If set to TRUE (default) a new log will be created holding the data from the current
+            top of the data set down to the slice depth..
+        create_bottom : bool, optional
+            If set to TRUE (default) a new log will be created holding the data from the slice depth
+            down to the bottom of the data set.
+        keep_original : bool, optional
+            If set to TRUE (default) the original log will be kept in the document.
         """
+        self._dispatch.SliceLog(log, slice_depth, create_top, create_bottom, keep_original)
 
-        self._dispatch.SliceLog(log,
-                                slice_depth,
-                                create_top,
-                                create_bottom,
-                                keep_original)
+    def merge_logs(self, log_a, log_b, ave_overlap=None, create_new=None):
+        """Merges the data of the two specified logs.
 
-    def merge_logs(self,
-                   log_a,
-                   log_b,
-                   ave_overlap=True,
-                   create_new=True):
-        """Merges two logs of the same type.
-
-        Arguments:
-            log_a -- Zero based index (integer) or title (string) of
-                     the log.
-            log_b -- Zero based index (integer) or title (string) of
-                     the log.
-            ave_overlap -- If set to False log_a will overwrite log_b.
-            create_new -- If set to False log_b will be pushed
-                          into log_a.
+        Parameters
+        ----------
+        log_a : str or int
+            The title or the zero based index of the log. If no new log is created this log
+            will receive the data from log_b.
+        log_b : str or int
+            The title or the zero based index of the log.
+        ave_overlap : bool, optional
+            If set to False log_a will overwrite log_b, if set to True, data from the two logs will be averaged
+            over the depth overlap.
+        create_new : bool
+            If set to False log_b will be pushed into log_a and the log_b will be removed
         """
-
         self._dispatch.MergeLogs(log_a, log_b, ave_overlap, create_new)
 
     def merge_same_log_items(self, log):
-        """Merges data intervals with same litho codes or text.
-        
-        Arguments:
-            log -- Zero based index (integer) or title (string) of
-                   the Litho log.
-        """
+        """Merges consecutive data intervals of same litho codes, text or data within the specified log.
+        This function applies to Litho, Comment, Engineering, CoreDesc, Interval, Stack and Bio logs.
 
+        Parameters
+        ----------
+        log : str or int, optional
+            The title or the zero based index of the log.
+        """
         self._dispatch.MergeSameLogItems(log)
 
     def extend_log(self, log, top_depth, bottom_depth):
-        """Extends the depth range of a Well log type.
-        
-        Call this method to allocate the memory for the additional
-        depth range of the Well Log.
+        """Extends the allocated depth range of Well, Formula and Analysis Logs.
 
-        Arguments:
-            log -- Zero based index (integer) or title (string) of
-                   the Well log.
-            top_depth -- Top of the final depth range.
-            bottom_depth -- Base of the final depth range.
+        Parameters
+        ----------
+        log : str or int
+            The title or the zero based index of the Well log.
+        top_depth : float
+            The new top depth of the log in units of the current depth axis.
+        bottom_depth : float
+            The new bottom depth of the log in units of the current depth axis.
         """
-
         self._dispatch.ExtendLog(log, top_depth, bottom_depth)
 
-    def depth_shift_log(self,
-                        log,
-                        shift,
-                        top_depth="",
-                        bottom_depth=""):
-        """Performs a bulk shift to all the log's data.
+    def depth_shift_log(self, log, shift, top_depth=None, bottom_depth=None):
+        """Allows the depth shifting of the log's data by the specified amount.
+        By default, the entire data column will be shifted (i.e. block shift). If a Top and Bottom depth
+        has been specified only the data within the specified interval will be shifted.
 
-        If top_depth and bottom_depth are specified the depth shift
-        will be restricted to this interval.
-
-        Arguments:
-            log -- Zero based index (integer) or title (string) of
-                   the log.
-            shift -- Amount of the depth shift (positive = down,
-                     negative = up).
-            top_depth -- Upper depth limit of the shifted interval.
-            bottom_depth -- Lower depth limit of the shifted interval.
+        Parameters
+        ----------
+        log : str or int
+            The title or the zero based index of the log.
+        shift : float
+            The amount of depth shift to be applied. A negative value will shift the data up and
+            a positive value applies a downward shift.
+        top_depth : float, optional
+            The upper depth limit of the shifted interval.
+            If not provided, this is the current top depth of the log
+        bottom_depth : float, optional
+            The lower depth limit of the shifted interval.
+            If not provided, this is the current bottom depth of the log
         """
+        self._dispatch.DepthShiftLog(log, shift, top_depth, bottom_depth)
 
-        self._dispatch.DepthShiftLog(log,
-                                     shift,
-                                     top_depth,
-                                     bottom_depth)
+    def depth_match_log(self, log=None, depth_log=None):
+        """Depth matches the specified log using the links created from the specified depth_log (i.e. a shift table).
 
-    def depth_match_log(self, log="", depth_log=""):
-        """Perfoms a depth matching using a shift table.
-
-        The shift table will be provided as a Depth Log and the process
-        of shifting is equivalent to the DepthMatcher in WellCAD. If
-        the parameter list is empty or if no depth_log has been
-        specified the DepthMatcher dialog box will be displayed.
-
-        Arguments:
-            log -- Zero based index (integer) or title (string) of
-                   the log to match.
-            depth_log -- Zero based index (integer) or title (string) of
-                   the Depth Log containing the shift table.
-        
+        Parameters
+        ----------
+        log : str or int, optional
+            The title or the zero based index of the log.
+            If not provided, the Depth Matcher dialog box will be displayed.
+        depth_log : str or int, optional
+            The title or the zero based index of the Depth log containing the shift table.
+            If not provided, the Depth Matcher dialog box will be displayed.
         """
-
         self._dispatch.DepthMatchLog(log, depth_log)
 
-    def fill_log(self,
-                 log,
-                 top_depth,
-                 bottom_depth,
-                 step,
-                 thickness,
-                 user_defined_intervals=True,
-                 interval_log=""):
-        """Creates intervals in Cross-section and Polar & Rose logs.
-        
-        Arguments:
-            log -- Zero based index (integer) or title (string) of
-                   the log to fill with intervals.
-            top_depth -- Start depth of the first interval.
-            bottom_depth -- Start depth of the last interval.
-            step -- Interval frequency (enter 5 for an interval
-                    starting every 5 meter or ft).
-            thickness -- Interval thickness (in depth units).
-            user_defined_intervals = If set to False the intervals
-                                     will be loaded from a reference
-                                     log.
-            interval_log -- Zero based index (integer) or title
-                            (string) of the log containing the
-                            reference intervals.
-        """
+    def fill_log(self, log, top_depth, bottom_depth, step, thickness, user_defined_intervals=None, interval_log=None):
+        """Fill a Cross-section Log or a Polar & Rose Log with intervals automatically.
 
-        self._dispatch.FillLog(log,
-                               top_depth,
-                               bottom_depth,
-                               step,
-                               thickness,
-                               user_defined_intervals,
-                               interval_log)
+        Parameters
+        ----------
+        log : str or int
+            The title or the zero based index of the log.
+        top_depth : float
+            The top depth of the first interval in units of the current depth axis.
+        bottom_depth : float
+            The last depth at which an interval could start in units of the current depth axis.
+        step : float
+            The frequency of the intervals in units of the current depth axis (every 2 m).
+        thickness : float
+            The interval thickness in units of the current depth axis.
+        user_defined_intervals : bool, optional
+            If set to False the intervals will be loaded from a reference log.
+        interval_log : str or int, optional
+            The title or the zero based index of the log containing the reference intervals.
+        """
+        self._dispatch.FillLog(log, top_depth, bottom_depth, step, thickness, user_defined_intervals, interval_log)
 
     # Common log processes
 
-    def filter_log(self, log, prompt_user=True, config=""):
-        """Applies a user selected filter to Well Logs.
+    def filter_log(self, log, prompt_user=None, config=None):
+        """Calculates a new filtered data set of a Well Log.
 
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-        
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+        Parameters
+        ----------
+        log : str or int
+            The title or the zero based index of the log.
+            If not provided, the process returns ''None''.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Returns:
+            .. code-block:: ini
+
+                [FilterLog]
+                ; FilterType : Median, MovingAverage, WeightedAverage
+                ; DataUnit : degrees, radians
+                FilterType =
+                FilterWidth = 5
+                MaxDepthRange = yes
+                TopDepth = 5.0
+                BottomDepth = 10.0
+                CircularData = yes
+                DataUnit = degrees
+
+        Returns
+        -------
+        Log
             An object of the filtered log.
         """
+        return Log(self._dispatch.FilterLog(log, prompt_user, config))
 
-        self._dispatch._FlagAsMethod("FilterLog")
-        oblog = self._dispatch.FilterLog(log, prompt_user, config)
-        return Log(oblog)
+    def block_log(self, log=None, prompt_user=None, config=None):
+        """Calculates statistical values for each depth interval determined from a
+        reference log or specified by the user.
 
-    def filter_log_average(self, log, filter_width, circular_data=False, data_unit="degrees"):
-        """Applies an average filter to a well log.
-            
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            filter_width -- Interger defining the length of the filter
-                            window in samples.
-            circular_data -- Boolean defining whether the log contain angular data.
-            data_unit -- Either 'degrees' or 'radians'. 
+        Parameters
+        ----------
+        log : str or int, optional
+            The title or the zero based index of the log.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Returns:
-            An object of the filtered log.
-        """
+            .. code-block:: ini
 
-        # compose in-line parameter string
-        circular_data_flag = "no"
-        if circular_data:
-            circular_data_flag = "yes"
-        config = "FilterType=MovingAverage, MaxDepthRange=yes,\
-                  FilterWidth=" + str(max(1, filter_width)) \
-                 + ",CircularData=" + circular_data_flag \
-                 + ",DataUnit=" + data_unit
-        # call method
-        self._dispatch._FlagAsMethod("FilterLog")
-        oblog = self._dispatch.FilterLog(log, False, config)
-        return Log(oblog)
-
-    def filter_log_median(self, log, filter_width, circular_data=False, data_unit="degrees"):
-        """Applies a median filter to a well log.
-            
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            filter_width -- Interger defining the length of the filter
-                            window in samples.
-            circular_data -- True if the log contains angular data
-                             (default = False).
-            data_unit -- Either 'degrees' or 'radians'
-                         (default = 'degrees'). 
-
-        Returns:
-            An object of the filtered log.
-        """
-
-        # compose in-line parameter string
-        circular_data_flag = "no"
-        if circular_data:
-            circular_data_flag = "yes"
-        config = "FilterType=Median, MaxDepthRange=yes,\
-                  FilterWidth=" + str(max(1, filter_width)) \
-                 + ",CircularData=" + circular_data_flag \
-                 + ",DataUnit=" + data_unit
-        # call method
-        self._dispatch._FlagAsMethod("FilterLog")
-        oblog = self._dispatch.FilterLog(log, False, config)
-        return Log(oblog)
-
-    def filter_log_weighted_ave(self, log, filter_width, circular_data=False, data_unit="degrees"):
-        """Applies a weighted average filter to a well log.
-            
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            filter_width -- Interger defining the length of the filter
-                            window in samples.
-            circular_data -- True if the log contains angular data
-                             (default = False).
-            data_unit -- Either 'degrees' or 'radians'
-                         (default = 'degrees'). 
-
-        Returns:
-            An object of the filtered log.
-        """
-
-        # compose in-line parameter string
-        circular_data_flag = "no"
-        if circular_data:
-            circular_data_flag = "yes"
-        config = "FilterType=WeightedAverage, MaxDepthRange=yes,\
-                  FilterWidth=" + str(max(1, filter_width)) \
-                 + ",CircularData=" + circular_data_flag \
-                 + ",DataUnit=" + data_unit
-        # call method
-        self._dispatch._FlagAsMethod("FilterLog")
-        oblog = self._dispatch.FilterLog(log, False, config)
-        return Log(oblog)
-
-    def block_log(self, log, prompt_user=True, config=""):
-        """Calculates statistics for log data per depth interval.
-        
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
-
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-
+                [BlockLog]
+                CircularData = yes / no
+                DataUnit = degrees / radians
+                ReferenceInterval = Lithology / 10.0
+                Cumulate = yes / no
+                OutputLogAsText = yes / no
+                OutputLogAsGraphic = yes / no
+                Minimum = yes / no
+                Maximum = yes / no
+                Mode = yes / no
+                Average = yes / no
+                Median = yes / no
+                StdDev = yes / no
+                Percentage = yes / no
+                Sum = yes / no
+                SumNorm= yes / no
+                Area = yes / no
+                MeanAbsoluteDeviation = yes / no
+                GeometricMean = yes / no
+                GeometricStdDev = yes / no
+                Skewness = yes / no
+                Kurtosis = yes / no
+                Quartiles = yes / no
+                AveragePlusStdDev = yes / no
+                AverageMinusStdDev = yes / no
+                RMS = Yes / No
+                Value1 = 50 / NULL
+                Value2 = 100
+                Resolution = 0.1
+                EmptyIntervalMode = Interpolate / Maximum / Minimum / Null
         """
         self._dispatch.BlockLog(log, prompt_user, config)
 
-    def multi_log_statistics(self, logs, prompt_user=True, config=""):
-        """Calculates statistical values from multiple logs.
-        
-        Statistical values are derived from multiple logs at the
-        same depth.
-        E.g. an avege density from two density logs.
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation.
+    def extract_well_log_statistics(self, logs=None, prompt_user=None, config=None):
+        """Extracts minimum, maximum, average, median and other statistical values fulfilling
+        an optional condition from each Well log
 
-        Arguments:
-            logs -- Title (string) or list of the log(s) to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+        Parameters
+        ----------
+        logs : list, optional
+            The list of the titles or the zero base indexes of the logs to process.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [ExtractWellLogStatistics]
+                ; Condition : 0=None, 1=lower than Value 1, 2=larger than Value1, 3=lower and equal,
+                ; 4=larger and equal,5=equal, 6=not equal, 7=between Value1 and Value2,
+                ; 8=between and equal to Value1 and Value2
+                Minimum = yes / no
+                Maximum = yes / no
+                Mode = yes / no
+                Average = yes / no
+                Median = yes / no
+                StandardDeviation = yes / no
+                Percentage = yes / no
+                MeanAbsoluteDeviation = yes / no
+                GeometricMean = yes / no
+                GeometricStandardDeviation = yes / no
+                Skewness = yes / no
+                Kurtosis = yes / no
+                Quartiles = yes / no
+                RMS = yes / no
+                RMSD = yes / no
+                Condition = 0
+                Value1 = 50
+                Value2 = 100
+                OneOutputlogPerImageLog = yes / no
         """
-
         self._dispatch.ExtractWellLogStatistics(logs, prompt_user, config)
 
-    def normalize_perc_log(self, log, prompt_user=True, config=""):
+    def normalize(self, log=None, prompt_user=None, config=None):
         """Normalizes the data in a Percentage or Analysis Log.
 
-        For a full list of prcessing parameters please refer to the
-        WellCAD help documentation.
+        Parameters
+        ----------
+        log : str or int, optional
+            The title or the zero based index of the log.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log -- Zero based index (integer) or title (string) of
-                   the log to normalize.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
-        
+            .. code-block:: ini
+
+                [AnalysisLogNormalize]
+                ComponentsToDelete=20,05#1,Artifacts
+                CreateNewLog=yes
+                NormalizeAt100=yes
         """
-
         self._dispatch.Normalize(log, prompt_user, config)
 
-    def resample_log(self, log, prompt_user=True, config=""):
-        """Resamples a data set using the new sample step provided.
-        
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+    def resample_log(self, log, prompt_user=None, config=None):
+        """Resamples a data set according to a new constant sampling rate or sample point
+        determined from a reference log.
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+        Parameters
+        ----------
+        log : str or int
+            The title or the zero based index of the log.
+            If not provided, the process returns ''None''.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
+            .. code-block:: ini
+
+                [ResampleLog]
+                ; For mud / well logs
+                ; ReferenceLog : log title of a Mud or Percentage Log
+                SamplingRate = 0.1
+                ReferenceLog = Plugs
+                UseReferenceLog = yes / no
+                UseNearestPoint = yes / no
+                CircularData = yes / no
+                DataUnit = degrees / radians
+                ; For image logs
+                VerticalSamplingFactor = 1
+                RadialSamplingFactor = 1
+                RadialDownSampling = yes / no
         """
+        return Log(self._dispatch.ResampleLog(log, prompt_user, config))
 
-        self._dispatch._FlagAsMethod("ResampleLog")
-        oblog = self._dispatch.ResampleLog(log, prompt_user, config)
-        return Log(oblog)
+    def interpolate_log(self, log, prompt_user=None, config=None):
+        """Allows the interpolation of Mud and Well Log data to close no data gaps in a data set.
 
-    def interpolate_log(self, log, prompt_user=True, config=""):
-        """Applies a linear interpolation across gaps in a data set.
-        
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        log : str or int
+            The title or the zero based index of the log.
+            If not provided, the process returns ''None''.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            log	-- Zero based index (integer) or title (string) of
-                   the log to process.
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
-        Returns:
+                [InterpolateLog]
+                MaximumGap = 0.25
+                CircularData = yes / no
+                DataUnit = degrees / radians
+        Returns
+        -------
+        Log
             An object of the interpolated log.
         """
+        return Log(self._dispatch.InterpolateLog(log, prompt_user, config))
 
-        self._dispatch._FlagAsMethod("InterpolateLog")
-        oblog = self._dispatch.InterpolateLog(log, prompt_user, config)
-        return Log(oblog)
+    def calculate_borehole_deviation(self, prompt_user=None, config=None):
+        """Calculates borehole Azimuth, RBR and Tilt from magnetometer and inclinometer / accelerometer data.
 
-    def borehole_deviation(self, prompt_user=True, config=""):
-        """Computes Azimuth, Tilt and RBR.
-        
-        The method uses accelerometer and inclinometer x,y,z components
-        of an orientation sensor to compute borhole azimuth, tilt and
-        relative bearing (RBR). The input logs are specified int the
-        config file or in-line as part of the config string.
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation. 
+        Parameters
+        ----------
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Arguments:
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+            .. code-block:: ini
 
+                [CalculateBoreholeDeviation]
+                ; MagX, MagY, MagZ : the title of the corresponding log
+                ; InclX, InclY, InclZ : the title of the corresponding log
+                MagX = Mag X
+                MagY = Mag Y
+                MagZ = Mag Z
+                InclX = Acc X
+                InclY = Acc Y
+                InclZ =
+                MagXPositive = yes / no
+                MagYPositive = yes / no
+                MagZPositive = yes / no
+                InclXPositive = yes / no
+                InclYPositive = yes / no
+                InclZPositive = yes / no
+                IsAccelerometer = yes / no
+                MarkerPosition = 182.5
         """
-
         self._dispatch.CalculateBoreholeDeviation(prompt_user, config)
 
-    def borehole_coordinates(self, prompt_user=True, config=""):
-        """Creates Northing, Easting and TVD data.
-        
-        Using borehole azimuth and tilt as input data this method
-        calculates northing, easting and tvd coordinates and outputs
-        them in well / mud logs.
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation.
+    def calculate_borehole_coordinates(self, prompt_user=None, config=None):
+        """Calculates the deviation path coordinates Northing, Easting and TVD.
 
-        Arguments:
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+        Parameters
+        ----------
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
+            .. code-block:: ini
+
+                [CalculateBoreholeCoordinates]
+                ; Method : Classic Tangential, Balanced Tangential, Radius Of Curvature, MinimumCurvature
+                ; AzimuthLog : the title of the log corresponding to the azimuth.
+                ; TiltLog : the title of the log corresponding to the tilt.
+                Method = Classic Tangential
+                Unit = m / ft
+                AzimuthLog = AZI
+                TiltLog = TILT
+                NewDepthLog = yes / no
+                CountTVDFromLogTop = yes / no
+                TVDStartDepth = 0.0
+                MagDeclination = 11.5
+                EstimateErrors = yes / no
+                AziError = 0.1
+                TiltError = 0.1
         """
-
         self._dispatch.CalculateBoreholeCoordinates(prompt_user, config)
 
-    def borehole_closure(self, prompt_user=True, config=""):
-        """Derives closure distance, closure angle and dog-leg data.
-        
-        Using borehole azimuth, tilt, northing and easting as input
-        data this method calculates the drift distance (closure), 
-        drift angle (cllosure angle) and the dog-leg-severity and
-        outputs the data in well / mud logs.
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation.
+    def calculate_borehole_closure(self, prompt_user=None, config=None):
+        """Calculates the deviation path closure distance, closure angle and DLS.
 
-        Arguments:
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+        Parameters
+        ----------
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
+            .. code-block:: ini
+
+                [CalculateBoreholeClosure]
+                ; AzimuthLog : the title of the log corresponding to the azimuth.
+                ; TiltLog : the title of the log corresponding to the tilt.
+                ; NorthingLog : the title of the log corresponding to the deviation along the north axis.
+                ; EastingLog : the title of the log corresponding to the deviation along the east axis.
+                AzimuthLog = AZI
+                TiltLog = TILT
+                NorthingLog = NORTH
+                EastingLog = EAST
         """
-
         self._dispatch.CalculateBoreholeClosure(prompt_user, config)
 
-    def elog_correction(self, prompt_user=True, config=""):
-        """ Environmental corrections for normal resisitivity data.
-        
-        A full description of the method and its parameters is given
-        in the Automation Module chapter of the WellCAD help
-        documentation.
+    def elog_correction(self, prompt_user=None, config=None):
+        """Applies the environmental corrections for normal resisitivity data.
 
-        Arguments:
-            prompt_user -- If set to False the processing parameters
-                           will be taken from the config file/string.
-            config -- Path and name of the configuration file or
-                      a parameter string.
+        Parameters
+        ----------
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
 
-        Returns:
+            .. code-block:: ini
+
+                [ElogCorrection]
+                ; Method : QL40-Elog (Bridle), QL40-Elog (Surface fish), Schlumberger
+                ; LogN8 : the title of the log corresponding to the electrode N8.
+                ; LogN16 : the title of the log corresponding to the electrode N16.
+                ; LogN32 : the title of the log corresponding to the electrode N32.
+                ; LogN64 : the title of the log corresponding to the electrode N64.
+                ; LogNx : the title of the log corresponding to the electrode Nx.
+                Method=QL40-Elog (Bridle)
+                LogN8=N8
+                LogN16=N16
+                LogN32=
+                LogN64=
+                LogNx=
+                ElectrodeSpacingNx=8
+                ElectrodeSpacingNxUnit=inch (in inch, in, inches or mm)
+                ElectrodeDiameter=1.57
+                ElectrodeDiameterUnit=inch (in inch, in, inches or mm)
+                BoreholeDiameter=2.20
+                BoreholeDiameterUnit=inch (in inch, in, inches or mm)
+                FluidResistivity=25 (log name or value in ohm.m)
+        Returns
+        -------
+        Log
             An object of the last corrected log.
         """
-
-        self._dispatch._FlagAsMethod("ElogCorrection")
-        oblog = self._dispatch.ElogCorrection(prompt_user, config)
-        return Log(oblog)
+        return Log(self._dispatch.ElogCorrection(prompt_user, config))
 
     def correct_bad_traces(self, log=None):
         """Replaces NULL data traces in Image, RGB and FWS logs.
@@ -919,6 +1204,7 @@ class Borehole(DispatchWrapper):
 
     def stack_traces(self, is_spectrum=None, log=None, prompt_user=None, config=None):
         """Stacks multiple FWS traces to create and average trace.
+
         Parameters
         ----------
         is_spectrum : bool, optional
@@ -934,7 +1220,9 @@ class Borehole(DispatchWrapper):
         config : str, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
+
             .. code-block:: ini
+
                 [StackTraces]
                 NumberOfStacks = 5
         Returns
@@ -994,7 +1282,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with
@@ -1030,7 +1318,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         """
         self._dispatch.MirrorImage(log)
@@ -1043,7 +1331,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with
@@ -1071,7 +1359,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with
@@ -1105,7 +1393,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with
@@ -1146,7 +1434,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with
@@ -1159,6 +1447,7 @@ class Borehole(DispatchWrapper):
             configuration file can contain the following options:
 
             .. code-block:: ini
+
                 [ExtractImageLogStatistics]
                 Minimum = yes / no
                 Maximum = yes / no
@@ -1196,7 +1485,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with
@@ -1230,7 +1519,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with
@@ -1260,7 +1549,7 @@ class Borehole(DispatchWrapper):
             The computed log.
         """
         return Log(self._dispatch.ImageComplexityMap(log, prompt_user, config))
-    
+
     def apply_structure_apparent_to_true_correction(self, log=None, prompt_user=None, config=None):
         """Corrects the apparent azimuth and dip angles in a
         Structure log
@@ -1269,7 +1558,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with
@@ -1280,6 +1569,7 @@ class Borehole(DispatchWrapper):
         config : str, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
+
             .. code-block:: ini
 
             [ApplyStructureApparentToTrueCorrection]
@@ -1302,7 +1592,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with
@@ -1336,7 +1626,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with
@@ -1368,7 +1658,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with
@@ -1400,7 +1690,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with
@@ -1411,6 +1701,7 @@ class Borehole(DispatchWrapper):
         config : str, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
+
             .. code-block:: ini
 
                 [RemoveStructuralDip]
@@ -1434,7 +1725,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         method : int, optional
             The methode used.
@@ -1496,7 +1787,8 @@ class Borehole(DispatchWrapper):
         """
         return Log(self._dispatch.ColorClassification(log, prompt_user, config))
 
-    def adjust_image_brightness_and_contrast(self, log=None, prompt_user=None):  #TODO you can't specify the parameters in the function call ?
+    def adjust_image_brightness_and_contrast(self, log=None,
+                                             prompt_user=None):  # TODO you can't specify the parameters in the function call ?
         """Adjusts the brightness and contrast in RGB logs
 
         Parameters
@@ -1519,7 +1811,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with
@@ -1559,7 +1851,7 @@ class Borehole(DispatchWrapper):
             One of the computed log.  #TODO figure out which
         """
         return Log(self._dispatch.ExtractStructureIntervalStatistic(log, prompt_user, config))
-    
+
     def rqd(self, log=None, prompt_user=None, config=None):
         """Computes the Rock Quality Designation from the structure
         picks in a Structure Log.
@@ -1611,7 +1903,7 @@ class Borehole(DispatchWrapper):
         ----------
         log : str or int, optional
             Zero based index (integer) or title (string) of
-            the log to process. If not provided, a dialog box 
+            the log to process. If not provided, a dialog box
             displaying a list of available logs will be displayed.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with
@@ -1640,8 +1932,6 @@ class Borehole(DispatchWrapper):
         """
         return Log(self._dispatch.RepresentativePicks(log, prompt_user, config))
 
-
-
     def correct_dead_sensor(self, log=None, prompt_user=None, config=None):
         """Corrects the Null and invalid data columns in Image logs.
 
@@ -1658,6 +1948,7 @@ class Borehole(DispatchWrapper):
         config : str, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
+
             .. code-block:: ini
 
                 [DeadSensor]
@@ -1732,6 +2023,7 @@ class Borehole(DispatchWrapper):
         config : bool, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
+
             .. code-block:: ini
 
                 [CalculateFluidVelocity]
@@ -1763,6 +2055,7 @@ class Borehole(DispatchWrapper):
     def centralize(self, log=None, prompt_user=None, config=None):
         """Corrects travel time or multi-finger-caliper data for de-centralization effects
         and outputs a new image log.
+
         Parameters
         ----------
         log : int or str, optional
@@ -1776,6 +2069,7 @@ class Borehole(DispatchWrapper):
         config : bool, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
+
             .. code-block:: ini
 
                 [Centralize]
@@ -1796,7 +2090,7 @@ class Borehole(DispatchWrapper):
     def calculate_acoustic_caliper(self, log=None, prompt_user=None, config=None):
         """Calculates borehole radius and caliper values from acoustic travel time measurements.
 
-       Parameters
+        Parameters
         ----------
         log : int or str, optional
             Zero based index or title of the log to process.
@@ -1809,6 +2103,7 @@ class Borehole(DispatchWrapper):
         config : bool, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
+
             .. code-block:: ini
 
                 [CalculateAcousticCaliper]
@@ -1842,6 +2137,7 @@ class Borehole(DispatchWrapper):
         config : bool, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
+
             .. code-block:: ini
 
                 [CalculateCasingThickness]
@@ -1873,6 +2169,7 @@ class Borehole(DispatchWrapper):
         config : bool, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
+
             .. code-block:: ini
 
                 [CalculateApparentMetalLoss]
@@ -1903,6 +2200,7 @@ class Borehole(DispatchWrapper):
         config : str, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
+
             .. code-block:: ini
 
                 [RadiusToFromDiameter]
@@ -1932,6 +2230,7 @@ class Borehole(DispatchWrapper):
         config : str, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
+
             .. code-block:: ini
 
                 [OuterInnerRadiusDiameter]
@@ -1965,10 +2264,7 @@ class Borehole(DispatchWrapper):
         config : bool, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
-            .. code-block:: ini
 
-                [Path to a configuration file or a parameter string. The
-            configuration file can contain the following options:
             .. code-block:: ini
 
                 [CasedHoleNormalization]
@@ -1987,6 +2283,7 @@ class Borehole(DispatchWrapper):
 
     def reverse_amplitude(self, log=None):
         """Inverts the amplitudes in a FWS log.
+
         Parameters
         ----------
         log : int or str, optional
@@ -2008,6 +2305,7 @@ class Borehole(DispatchWrapper):
         filter_type : int, optional
             If not provided, default value will be used.
             Type of the filter :
+
                 * 0 = moving average
                 * 1 = weighted average
 
@@ -2380,7 +2678,7 @@ class Borehole(DispatchWrapper):
             Object of the log containing the pick times shifted to the nearest amplitude extremum.
         """
 
-        return Log(self._dispatch.AdjustPickToExtremum(fws_log,arrival_log, prompt_user, config))
+        return Log(self._dispatch.AdjustPickToExtremum(fws_log, arrival_log, prompt_user, config))
 
     def extract_window_peak_amplitude(self, log=None, prompt_user=None, config=None):
         """Extracts the maximum amplitude found in a time window of a FWS log trace.
@@ -2531,8 +2829,6 @@ class Borehole(DispatchWrapper):
 
         return Log(self._dispatch.CompressiveStrength(log, prompt_user, config))
 
-
-
     def apply_natural_gamma_borehole_correction(self, log=None, prompt_user=None, config=None):
         """Applies borehole corrections to FWS and Well logs
 
@@ -2576,9 +2872,9 @@ class Borehole(DispatchWrapper):
         return Log(self._dispatch.ApplyNaturalGammaBoreholeCorrection(log, prompt_user, config))
 
     def apply_total_gamma_calibration(self, log=None, prompt_user=None, config=None):
-        """Applies a calibration factor or equation to the values in the specified Well Log
+        """Applies a calibration factor or equation to the values in the specified Well Log.
 
-       Parameters
+        Parameters
         ----------
         log : int or str, optional
             Zero based index or title of the log to process.
@@ -2641,7 +2937,7 @@ class Borehole(DispatchWrapper):
 
     def spectrometric_ratios(self, log_a=None, log_b=None, log_c=None, prompt_user=None, config=None):
         """Computes spectrometric ratios like U/Th or U/k
-        
+
         By default, the ratios log_b/log_a, log_b/log_c and log_c/log_a
         will be computed.
 
@@ -2770,7 +3066,6 @@ class Borehole(DispatchWrapper):
         """
 
         return Log(self._dispatch.ComputeGR(log_k, log_u, log_th, prompt_user, config))
-
 
     def process_nmrsa_data(self, log=None, prompt_user=None, config=None):
         """Performs a post-processing of NMRSA's BMR tool raw data.
@@ -2922,7 +3217,6 @@ class Borehole(DispatchWrapper):
         """
 
         return Log(self._dispatch.NMRFluidVolumes(log, prompt_user, config))
-
 
     def water_salinity(self, log=None, prompt_user=None, config=None):
         """Salinity estimation from fluid conductivity.
@@ -3274,8 +3568,10 @@ class Borehole(DispatchWrapper):
              .. code-block:: ini
 
                 [GrainSizeStatistics]
-                ; Method : 0 = Logarithmic (original Folk and Ward; default), 1 = Geometric (modified Folk and Ward),\
-                2 = Logarithmic method of moments, 3= Geometric method of moments
+                ; Method : 0 = Logarithmic (original Folk and Ward; default),
+                ; 1 = Geometric (modified Folk and Ward),
+                ; 2 = Logarithmic method of moments,
+                ; 3= Geometric method of moments
                 Mean = yes
                 Median = yes
                 Sorting = yes
@@ -3288,7 +3584,7 @@ class Borehole(DispatchWrapper):
 
     def grain_size_sorting(self, log_min, log_max, prompt_user=None, config=None):
         """Classifies grain size values based on min and max logs.
-        
+
         Parameters
         ----------
         log_min : int or str, optional
@@ -3309,8 +3605,10 @@ class Borehole(DispatchWrapper):
              .. code-block:: ini
 
                 [GrainSizeSorting]
-                ; Method : 0 = Logarithmic (original Folk and Ward; default), 1 = Geometric (modified Folk and Ward),\
-                2 = Logarithmic method of moments, 3= Geometric method of moments
+                ; Method : 0 = Logarithmic (original Folk and Ward; default),
+                ; 1 = Geometric (modified Folk and Ward),
+                ; 2 = Logarithmic method of moments,
+                ; 3= Geometric method of moments
                 BlockedAverage = yes
 
         Returns
@@ -3413,3 +3711,4 @@ class Borehole(DispatchWrapper):
         """
 
         self._dispatch.AllowModifyHeadersContent(enable, password)
+        
