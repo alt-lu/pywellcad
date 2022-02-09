@@ -25,9 +25,6 @@ class TestBoreholeImageAndStructure(unittest.TestCase, ExtraAsserts, SamplePath)
     def tearDownClass(cls):
         cls.app.quit(False)
 
-    def test_image_complexity_map_duplicate_entry(self):
-        self.fail("Wellcad documentation for ImageComplexityMap has duplicate entry")
-
     def test_adjust_image_brightness_and_contrast_auto(self):
         self.obi_borehole.adjust_image_brightness_and_contrast(log="CORE", prompt_user=False)
 
@@ -60,22 +57,19 @@ class TestBoreholeImageAndStructure(unittest.TestCase, ExtraAsserts, SamplePath)
 
     def test_extract_color_components(self):
         self.obi_borehole.extract_color_components(log="CORE", prompt_user=False)
-        self.assertIsInstance(self.obi_borehole.log("CORE-R"), wellcad.com.Log)
-        self.assertIsInstance(self.obi_borehole.log("CORE-G"), wellcad.com.Log)
-        self.assertIsInstance(self.obi_borehole.log("CORE-B"), wellcad.com.Log)
+        self.assertIsInstance(self.obi_borehole.get_log("CORE-R"), wellcad.com.Log)
+        self.assertIsInstance(self.obi_borehole.get_log("CORE-G"), wellcad.com.Log)
+        self.assertIsInstance(self.obi_borehole.get_log("CORE-B"), wellcad.com.Log)
         self.obi_borehole.remove_log("CORE-R")
         self.obi_borehole.remove_log("CORE-G")
         self.obi_borehole.remove_log("CORE-B")
 
     def test_color_classification(self):
         self.obi_borehole.color_classification(log="CORE", prompt_user=False, config=self.config_file)
-        self.assertIsInstance(self.obi_borehole.log("CORE - Classification - Analysis"), wellcad.com.Log)
-        self.assertIsInstance(self.obi_borehole.log("CORE - Classification - RGB"), wellcad.com.Log)
+        self.assertIsInstance(self.obi_borehole.get_log("CORE - Classification - Analysis"), wellcad.com.Log)
+        self.assertIsInstance(self.obi_borehole.get_log("CORE - Classification - RGB"), wellcad.com.Log)
         self.obi_borehole.remove_log("CORE - Classification - Analysis")
         self.obi_borehole.remove_log("CORE - Classification - RGB")
-
-    def test_no_documented_return_color_classification(self):
-        self.fail("There are no documented return in the wellcad help for color classification. Also: The function creates multiple logs but returns just one ?")
 
 
     def test_representative_picks(self):
@@ -85,12 +79,12 @@ class TestBoreholeImageAndStructure(unittest.TestCase, ExtraAsserts, SamplePath)
 
     def test_image_complexity_map(self):
         self.classic_borehole.image_complexity_map(log="Reflec", prompt_user=False, config=self.config_file)
-        self.assertIsInstance(self.classic_borehole.log("Reflec - ICM"), wellcad.com.Log)
+        self.assertIsInstance(self.classic_borehole.get_log("Reflec - ICM"), wellcad.com.Log)
         self.classic_borehole.remove_log("Reflec - ICM")
 
     def test_extract_image_log_image_statistics(self):
         self.classic_borehole.extract_image_log_image_statistics(log="Reflec", prompt_user=False, config=self.config_file)
-        self.assertIsInstance(self.classic_borehole.log("Reflec - Max"), wellcad.com.Log)
+        self.assertIsInstance(self.classic_borehole.get_log("Reflec - Max"), wellcad.com.Log)
         self.classic_borehole.remove_log("Reflec - Max")
 
     def test_normalize_image(self):

@@ -11,7 +11,7 @@ class TestIntervalItem(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.app = wellcad.com.Application()
         cls.sample_path = cls._find_sample_path()
         cls.borehole = cls.app.open_borehole(str(cls.sample_path / "Geotech Plot.WCL"))
-        cls.log = cls.borehole.log("Sampling")
+        cls.log = cls.borehole.get_log("Sampling")
         cls.item = cls.log.interval_item(0)
 
     @classmethod

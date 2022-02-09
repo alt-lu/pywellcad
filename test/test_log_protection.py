@@ -14,11 +14,11 @@ class TestLogProtection(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.fixture_path = pathlib.Path(__file__).parent / "fixtures"
 
         cls.litho_borehole = cls.app.open_borehole(str(cls.sample_path / "Core Description.wcl"))
-        cls.litho_log = cls.litho_borehole.log("lithology")
+        cls.litho_log = cls.litho_borehole.get_log("lithology")
         cls.volume_analysis_borehole = cls.app.open_borehole(str(cls.sample_path / "Volume Analysis.wcl"))
-        cls.formula_log = cls.volume_analysis_borehole.log("GR percent")
+        cls.formula_log = cls.volume_analysis_borehole.get_log("GR percent")
         cls.classic_borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
-        cls.gr_log = cls.classic_borehole.log("GR")
+        cls.gr_log = cls.classic_borehole.get_log("GR")
 
     @classmethod
     def tearDownClass(cls):

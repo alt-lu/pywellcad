@@ -119,9 +119,10 @@ class Structure(DispatchWrapper):
         Azimuth is the angle of inclination of the structure measured
         downward from horizontal.
         Depending on the log type, azimuth has a different meaning:
-            - dip direction for planar features (i.e. Structure log).
-            - azimuthal position for breakouts and tensile fractures (i.e. Breakout Log).
-            - trend for vector like structures (i.e. Lineation Log).
+
+            * dip direction for planar features (i.e. Structure log).
+            * azimuthal position for breakouts and tensile fractures (i.e. Breakout Log).
+            * trend for vector like structures (i.e. Lineation Log).
         """
         return self._dispatch.Azimuth
 
@@ -136,9 +137,10 @@ class Structure(DispatchWrapper):
         Tilt is measured from the horizontal. It corresponds to the
         structural dip angle.
         Depending on the log type, tilt has a different meaning:
-            - dip angle for planar features (i.e. Structure log)
-            - tilt angle between breakout and borehole axis (i.e. Breakout Log)
-            - plunge for vector like structures (i.e. Lineation Log)."""
+
+            * dip angle for planar features (i.e. Structure log)
+            * tilt angle between breakout and borehole axis (i.e. Breakout Log)
+            * plunge for vector like structures (i.e. Lineation Log)."""
         return self._dispatch.Tilt
 
     @tilt.setter
@@ -217,8 +219,8 @@ class Structure(DispatchWrapper):
         Examples:
 
              * stucture entirely visible : ""
-             * 1 visible azimuth range : "25-189"
-             * 2 visible azimuth range : "25-18 - 200-260"
+             * 1 visible azimuth range : "25.00-189.00"
+             * 2 visible azimuth range : "12.00-36.00-100.00-150.00""
         """
         return self._dispatch.VisibleAzimuthRanges
 

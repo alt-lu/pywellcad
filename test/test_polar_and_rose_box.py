@@ -12,7 +12,7 @@ class TestPolarAndRoseBox(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.sample_path = cls._find_sample_path()
         cls.borehole = cls.app.new_borehole()
         cls.fmi_net_sand_estimation_borehole = cls.app.open_borehole(str(cls.sample_path / "FMI and Net Sand Estimation.wcl"))
-        cls.polar_log = cls.fmi_net_sand_estimation_borehole.log("Polar Projection")
+        cls.polar_log = cls.fmi_net_sand_estimation_borehole.get_log("Polar Projection")
         cls.polar_item = cls.polar_log.schmit_box(0)
 
     @classmethod

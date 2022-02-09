@@ -50,17 +50,17 @@ class TestWorkspace(unittest.TestCase, SamplePath):
 
     def test_add_joint_log_to_b_hole(self):
         self.casing_workspace.add_joint_log_to_b_hole()
-        self.assertIsInstance(self.casing_borehole.log("Joints"), wellcad.com.Log)
+        self.assertIsInstance(self.casing_borehole.get_log("Joints"), wellcad.com.Log)
         self.casing_borehole.remove_log("Joints")
 
     def test_add_engin_log_from_driller_casing_table_to_b_hole(self):
         self.casing_workspace.add_engin_log_from_driller_casing_table_to_b_hole()
-        self.assertIsInstance(self.casing_borehole.log("#1"), wellcad.com.Log)
+        self.assertIsInstance(self.casing_borehole.get_log("#1"), wellcad.com.Log)
         self.casing_borehole.remove_log("#1")
 
     def test_add_engin_log_from_logger_casing_table_to_b_hole(self):
         self.casing_workspace.add_engin_log_from_logger_casing_table_to_b_hole()
-        self.assertIsInstance(self.casing_borehole.log("#1"), wellcad.com.Log)
+        self.assertIsInstance(self.casing_borehole.get_log("#1"), wellcad.com.Log)
         self.casing_borehole.remove_log("#1")
 
 

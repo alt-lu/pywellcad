@@ -32,8 +32,8 @@ class TestPage(unittest.TestCase, SamplePath, ExtraAsserts):
         self.assertEqual(self.page.document_height, 491)
 
     def test_document_width(self):
-        self.assertAttrEqual(self.page, "document_width", 283)
-        self.assertAttrChange(self.page, "document_width", 200)  # actually sets the value to value/10
+        self.assertAttrEqual(self.page, "document_width", 2826)
+        self.assertAttrChange(self.page, "document_width", 200)
 
     def test_paper_mode(self):
         self.assertAttrEqual(self.page, "paper_mode", 0)
@@ -49,12 +49,12 @@ class TestPage(unittest.TestCase, SamplePath, ExtraAsserts):
         self.assertAttrChange(self.page, "print_titles_on_bottom", False)
 
     def test_print_titles_on_top_on_each_page(self):
-        self.assertAttrEqual(self.page, "print_titles_on_top_on_each_page", True)
-        self.assertAttrChange(self.page, "print_titles_on_top_on_each_page", False)  # Fails
+        self.assertAttrEqual(self.page, "print_titles_on_top_on_each_page", False)
+        self.assertAttrChange(self.page, "print_titles_on_top_on_each_page", True)
 
     def test_print_titles_on_bottom_on_each_page(self):
-        self.assertAttrEqual(self.page, "print_titles_on_bottom_on_each_page", True)
-        self.assertAttrChange(self.page, "print_titles_on_bottom_on_each_page", False)  # Fails
+        self.assertAttrEqual(self.page, "print_titles_on_bottom_on_each_page", False)
+        self.assertAttrChange(self.page, "print_titles_on_bottom_on_each_page", True)
 
     def test_margin(self):
         self.assertAttrEqual(self.page, "top_margin", 5)

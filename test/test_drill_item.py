@@ -11,7 +11,7 @@ class TestDrillItem(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.app = wellcad.com.Application()
         cls.sample_path = cls._find_sample_path()
         cls.borehole = cls.app.open_borehole(str(cls.sample_path / "Engineering Log and Borehole Volume.wcl"))
-        cls.engineering_log = cls.borehole.log("Well Sketch")
+        cls.engineering_log = cls.borehole.get_log("Well Sketch")
         cls.drill_item = cls.engineering_log.drill_item(0)
 
     @classmethod
@@ -20,6 +20,7 @@ class TestDrillItem(unittest.TestCase, ExtraAsserts, SamplePath):
 
     def test_bottom_depth(self):
         self.assertAlmostEqual(self.drill_item.bottom_depth, 15.0, 3)
+        self.assertAttrAlmostChange(self.drill_item, "bottom_depth", 20.0, 3)
 
     def test_set_diameter(self):
         self.assertAlmostEqual(self.drill_item.diameter, 300.0, 3)

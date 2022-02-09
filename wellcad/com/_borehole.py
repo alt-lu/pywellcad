@@ -13,13 +13,13 @@ class Borehole(DispatchWrapper):
                          "RemoveStructuralDip", "ExtractStructureIntervalStatistic", "ColorClassification",
                          "RepresentativePicks", "ImageComplexityMap", "NormalizeImage", "OrientImageToNorth",
                          "FilterImageLog", "ApplyConditionalTesting", "RQD", "GrainSizeSorting", "StackTraces",
-                         "FilterFWSLog", "AverageFilterFWSLog", "FreqFilterFwsLog", "ApplyStandOffCorrection",
+                         "AverageFilterFWSLog", "FreqFilterFwsLog", "ApplyStandOffCorrection",
                          "CompensatedVelocity", "ApplySemblanceProcessing", "ProcessReflectedTubeWave",
                          "PickFirstArrival", "PickE1Arrival", "ExtractE1Amplitude", "AdjustPickToExtremum",
                          "ExtractWindowPeakAmplitude", "ApplyNaturalGammaBoreholeCorrection",
                          "ApplyTotalGammaCalibration", "CorrectDeadSensor", "CalculateFluidVelocity",
                          "CalculateApparentMetalLoss", "GetLog", "CreateNewWorkspace",  "Workspace", "FileExport",
-                         "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",)
+                         "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection", "NMRFluidVolumes",)
 
     @property
     def name(self):
@@ -72,6 +72,10 @@ class Borehole(DispatchWrapper):
     def refresh_window(self):
         """Performs a one time refresh of the borehole view"""
         self._dispatch.RefreshWindow()
+
+    def show_window(self):
+        """Puts the borhole into focus."""
+        self._dispatch.ShowWindow()
 
     def set_draft_mode(self, display_mode=None):
         """Toggles the view of the borehole document.
@@ -222,6 +226,22 @@ class Borehole(DispatchWrapper):
             if the index is out of bounds or if name does not match any of the workspace name.
         """
         return Workspace(self._dispatch.Workspace(workspace_id))
+
+    def check_formula(self, formula):
+        """Verifies the syntax of a formula used in a Formula Log.
+
+        Parameters
+        ----------
+        formula : str
+            The formula that needs to be checked.
+            Example: "({GR}-min({GR}))/(max({GR})- min({GR}))"
+
+        Returns
+        -------
+        bool
+            Whether the formula is correct or not.
+        """
+        return self._dispatch.CheckFormula(formula)
 
     @property
     def odbc(self):
@@ -403,22 +423,35 @@ class Borehole(DispatchWrapper):
         """
         self._dispatch.DoPrint(self, enable_dialog, top_depth, bottom_depth, nb_of_copies)
 
-    # Methods for general log handling
-
-    def log(self, index_or_name):
-        """Gets an existing log object in the document.
+    def read_database(self, script_path):
+        """Opens and interprets an SQL script to download data from a database.
 
         Parameters
         ----------
-        index_or_name :  int or str
-            The zero based index or the name of the log.
+        script_path : str
+            The path to the SQL script to be called
+
         Returns
         -------
-        Log
-            The log object with the specified index or name, or ``None``
-            if the index is out of bounds or if name does not match any of the log name.
+        bool
+            Whether the operation was successful or not.
         """
-        return Log(self._dispatch.Log(index_or_name))
+        return self._dispatch.ReadDatabase(script_path)
+
+    def write_database(self, script_path):
+        """Opens and interprets an SQL script to upload data to a database.
+
+        Parameters
+        ----------
+        script_path : str
+            The path to the SQL script to be called
+
+        Returns
+        -------
+        bool
+            Whether the operation was successful or not.
+        """
+        return self._dispatch.WriteDatabase(script_path)
 
     def get_log(self, index_or_name):
         """Gets an existing log object in the document.
@@ -983,6 +1016,63 @@ class Borehole(DispatchWrapper):
         """
         self._dispatch.Normalize(log, prompt_user, config)
 
+    def unit_conversion(self, log=None, prompt_user=None, config=None):
+        """Converts the units used in a log.
+
+        Units are organized in categories (e.g. Length, Weight or Temperature).
+
+        Parameters
+        ----------
+        log : str or int, optional
+            The title or the zero based index of the log.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [UnitConversion]
+                Category=Length / Weight / Temperature
+                FromUnit=mm
+                ToUnit=in
+                CreateNewLogs=yes/no
+        """
+        self._dispatch.UnitConversion(log, prompt_user, config)
+
+    def zonation(self, logs=None, prompt_user=None, config=None):
+        """Splits log data into zones.
+
+        This is an automated version of the Zonation process in WellCAD.
+
+        Parameters
+        ----------
+        logs : list, optional
+            The list of the titles or the zero base indexes of the logs to process.
+            If not provided, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [Zonation]
+                UseIntervalThickness = yes/no (set to "no" to neglect theNbOuptutIntervals parameter)
+                NbOutputIntervals = 2
+                IntervalMinThickness = 0.5
+                UseLithoLogAsOutput = yes/no
+        """
+        self._dispatch.Zonation(logs, prompt_user, config)
+
     def resample_log(self, log, prompt_user=None, config=None):
         """Resamples a data set according to a new constant sampling rate or sample point
         determined from a reference log.
@@ -1084,6 +1174,47 @@ class Borehole(DispatchWrapper):
                 MarkerPosition = 182.5
         """
         self._dispatch.CalculateBoreholeDeviation(prompt_user, config)
+
+    def calculate_borehole_volume(self, prompt_user=None, config=None):
+        """Calculates the volume of an entire hole or annulus (e.g. between casing and borehole wall)
+        from an Image logs containing radius values or a Well logs providing caliper values.
+
+        Parameters
+        ----------
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [VolumeProcess]
+                InnerDiam = 100 / log name
+                InnerDiamUnit = mm/in/cm/ft/yd
+                OuterDiam = 110 / log name
+                OuterDiamUnit = mm/in/cm/ft/yd
+                AnnularVolume = yes/no
+                BottomToTop = yes/no
+                VolumeUnit = litre/cu.yd/cu.ft/cu.in/cu.cm/cu.m
+                DisplayTick = yes/no
+                SmallTickFreq = 1
+                MediumTickFreq = 10
+                LargeTickFreq = 100
+                DisplayNumerical = yes/no
+                NumericalFreq = 10
+                DisplayCurve = yes/no
+                DisplayInterval = yes/no
+                IntervalRef = 10
+                MaxDepthRange = yes/no
+                TopDepth = 0.0
+                BottomDepth = 123.5
+
+        """
+        self._dispatch.CalculateBoreholeVolume(prompt_user, config)
 
     def calculate_borehole_coordinates(self, prompt_user=None, config=None):
         """Calculates the deviation path coordinates Northing, Easting and TVD.
@@ -1783,12 +1914,12 @@ class Borehole(DispatchWrapper):
         Returns
         -------
         Log
-            One of the computed log.  #TODO figure out which log is returned
+            Returns an RGB Log or an Analysis Log depending on the configuration file.
+            Returns the RGB Log if both options are selected.
         """
         return Log(self._dispatch.ColorClassification(log, prompt_user, config))
 
-    def adjust_image_brightness_and_contrast(self, log=None,
-                                             prompt_user=None):  # TODO you can't specify the parameters in the function call ?
+    def adjust_image_brightness_and_contrast(self, log=None, prompt_user=None):
         """Adjusts the brightness and contrast in RGB logs
 
         Parameters
@@ -3035,7 +3166,7 @@ class Borehole(DispatchWrapper):
 
     def compute_gr(self, log_k=None, log_u=None, log_th=None, prompt_user=None, config=None):
         """Computes total gamma ray from K, U and Th isotope concentrations using the MEDUSA
-        calibration file
+        calibration file.
 
         Parameters
         ----------

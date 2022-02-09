@@ -11,7 +11,7 @@ class TestEquipmentItem(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.app = wellcad.com.Application()
         cls.sample_path = cls._find_sample_path()
         cls.borehole = cls.app.open_borehole(str(cls.sample_path / "Engineering Log and Borehole Volume.wcl"))
-        cls.engineering_log = cls.borehole.log("Well Sketch")
+        cls.engineering_log = cls.borehole.get_log("Well Sketch")
         cls.eqp_item = cls.engineering_log.eqp_item(10)
         cls.liquid_eqp_item = cls.engineering_log.eqp_item(16)
 
@@ -93,10 +93,9 @@ class TestEquipmentItem(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrAlmostChange(self.liquid_eqp_item, 'injection_position', 0.5, 3)
 
     def test_set_injection_depth(self):
-        self.assertAttrEqual(self.liquid_eqp_item, 'injection_depth', 60.0)
+        self.assertAttrEqual(self.liquid_eqp_item, 'injection_depth', 60.0)  # fails : Default value is 0 but when a value is set, it clamps to the bounds top_depth - bottom_depth.
         self.assertAttrAlmostChange(self.liquid_eqp_item, 'injection_depth', 65.0, 3)
-        self.fail("Default value is 0 but when a value is set, it clamps to the bounds top_depth - bottom_depth.")
-        
+
     def test_weight(self):
         self.assertAttrEqual(self.eqp_item, 'weight', -1.0)  # default value is -1 ?
         self.assertAttrAlmostChange(self.eqp_item, 'weight', 0.5, 3)

@@ -11,7 +11,7 @@ class TestCrossSectionBox(unittest.TestCase, SamplePath, ExtraAsserts):
         cls.app = wellcad.com.Application()
         cls.sample_path = cls._find_sample_path()
         cls.borehole = cls.app.open_borehole(str(cls.sample_path / "ABI 43 Corrosion Plot.wcl"))
-        cls.log = cls.borehole.log("Cross Section")
+        cls.log = cls.borehole.get_log("Cross Section")
         cls.item = cls.log.cross_box(0)
 
     @classmethod

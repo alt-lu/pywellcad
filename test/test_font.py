@@ -10,7 +10,7 @@ class TestFont(unittest.TestCase, SamplePath, ExtraAsserts):
         cls.app = wellcad.com.Application()
         cls.sample_path = cls._find_sample_path()
         cls.borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
-        cls.log = cls.borehole.log("Description")
+        cls.log = cls.borehole.get_log("Description")
         cls.font = cls.log.font
 
     @classmethod

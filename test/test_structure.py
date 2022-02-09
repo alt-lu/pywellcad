@@ -11,16 +11,16 @@ class TestStructure(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.app = wellcad.com.Application()
         cls.sample_path = cls._find_sample_path()
         cls.struct_borehole = cls.app.open_borehole(str(cls.sample_path / "FMI and Net Sand Estimation.wcl"))
-        cls.struct_log = cls.struct_borehole.log("Structure")
+        cls.struct_log = cls.struct_borehole.get_log("Structure")
         cls.struct = cls.struct_log.structure(0)
 
         cls.fixture_path = pathlib.Path(__file__).parent / "fixtures"
         cls.breakout_borehole = cls.app.open_borehole(str(cls.fixture_path / "Breakout Picking.WCL"))
-        cls.breakout_log = cls.breakout_borehole.log("Breakouts")
+        cls.breakout_log = cls.breakout_borehole.get_log("Breakouts")
         cls.breakout = cls.breakout_log.breakout(0)
 
         cls.lineation_borehole = cls.app.open_borehole(str(cls.fixture_path / "Lineation Example.WCL"))
-        cls.lineation_log = cls.lineation_borehole.log("Lineations")
+        cls.lineation_log = cls.lineation_borehole.get_log("Lineations")
         cls.lineation = cls.lineation_log.lineation(0)
 
     @classmethod
@@ -75,7 +75,8 @@ class TestStructure(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAlmostEqual(self.struct.feature_depth, 2119.46, 2)  #TODO is there an example to test this with a partial structure?
 
     def test_visible_azimuth_ranges(self):
-        self.assertEqual(self.struct.visible_azimuth_ranges, "")  #TODO is there an example to test this with a partial structure?
+        self.assertAttrEqual(self.struct, "visible_azimuth_ranges", "")
+        self.assertAttrChange(self.struct, "visible_azimuth_ranges", "12.00-36.00-100.00-150.00")
 
     def test_eccentricity(self):
         self.assertEqual(self.lineation.eccentricity, 0.8725769519805908)

@@ -218,7 +218,6 @@ class Workspace(DispatchWrapper):
                 ImageSmoothingStrength = 20
                 ImageSmoothingSpeed = 0.25
                 ImageContrastSensitivity = 0.05
-
         """
 
         self._dispatch.QuickPick(config_file_name)
@@ -233,7 +232,7 @@ class Workspace(DispatchWrapper):
         ----------
         path: str
             String specifying the name and path of the
-            workspace template to be applied (*.ist). Please note
+            workspace template to be applied (\*.ist). Please note
             that the file extension is different for the
             ISI, Casing Integrity and NMR Workspaces.
         prompt_if_not_found: bool, optional
@@ -260,7 +259,7 @@ class Workspace(DispatchWrapper):
         Parameters
         ----------
         config_file_name : str
-            *.ini file containing the processing parameters.
+            \*.ini file containing the processing parameters.
             Read the WellCAD Help for information on the
             syntax of the file.
         """

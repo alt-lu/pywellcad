@@ -11,7 +11,7 @@ class TestLithoDictionary(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.app = wellcad.com.Application()
         cls.sample_path = cls._find_sample_path()
         cls.borehole = cls.app.open_borehole(str(cls.sample_path / "Core Description.wcl"))
-        cls.litho_log = cls.borehole.log("lithology")
+        cls.litho_log = cls.borehole.get_log("lithology")
         cls.dict = cls.litho_log.litho_dictionary
 
     @classmethod

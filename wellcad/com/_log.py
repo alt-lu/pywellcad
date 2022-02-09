@@ -2054,6 +2054,22 @@ class Log(DispatchWrapper):
         return EquipmentItem(self._dispatch.EqpItem(index))
 
     @property
+    def comment_style(self):
+        """int: The position of the comment associated with an engineering log.
+
+        The following styles are available:
+
+            * 0 = None, comment is not displayed
+            * 1 = Left, comment displayed on the left of the engineering log
+            * 2 = Right, comment displayed on the right of the engineering log
+        """
+        return self._dispatch.CommentStyle
+
+    @comment_style.setter
+    def comment_style(self, style):
+        self._dispatch.CommentStyle = style
+
+    @property
     def ground_depth(self):
         """float: The starting point (reference datum) of the
         borehole."""

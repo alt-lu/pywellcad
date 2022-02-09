@@ -2,15 +2,19 @@ import unittest
 import pathlib
 import wellcad.com
 from ._extra_asserts import ExtraAsserts
+from ._sample_path import SamplePath
 
 
-class TestBorehole(unittest.TestCase, ExtraAsserts):
+class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
     @classmethod
     def setUpClass(cls):
         cls.app = wellcad.com.Application()
         cls.fixture_path = pathlib.Path(__file__).parent / "fixtures"
+        cls.sample_path = cls._find_sample_path()
         cls.borehole = cls.app.open_borehole(str(cls.fixture_path / "borehole/Well1.wcl"))
         cls.elog_borehole = cls.app.open_borehole(str(cls.fixture_path / "borehole/ElogCorrection.wcl"))
+        cls.classic_borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
+
 
     @classmethod
     def tearDownClass(cls):
@@ -45,6 +49,9 @@ class TestBorehole(unittest.TestCase, ExtraAsserts):
     def test_refresh_window(self):
         self.borehole.refresh_window()
 
+    def test_show_window(self):
+        self.borehole.show_window()
+
     def test_set_draft_mode(self):
         self.borehole.set_draft_mode(0)
         self.borehole.set_draft_mode(1)
@@ -58,6 +65,16 @@ class TestBorehole(unittest.TestCase, ExtraAsserts):
     
     def test_maximize_window(self):
         self.borehole.maximize_window()
+
+    def test_read_database(self):
+        script = str(self.fixture_path / "database/load_header.sql")
+        success = self.borehole.read_database(script)
+        self.assertEqual(success, True)
+
+    def test_write_database(self):
+        script = str(self.fixture_path / "database/store_header.sql")
+        success = self.borehole.write_database(script)
+        self.assertEqual(success, True)
 
     def test_set_visible_depth_range(self):
         self.borehole.set_visible_depth_range(10, 20)
@@ -75,6 +92,10 @@ class TestBorehole(unittest.TestCase, ExtraAsserts):
         config = str(self.fixture_path / "borehole/workspace_settings.ini")
         self.assertIsInstance(self.borehole.create_new_workspace(2, config), wellcad.com.Workspace)
         self.assertIsInstance(self.borehole.workspace(0), wellcad.com.Workspace)
+
+    def test_check_formula(self):
+        self.assertEqual(self.borehole.check_formula("({GR}-min({GR}))/(max({GR})- min({GR}))"), True)
+        self.assertEqual(self.borehole.check_formula("bad formula"), False)
 
     def test_get_odbc(self):
         self.assertIsInstance(self.borehole.odbc, wellcad.com.Odbc)
@@ -98,10 +119,10 @@ class TestBorehole(unittest.TestCase, ExtraAsserts):
         self.fail("test_do_print not implemented")
 
     def test_log_by_name(self):
-        self.assertIsInstance(self.borehole.log("GR"), wellcad.com.Log)
+        self.assertIsInstance(self.borehole.get_log("GR"), wellcad.com.Log)
 
     def test_log_by_index(self):
-        self.assertIsInstance(self.borehole.log(0), wellcad.com.Log)
+        self.assertIsInstance(self.borehole.get_log(0), wellcad.com.Log)
 
     def test_get_log_by_name(self):
         self.assertIsInstance(self.borehole.get_log("GR"), wellcad.com.Log)
@@ -189,7 +210,31 @@ class TestBorehole(unittest.TestCase, ExtraAsserts):
 
     def test_normalize(self):
         config = "NormalizeAt100=yes,  CreateNewLog=yes, ComponentsToDelete=VCLA"
-        self.borehole.block_log("Volume", False, config)
+        self.borehole.normalize("Volume", False, config)
+
+    def test_unit_conversion(self):
+        self.assertEqual(self.elog_borehole.get_log("Diam").log_unit, "in")
+        config = "Category=Length, FromUnit=in, ToUnit=mm, CreateNewLogs=False"
+        self.elog_borehole.unit_conversion("Diam", False, config)
+        self.assertEqual(self.elog_borehole.get_log("Diam").log_unit, "mm")
+        config = "Category=Length, FromUnit=mm, ToUnit=in, CreateNewLogs=False"
+        self.elog_borehole.unit_conversion("Diam", False, config)  # Undo changes
+        self.assertEqual(self.elog_borehole.get_log("Diam").log_unit, "in")
+
+    def test_zonation_single_log(self):
+        nb_of_logs = self.classic_borehole.nb_of_logs
+        logs = "GR"
+        config = "NbOutputIntervals=2,IntervalMinThickness=1,UseIntervalThickness=false,UseLithoLogAsOutput=true"
+        self.classic_borehole.zonation(logs, False, config)
+        self.assertGreater(self.classic_borehole.nb_of_logs, nb_of_logs)
+
+    def test_zonation_multiple_log(self):
+        nb_of_logs = self.classic_borehole.nb_of_logs
+        logs = ["GR", ]
+        config = "NbOutputIntervals=2,IntervalMinThickness=1,UseIntervalThickness=false,UseLithoLogAsOutput=true"
+        self.classic_borehole.zonation(logs, False, config)  # TODO figure out why it doesn't work with lists
+        self.assertGreater(self.classic_borehole.nb_of_logs, nb_of_logs)
+
 
     def test_resample_log(self):
         config = "SamplingRate=0.05"
@@ -218,6 +263,12 @@ class TestBorehole(unittest.TestCase, ExtraAsserts):
         config = "AzimuthLog=Azimuth,TiltLog=Tilt,NorthingLog=Northing,EastingLog=Easting"
         self.borehole.calculate_borehole_closure(False, config)
         self.assertGreater(self.borehole.nb_of_logs, nb_of_logs)
+
+    def test_calculate_borehole_volume(self):
+        nb_of_logs = self.elog_borehole.nb_of_logs
+        config = "InnerDiam = Diam, InnerDiamUnit = in, AnnularVolume = False"
+        self.elog_borehole.calculate_borehole_volume(False, config)
+        self.assertGreater(self.elog_borehole.nb_of_logs, nb_of_logs)
 
     def test_elog_correction(self):
         config = str(self.fixture_path / "borehole/AutoElogCorrection.ini")

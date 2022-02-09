@@ -26,7 +26,7 @@ class TestBoreholeNmr(unittest.TestCase, ExtraAsserts, SamplePath):
     def test_process_nmrsa_data(self):
         nb_logs = self.borehole_proc.nb_of_logs
         config = "UseDefautOuputs=yes"
-        self.borehole_proc.process_nmrprocess_nmrsa_data("NMR", False, config)
+        self.borehole_proc.process_nmrsa_data("NMR", False, config)
         self.assertGreater(self.borehole_proc.nb_of_logs, nb_logs)
 
     def test_nmr_total_porosity(self):
@@ -42,7 +42,7 @@ class TestBoreholeNmr(unittest.TestCase, ExtraAsserts, SamplePath):
         DisplayTIMModel=true,VariableCforTIMModel=1,ExponentMforTIMModel=4,BFVCutoffForTIMModel=2, \
         BFVCutoffForTIMModel=0.3,FFVCutoffForTIMModel=0,DisplaySDRModel=true,VariableCforSDRModel=4, \
         ExponentMforSDRModel=4,ExponentNforSDRModel=2,DisplayT2LogMean=false"
-        output_log = self.borehole.nmr_total_porosity("T2DIST", False, config)
+        output_log = self.borehole.nmr_permeability("T2DIST", False, config)
         self.assertIsInstance(output_log, wellcad.com.Log)
 
     def test_nmr_permeability_documentation(self):
@@ -51,10 +51,10 @@ class TestBoreholeNmr(unittest.TestCase, ExtraAsserts, SamplePath):
     def test_nmr_fluid_volumes(self):
         config = "UseLithoDatabaseAssociatedColor=yes,Components=Bound Water,Moveable Water,\
         Cutoff=3,5"
-        output_log = self.borehole.nmr_nmr_fluid_volumes("T2DIST", False, config)
+        output_log = self.borehole.nmr_fluid_volumes("T2DIST", False, config)
         self.assertIsInstance(output_log, wellcad.com.Log)
 
-    def test_nmr_fluid_volumes(self):
+    def test_nmr_fluid_volumes_missing_doc(self):
         self.fail("NMRFluidVolumes missing in the chm documentation")
 
 

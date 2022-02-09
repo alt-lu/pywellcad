@@ -19,49 +19,49 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.fixture_path = pathlib.Path(__file__).parent / "fixtures"
 
         cls.borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
-        cls.gr_log = cls.borehole.log("GR")
-        cls.sonic_e1_mud_log = cls.borehole.log("Sonic - E1 - Mud")
-        cls.gr_litho_interval_log = cls.borehole.log("Lithology from GR Classification")
+        cls.gr_log = cls.borehole.get_log("GR")
+        cls.sonic_e1_mud_log = cls.borehole.get_log("Sonic - E1 - Mud")
+        cls.gr_litho_interval_log = cls.borehole.get_log("Lithology from GR Classification")
         cls.ole_log = cls.borehole.insert_new_log(22)
         cls.polar_and_rose_log = cls.borehole.insert_new_log(20)
-        cls.comment_log = cls.borehole.log("Description")
-        cls.fws_log = cls.borehole.log("Sonic")
+        cls.comment_log = cls.borehole.get_log("Description")
+        cls.fws_log = cls.borehole.get_log("Sonic")
 
         cls.geotech_borehole = cls.app.open_borehole(str(cls.sample_path / "Geotech Plot.WCL"))
-        cls.depth_log = cls.geotech_borehole.log("Elev.")
-        cls.marker_log = cls.geotech_borehole.log("Sample No.")
+        cls.depth_log = cls.geotech_borehole.get_log("Elev.")
+        cls.marker_log = cls.geotech_borehole.get_log("Sample No.")
 
         cls.engineering_borehole = cls.app.open_borehole(str(cls.sample_path / "Engineering Log and Borehole Volume.wcl"))
-        cls.engineering_log = cls.engineering_borehole.log("Well Sketch")
+        cls.engineering_log = cls.engineering_borehole.get_log("Well Sketch")
 
         cls.volume_analysis_borehole = cls.app.open_borehole(str(cls.sample_path / "Volume Analysis.wcl"))
-        cls.formula_log = cls.volume_analysis_borehole.log("GR percent")
-        cls.analysis_log = cls.volume_analysis_borehole.log("Volume")
+        cls.formula_log = cls.volume_analysis_borehole.get_log("GR percent")
+        cls.analysis_log = cls.volume_analysis_borehole.get_log("Volume")
 
         cls.fmi_borehole = cls.app.open_borehole(str(cls.sample_path / "FMI and Net Sand Estimation.wcl"))
-        cls.structure_log = cls.fmi_borehole.log("Structure")
-        cls.image_log = cls.fmi_borehole.log("FMI Image")
+        cls.structure_log = cls.fmi_borehole.get_log("Structure")
+        cls.image_log = cls.fmi_borehole.get_log("FMI Image")
 
 
         cls.breakout_borehole = cls.app.open_borehole(str(cls.fixture_path / "Breakout Picking.WCL"))
-        cls.breakout_log = cls.breakout_borehole.log("Breakouts")
+        cls.breakout_log = cls.breakout_borehole.get_log("Breakouts")
 
         cls.lineation_borehole = cls.app.open_borehole(str(cls.fixture_path / "Lineation Example.WCL"))
-        cls.lineation_log = cls.lineation_borehole.log("Lineations")
-        cls.rgb_log = cls.lineation_borehole.log("OPTV (High side)")
+        cls.lineation_log = cls.lineation_borehole.get_log("Lineations")
+        cls.rgb_log = cls.lineation_borehole.get_log("OPTV (High side)")
 
         cls.litho_borehole = cls.app.open_borehole(str(cls.sample_path / "Core Description.wcl"))
-        cls.core_desc_log = cls.litho_borehole.log("Bio qualifier")
-        cls.strata_log = cls.litho_borehole.log("Depo")
-        cls.stacking_pattern_log = cls.litho_borehole.log("Stacking")
-        cls.litho_log = cls.litho_borehole.log("lithology")
+        cls.core_desc_log = cls.litho_borehole.get_log("Bio qualifier")
+        cls.strata_log = cls.litho_borehole.get_log("Depo")
+        cls.stacking_pattern_log = cls.litho_borehole.get_log("Stacking")
+        cls.litho_log = cls.litho_borehole.get_log("lithology")
         cls.litho_dict = str(cls.fixture_path / "litho_dict.LTH")
 
         cls.corrosion_borehole = cls.app.open_borehole(str(cls.sample_path / "ABI 43 Corrosion Plot.wcl"))
-        cls.cross_section_log = cls.corrosion_borehole.log("Cross Section")
+        cls.cross_section_log = cls.corrosion_borehole.get_log("Cross Section")
 
         cls.nmr_borehole = cls.app.open_borehole(str(cls.sample_path / "NMR Demo.WCL"))
-        cls.percentage_log = cls.nmr_borehole.log("Fluid Volumes")
+        cls.percentage_log = cls.nmr_borehole.get_log("Fluid Volumes")
 
     @classmethod
     def tearDownClass(cls):
@@ -282,9 +282,6 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertEqual(self.gr_log.maj_grid_spacing, 40.0)
         self.gr_log.min_grid_spacing = 0.0
 
-    def test_typo_in_wellcad_help(self):
-        self.fail("MajGridSpacing is spelled MajGridSpcaing, NbOfData is spelled NbData")
-
     def test_lock_log_data(self):
         self.assertFalse(self.gr_log.lock_log_data)
         self.gr_log.lock_log_data = True
@@ -474,7 +471,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrEqual(self.analysis_log, "nb_of_data", 1869)
         self.analysis_log.remove_trace(10)  # trace is not really removed but values are set to No-data
         self.assertAttrEqual(self.analysis_log, "nb_of_data", 1869)
-        self.assertEqual(self.analysis_log.get_trace_data(10, 0), 0)  # replacement data is not -999.25 like above
+        self.assertEqual(self.analysis_log.get_trace_data(10, 0), -999.25)
 
         self.assertAttrEqual(self.image_log, "nb_of_data", 1026)
         self.image_log.insert_trace(0)
@@ -509,7 +506,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrEqual(self.analysis_log, "nb_of_data", 1869)
         self.analysis_log.remove_trace_at_depth(50.0)  # trace is not really removed but values are set to No-data
         self.assertAttrEqual(self.analysis_log, "nb_of_data", 1869)
-        self.assertEqual(self.analysis_log.get_trace_data_at_depth(50.0, 0), 0)  # replacement data is not -999.25 like above
+        self.assertEqual(self.analysis_log.get_trace_data_at_depth(50.0, 0), -999.25)
 
         self.assertAttrEqual(self.image_log, "nb_of_data", 1026)
         self.image_log.insert_trace_at_depth(2118.1)
@@ -680,6 +677,11 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrEqual(self.engineering_log, "nb_of_eqp_item", 20)
         self.engineering_log.insert_new_eqp_item(10.0, 15.0, "invalid name")
         self.assertAttrEqual(self.engineering_log, "nb_of_eqp_item", 20)
+
+    def test_comment_style(self):
+        self.assertAttrEqual(self.engineering_log, "comment_style", 2)
+        self.assertAttrChange(self.engineering_log, "comment_style", 0)
+        self.assertAttrChange(self.engineering_log, "comment_style", 1)
 
     def test_diameter_high(self):
         self.assertAttrEqual(self.engineering_log, "diameter_high", 400.0)
