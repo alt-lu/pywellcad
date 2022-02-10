@@ -3435,7 +3435,8 @@ class Borehole(DispatchWrapper):
 
                 [ShaleVolume]
                 Equation = 0
-                ; 0 = Linear (default), 1 = Larionov (Tertiary), 2 = Steiber, 3 = Clavier, 4 = Larionov (older rocks)
+                ; 0 = Linear (default), 1 = Larionov (Tertiary), 2 = Steiber,
+                ; 3 = Clavier, 4 = Larionov (older rocks)
                 Shale=150
                 ShaleValueType=1
                 ; ...Type: 0 = value, 1 = minmax, 2 = avginterval
