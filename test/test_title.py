@@ -240,12 +240,6 @@ class TestTitle(unittest.TestCase, SamplePath, ExtraAsserts):
         self.assertAttrChange(self.title, "comment_text", "New comment")
         self.assertAttrChange(self.title, "comment_text", "")
 
-    def test_title_text_missing_documentation(self):
-        self.fail("Documentation for TitleText is missing in wellcad")
-
-    def test_comment_text_missing_documentation(self):
-        self.fail("Documentation for CommentText is missing in wellcad")
-
     def test_title_font(self):
         self.assertIsInstance(self.title.title_font, wellcad.com.Font)
 

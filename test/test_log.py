@@ -42,7 +42,6 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.structure_log = cls.fmi_borehole.get_log("Structure")
         cls.image_log = cls.fmi_borehole.get_log("FMI Image")
 
-
         cls.breakout_borehole = cls.app.open_borehole(str(cls.fixture_path / "Breakout Picking.WCL"))
         cls.breakout_log = cls.breakout_borehole.get_log("Breakouts")
 
@@ -467,10 +466,10 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertEqual(self.analysis_log.get_trace_data(10, 0), -999.25)
 
         self.assertAttrEqual(self.image_log, "nb_of_data", 1026)
-        self.image_log.insert_trace(0)
+        self.image_log.insert_trace(1026)
         self.assertAttrEqual(self.image_log, "nb_of_data", 1027)
         self.assertEqual(self.image_log.get_trace_data(1869, 0), 65535)
-        self.image_log.remove_trace(0)
+        self.image_log.remove_trace(1026)
         self.assertAttrEqual(self.image_log, "nb_of_data", 1026)
         self.image_log.remove_trace(10)  # trace is not really removed but values are set to No-data
         self.assertAttrEqual(self.image_log, "nb_of_data", 1026)
@@ -504,7 +503,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrEqual(self.image_log, "nb_of_data", 1026)
         self.image_log.insert_trace_at_depth(2118.1)
         self.assertAttrEqual(self.image_log, "nb_of_data", 1027)
-        self.assertEqual(self.image_log.get_trace_data_at_depth(1869, 0), 65535)
+        self.assertEqual(self.image_log.get_trace_data_at_depth(2118.8, 0), 65535)
         self.image_log.remove_trace_at_depth(2118.05)
         self.assertAttrEqual(self.image_log, "nb_of_data", 1026)
         self.image_log.remove_trace_at_depth(2119.0)  # trace is not really removed but values are set to No-data
@@ -750,7 +749,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
 
     def test_attach_attribute_dictionary(self):
         attribute_dictionary = str(self.fixture_path / "DefaultStructure.tad")
-        self.structure_log.attach_attribute_dictionary("new_attribute", attribute_dictionary)
+        self.structure_log.attach_attribute_dictionary("Type", attribute_dictionary)
 
     def test_insert_delete_structure(self):
         self.structure_log.insert_new_structure_ex(depth=10.0, azimuth=20.0, dip=3.0, aperture=0.0)
@@ -794,9 +793,9 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertEqual(comment_box.text, "Distributary Mouth Bar")
         self.assertIsInstance(column, wellcad.com.Log)
 
-    def test_remove_strata_column(self):
+    def test_insert_remove_strata_column(self):
         self.fail("There is no way to programmatically add a strata column")
-        self.strata_log.remove_strata_column(0)
+        self.strata_log.remove_strata_column(0)  # This works
 
     def test_insert_delete_comment_box(self):
         self.comment_log.insert_new_comment_box(top_depth=10.0, bottom_depth=12.0, text="kind text")

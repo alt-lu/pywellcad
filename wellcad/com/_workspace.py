@@ -18,14 +18,15 @@ class Workspace(DispatchWrapper):
         self._dispatch.AutoDetectZones()
 
     def pick_similar_features(self, config_file_name):
-        """Runs an automated similar structure picking in ISI
+        """Runs an automated similar structure picking in ISI workspace.
 
-        TODO: Requires the user to first select a structure before calling the methode.
-        The Pick Similar Features process takes one or more reference
+        The Pick Similar Features process takes one or more manual
         picks as input, runs the automated picking and keeps only
         picks which do not deviate from the reference(s) by a defined
         tolerance value in Dip Azimuth and Dip angle. Picks detected
         as similar are then added to the pick repository.
+        You need to have **manually** selected the input picks first
+        in the WellCAD window.
 
         Parameters
         ----------

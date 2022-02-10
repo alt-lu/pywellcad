@@ -66,15 +66,9 @@ class TestEquipmentItem(unittest.TestCase, ExtraAsserts, SamplePath):
     def test_description(self):
         self.assertAttrEqual(self.eqp_item, "description", "Plain casing")
 
-    def test_description_vs_name(self):
-        self.fail("equipment_item.description and equipment_item.name are very similar, should we remove one ?")
-
     def test_comment(self):
         self.assertAttrEqual(self.eqp_item, "comment", "")
         self.assertAttrChange(self.eqp_item, "comment", "a fresh comment")
-
-    def test_missing_comment_documentation(self):
-        self.fail("documentation is not documented in wellcad")
 
     def test_axis_position_fail_on_non_solid(self):
         with self.assertRaises(pywintypes.com_error):
@@ -93,8 +87,9 @@ class TestEquipmentItem(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrAlmostChange(self.liquid_eqp_item, 'injection_position', 0.5, 3)
 
     def test_set_injection_depth(self):
-        self.assertAttrEqual(self.liquid_eqp_item, 'injection_depth', 60.0)  # fails : Default value is 0 but when a value is set, it clamps to the bounds top_depth - bottom_depth.
-        self.assertAttrAlmostChange(self.liquid_eqp_item, 'injection_depth', 65.0, 3)
+        self.assertAttrEqual(self.liquid_eqp_item, 'injection_depth', 0.0)  # initial value is 0
+        self.assertAttrAlmostChange(self.liquid_eqp_item, 'injection_depth', 70.0, 3)
+        self.assertAttrAlmostChange(self.liquid_eqp_item, 'injection_depth', 0.0, 3)  # Cannot set it back to a value outside the range top_depth - bottom_depth
 
     def test_weight(self):
         self.assertAttrEqual(self.eqp_item, 'weight', -1.0)  # default value is -1 ?

@@ -15,6 +15,15 @@ from ._litho_dictionary import LithoDictionary
 
 
 class Log(DispatchWrapper):
+    """The Log class represents a depth or time referenced set of data displayed as a column in a borehole document.
+    Logs can be added/removed/manipulated from the borehole document itself.
+
+    >>> import wellcad.com
+    >>> app = wellcad.com.Application()
+    >>> borehole = app.new_borehole()
+    >>> log = borehole.insert_new_log(1) # Create a new well log
+    """
+    
     _DISPATCH_METHODS = ("Structure",)
     _DISPATCH_ATTRIBUTES = ("Style",)
 
@@ -1415,6 +1424,11 @@ class Log(DispatchWrapper):
             Name of the classification column.
         file : str
             Path to the TAD file to attach.
+
+        Raises
+        ------
+        pywintypes.com_error
+            If the classification column doesn't exist, an exception is raised.
         """
         self._dispatch.AttachAttributeDictionary(attribute, file)
 

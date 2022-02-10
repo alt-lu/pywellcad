@@ -26,6 +26,7 @@ the interface to be more Pythonic.
    fossil_item
    structure
    marker_item
+   cross_section_box
    polar_and_rose_box
    stacking_pattern_item
    drill_item

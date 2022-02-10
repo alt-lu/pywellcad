@@ -39,9 +39,6 @@ class TestLithoDictionary(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertIsNone(self.dict.litho_pattern(self.dict.nb_of_patterns))
         self.assertIsNone(self.dict.litho_pattern('code_not_present'))
 
-    def test_litho_pattern_documentation(self):
-       self.fail('wellcad documentation : litho pattern from a code or an index')
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -27,9 +27,7 @@ class TestWorkspace(unittest.TestCase, SamplePath):
         self.isi_workspace.auto_detect_zones()
 
     def test_pick_similar_features(self):
-        # self.isi_workspace.pick_similar_features(
-        #     config_file_name=self.config_file)
-        self.fail("pick_similar_features requires the user to pick at least one feature by hand")
+        self.isi_workspace.pick_similar_features(config_file_name=self.config_file)  # Should display a dialog because no feature was manually selected.
 
     def test_representative_picks(self):
         self.isi_workspace.representative_picks(config_file_name=self.config_file)
@@ -41,8 +39,8 @@ class TestWorkspace(unittest.TestCase, SamplePath):
         self.isi_workspace.quick_pick(config_file_name=self.config_file)
 
     def test_apply_template(self):
-        # success = self.fmi_workspace.apply_template(self.template, False)
-        # self.assertEqual(success, True)
+        success = self.isi_workspace.apply_template(self.template, False)
+        self.assertEqual(success, True)
         self.fail("ApplyTemplate always display a dialog box, making it impossible to write a fully automatic test")
 
     def test_auto_joint_detection(self):
