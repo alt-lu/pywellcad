@@ -2,26 +2,27 @@ from ._dispatch_wrapper import DispatchWrapper
 
 
 class EquipmentItem(DispatchWrapper):
-    """ A Equipment Item found in an engineering log gives information about the elements present in a borehole.
+    """A Equipment Item found in an engineering log gives information about the elements present in a borehole.
 
-        Base available equipments are listed below, but you can modify or add your own in the Equipment dictionary.
-            * plain casing
-            * wire wound casing
-            * slotted casing
-            * perforated casing
-            * centralizer
-            * shoe
-            * packer
-            * water
-            * wedge
-            * headWorks
-            * transducer
-            * gauge
-            * cement
-            * gravel
-            * normal thread
-            * reverse thread
-            * plug
+    Base available equipments are listed below, but you can modify or add your own in the Equipment dictionary.
+    
+        * plain casing
+        * wire wound casing
+        * slotted casing
+        * perforated casing
+        * centralizer
+        * shoe
+        * packer
+        * water
+        * wedge
+        * headWorks
+        * transducer
+        * gauge
+        * cement
+        * gravel
+        * normal thread
+        * reverse thread
+        * plug
 
     Example
     -------

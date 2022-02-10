@@ -117,7 +117,6 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
     def test_log_unit(self):
         self.assertAttrEqual(self.gr_log, "log_unit", "API")
         self.assertAttrChange(self.gr_log, "log_unit", "cps")
-        self.assertAttrChangeRaises(self.gr_log, "log_unit", 25)
 
     def test_position(self):
         left = self.gr_log.left_position
@@ -329,12 +328,6 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAlmostEqual(self.gr_log.get_data_at_depth(87.05), 11.0)
         self.gr_log.remove_data_at_depth(87.05)
         self.assertAlmostEqual(self.gr_log.get_data_at_depth(87.05), original)
-    
-    def test_insert_data_at_depth_documentation(self):
-        self.fail("It isn't clear which direction data gets pushed when a new data point is inserted.")
-    
-    def test_remove_data_at_depth_documentation(self):
-        self.fail("Behaviour isn't the same as in documentation. remove_data_at_depth() in a Well Log actually removes it, it doesn't just set it to NULL")
     
     def test_insert_data_between_samples(self):
         self.gr_log.insert_data_at_depth(87.06, 12.0)

@@ -218,9 +218,9 @@ class Structure(DispatchWrapper):
 
         Examples:
 
-             * stucture entirely visible : ""
-             * 1 visible azimuth range : "25.00-189.00"
-             * 2 visible azimuth range : "12.00-36.00-100.00-150.00""
+             * stucture entirely visible : ``""``
+             * 1 visible azimuth range : ``"25.00-189.00"``
+             * 2 visible azimuth range : ``"12.00-36.00-100.00-150.00"``
         """
         return self._dispatch.VisibleAzimuthRanges
 

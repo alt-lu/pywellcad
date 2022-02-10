@@ -556,7 +556,8 @@ class Log(DispatchWrapper):
     def insert_data_at_depth(self, depth, value):
         """Inserts a new data value at the specified depth.
 
-        If necessary existing data points will be shifted.
+        Data points above (shallower depth) will be shifted upward to
+        accomodate the newly inserted point in a Well Log.
 
         Parameters
         ----------
@@ -710,7 +711,8 @@ class Log(DispatchWrapper):
     def remove_data_at_depth(self, depth):
         """Removes a data point from a Mud or Well Log.
         
-        For Well Logs the data value will be set to ``Null``.
+        All data points above (shallower depth) the removed point will be
+        shifted downward (deeper) when data is removed from a Well Log.
 
         Parameters
         ----------
