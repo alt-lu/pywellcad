@@ -411,7 +411,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertIsInstance(original_dict, wellcad.com.LithoDictionary)
         new_dict = self.litho_log.attach_litho_dictionary(self.litho_dict)
         self.assertIsInstance(new_dict, wellcad.com.LithoDictionary)
-        self.litho_log.litho_dictionary = original_dict._dispatch  # Property '<unknown>.LithoDictionary' can not be set.
+        self.litho_log.litho_dictionary = original_dict
 
     def test_component_name(self):
         self.assertEqual(self.analysis_log.get_component_name(0), "VXBW.ELA")
@@ -441,11 +441,12 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.litho_log.remove_litho_bed_at_depth(15.0)
 
     def test_set_litho_bed(self):
-        litho_bed1 = self.litho_log.get_litho_bed(0)
-        litho_bed2 = self.litho_log.get_litho_bed(1)
-        self.assertIsInstance(litho_bed1, wellcad.com.LithoBed)
-        self.litho_log.set_litho_bed(0, litho_bed2._dispatch) # TODO 'The property or the method is not allowed on this instance of the object.'
-        self.litho_log.set_litho_bed_at_depth(10522, litho_bed2._dispatch)  # TODO same
+        litho_bed_1 = self.litho_log.get_litho_bed(0)
+        litho_bed_2 = self.litho_log.get_litho_bed(1)
+        self.assertIsInstance(litho_bed_1, wellcad.com.LithoBed)
+        self.assertIsInstance(litho_bed_2, wellcad.com.LithoBed)
+        self.litho_log.set_litho_bed(0, litho_bed_2)
+        self.litho_log.set_litho_bed_at_depth(10522, litho_bed_2)
 
     def test_insert_delete_trace(self):
         """For each log that has an insert_trace methode, we test the following:
@@ -820,9 +821,11 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
     def test_font(self):
         font = self.comment_log.font
         self.assertIsInstance(font, wellcad.com.Font)
-        new_font = font
-        new_font.italic = True
-        self.comment_log.font = new_font  # Fails, for the moment you need to use new_font._dispatch for it to work
+        self.assertEqual(font.italic, False)
+        new_comment_log = self.borehole.insert_new_log(8)
+        new_comment_log.font.italic = True
+        new_comment_log.font = font
+        self.assertEqual(new_comment_log.font.italic, False)
 
     def test_insert_delete_cross_box(self):
         self.cross_section_log.insert_new_cross_box(top_depth=10.0, bottom_depth=12.0)

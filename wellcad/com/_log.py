@@ -938,7 +938,7 @@ class Log(DispatchWrapper):
         """
         return LithoBed(self._dispatch.GetLithoBed(index))
 
-    def set_litho_bed(self, index, lithobed):
+    def set_litho_bed(self, index, litho_bed):
         """Sets a LithoBed object at the specified index from another
         LithoBed object.
 
@@ -946,10 +946,10 @@ class Log(DispatchWrapper):
         ----------
         index : int
             Zero based index of the LithoBed to retrieve.
-        lithobed : Lithobed
-            The Lithobed object to copy.
+        litho_bed : LithoBed
+            The LithoBed object to copy.
         """
-        self._dispatch.SetLithoBed(index, lithobed)
+        self._dispatch.SetLithoBed(index, litho_bed._dispatch)
 
     def get_litho_bed_at_depth(self, depth):
         """Gets a LithoBed object at the specified depth from a Lithology Log.
@@ -966,7 +966,7 @@ class Log(DispatchWrapper):
         """
         return LithoBed(self._dispatch.GetLithoBedAtDepth(depth))
 
-    def set_litho_bed_at_depth(self, depth, lithobed):
+    def set_litho_bed_at_depth(self, depth, litho_bed):
         """Sets a LithoBed object at the specified depth from another
         LithoBed object.
 
@@ -974,10 +974,10 @@ class Log(DispatchWrapper):
         ----------
         depth : float
             Depth value in current depth units at which the item will be retrieved.
-        lithobed : Lithobed
-            The Lithobed object to copy.
+        litho_bed : LithoBed
+            The LithoBed object to copy.
         """
-        self._dispatch.SetLithoBedAtDepth(depth, lithobed)
+        self._dispatch.SetLithoBedAtDepth(depth, litho_bed._dispatch)
 
     @property
     def litho_dictionary(self):
@@ -986,7 +986,7 @@ class Log(DispatchWrapper):
 
     @litho_dictionary.setter
     def litho_dictionary(self, dictionary):
-        self._dispatch.LithoDictionary = dictionary
+        self._dispatch.LithoDictionary = dictionary._dispatch
 
     def remove_fossil_item(self, index):
         """Removes an item at the specified index from a CoreDesc Log.
@@ -1412,7 +1412,7 @@ class Log(DispatchWrapper):
 
     @font.setter
     def font(self, font):
-        self._dispatch.Font = font
+        self._dispatch.Font = font._dispatch
 
     def attach_attribute_dictionary(self, attribute, file):
         """Attaches a new attribute library (\*.TAD file) to a
