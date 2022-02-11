@@ -20,7 +20,7 @@ class Borehole(DispatchWrapper):
                          "ApplyTotalGammaCalibration", "CorrectDeadSensor", "CalculateFluidVelocity",
                          "CalculateApparentMetalLoss", "GetLog", "CreateNewWorkspace",  "Workspace", "FileExport",
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
-                         "NMRFluidVolumes", )
+                         "NMRFluidVolumes", "ROPAverage", )
 
     @property
     def name(self):
@@ -1013,6 +1013,75 @@ class Borehole(DispatchWrapper):
                 At100=yes
         """
         self._dispatch.Normalize(log, prompt_user, config)
+
+    def tvd(self, log=None, prompt_user=None, config=None):
+        """Calculates a TVD either from another TVD log (Depth Log) or from a tilt log (Well Log).
+
+        Parameters
+        ----------
+        log : str or int, optional
+            The title or the zero based index of the log.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [TVD]
+                Output=TVD /Elevation
+                ExtrapolateBack=yes /no
+                TVDAtZero=0.0
+
+        Returns
+        -------
+        Log
+            The newly created Log containing the TVD data.
+        """
+        return Log(self._dispatch.TVD(log, prompt_user, config))
+
+    def rop_average(self, log=None, prompt_user=None, config=None):
+        """Computes the average rate of penetration over specified depth intervals
+        for a Mud Log or a Well Log.
+
+        Parameters
+        ----------
+        log : str or int, optional
+            The title or the zero based index of the log.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [ROPAverage]
+                ReferenceInterval=Litho ; log title or constant value indicating the interval height
+                OutputLogAsGraphic=no
+                OutputLogAsText=yes
+                DepthRange=Maximum ;Maximum, UserDefined, Zones, LogZones
+                TopDepth=105
+                BottomDepth=120
+                ;LogZones : top1, bot1, top2, bot2, ... topN, botN
+                LogZones=
+                ; LogZonesDepthRange=logname, depthsectionName1, depthsectionName2, ....depthsectionname3
+                LogZonesDepthRange=Litho,06,05#1
+
+        Returns
+        -------
+        Log
+            The newly created Log.
+        """
+        
+        return Log(self._dispatch.ROPAverage(log, prompt_user, config))
 
     def unit_conversion(self, log=None, prompt_user=None, config=None):
         """Converts the units used in a log.

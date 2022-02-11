@@ -12,8 +12,10 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.fixture_path = pathlib.Path(__file__).parent / "fixtures"
         cls.sample_path = cls._find_sample_path()
         cls.borehole = cls.app.open_borehole(str(cls.fixture_path / "borehole/Well1.wcl"))
+        cls.rop_borehole = cls.app.open_borehole(str(cls.fixture_path / "rop_average.wcl"))
         cls.elog_borehole = cls.app.open_borehole(str(cls.fixture_path / "borehole/ElogCorrection.wcl"))
         cls.classic_borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
+        cls.survey_borehole = cls.app.open_borehole(str(cls.sample_path / "Borehole Survey (Deviation Module).wcl"))
 
 
     @classmethod
@@ -214,6 +216,17 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         self.borehole.normalize("Volume", False, config)
         self.assertGreater(self.borehole.nb_of_logs, nb_of_logs)
         self.fail("NormalizeAt100 should be changed in the documentation")
+
+    def test_tvd(self):
+        config = "Output=TVD, ExtrapolateBack=no, TVDAtZero=0.0"
+        log1 = self.survey_borehole.tvd("tvd", False, config)
+        log2 = self.survey_borehole.tvd("tilt", False, config)
+        self.assertIsInstance(log1, wellcad.com.Log)
+        self.assertIsInstance(log2, wellcad.com.Log)
+
+    def test_rop_average(self):
+        log = self.rop_borehole.rop_average("ROP", False)
+        self.assertIsInstance(log, wellcad.com.Log)
 
     def test_unit_conversion(self):
         self.assertEqual(self.elog_borehole.get_log("Diam").log_unit, "in")
