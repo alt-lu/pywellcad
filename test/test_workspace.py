@@ -9,7 +9,7 @@ class TestWorkspace(unittest.TestCase, SamplePath):
     def setUpClass(cls):
         cls.app = wellcad.com.Application()
         cls.fixture_path = pathlib.Path(__file__).parent / "fixtures"
-        cls.template = str(cls.fixture_path / "Getting Started FMI.ist")
+        cls.template = str(cls.fixture_path / "BMR Workspace.mrt")
         cls.config_file = str(cls.fixture_path / "workspace_config.ini")
         cls.sample_path = cls._find_sample_path()
 
@@ -18,6 +18,9 @@ class TestWorkspace(unittest.TestCase, SamplePath):
 
         cls.casing_borehole = cls.app.open_borehole(str(cls.fixture_path / "Cased Hole Demo.wcl"))
         cls.casing_workspace = cls.casing_borehole.workspace("Casing Integrity Workspace #1")
+
+        cls.nmr_borehole = cls.app.open_borehole(str(cls.sample_path / "NMR Demo.wcl"))
+        cls.bmr_workspace = cls.nmr_borehole.workspace("BMR Workspace")
 
     @classmethod
     def tearDownClass(cls):
@@ -39,9 +42,8 @@ class TestWorkspace(unittest.TestCase, SamplePath):
         self.isi_workspace.quick_pick(config_file_name=self.config_file)
 
     def test_apply_template(self):
-        success = self.isi_workspace.apply_template(self.template, False)
+        success = self.bmr_workspace.apply_template(self.template, False)
         self.assertEqual(success, True)
-        self.fail("ApplyTemplate always display a dialog box, making it impossible to write a fully automatic test")
 
     def test_auto_joint_detection(self):
         self.casing_workspace.auto_joint_detection(self.config_file)

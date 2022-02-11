@@ -19,6 +19,8 @@ class TestLogProtection(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.formula_log = cls.volume_analysis_borehole.get_log("GR percent")
         cls.classic_borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.gr_log = cls.classic_borehole.get_log("GR")
+        cls.fmi_borehole = cls.app.open_borehole(str(cls.sample_path / "FMI and Net Sand Estimation.wcl"))
+        cls.structure_log = cls.fmi_borehole.get_log("Structure")
 
     @classmethod
     def tearDownClass(cls):

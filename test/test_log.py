@@ -31,7 +31,8 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.depth_log = cls.geotech_borehole.get_log("Elev.")
         cls.marker_log = cls.geotech_borehole.get_log("Sample No.")
 
-        cls.engineering_borehole = cls.app.open_borehole(str(cls.sample_path / "Engineering Log and Borehole Volume.wcl"))
+        cls.engineering_borehole = cls.app.open_borehole(
+            str(cls.sample_path / "Engineering Log and Borehole Volume.wcl"))
         cls.engineering_log = cls.engineering_borehole.get_log("Well Sketch")
 
         cls.volume_analysis_borehole = cls.app.open_borehole(str(cls.sample_path / "Volume Analysis.wcl"))
@@ -65,7 +66,6 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
     @classmethod
     def tearDownClass(cls):
         cls.app.quit(False)
-
 
     def test_file_export_to_csv(self):
         self.assertTrue(self.gr_log.file_export(r"C:\Temp", "Test Export", "csv"))
@@ -289,7 +289,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.gr_log.data_table = new_data
         self.assertEqual(self.gr_log.data_table, original_data)
         self.gr_log.lock_log_data = False
-    
+
     def test_data(self):
         self.assertEqual(self.gr_log.get_data(0), 97.86750030517578)
         self.gr_log.set_data(0, 100.0)
@@ -297,7 +297,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.gr_log.set_data(0, 97.86750030517578)
         self.assertEqual(self.gr_log.get_data(0), 97.86750030517578)
         self.assertEqual(self.gr_log.get_data(-1), self.gr_log.null_value)
-    
+
     def test_data_at_depth(self):
         self.assertEqual(self.gr_log.get_data_at_depth(88.0), 97.86750030517578)
         self.assertEqual(self.gr_log.get_data_at_depth(87.0), 98.1874008178711)
@@ -310,24 +310,24 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
     def test_data_depth(self):
         self.assertEqual(self.gr_log.data_depth(0), 88.0)
         self.assertIsNone(self.gr_log.data_depth(-1), "What is the behaviour of data_depth() with out-of-bound indices?")
-    
+
     def test_insert_remove_data(self):
         self.gr_log.insert_data(0, 10.0)
         self.assertEqual(self.gr_log.get_data(0), 10.0)
         self.gr_log.remove_data(0)
         self.assertEqual(self.gr_log.get_data(0), 97.86750030517578)
-    
+
     def test_insert_oob_data(self):
         with self.assertRaises(pywintypes.com_error):
             self.gr_log.insert_data(-1, 11.0)
-    
+
     def test_insert_remove_data_at_depth(self):
         original = self.gr_log.get_data_at_depth(87.05)
         self.gr_log.insert_data_at_depth(87.05, 11.0)
         self.assertAlmostEqual(self.gr_log.get_data_at_depth(87.05), 11.0)
         self.gr_log.remove_data_at_depth(87.05)
         self.assertAlmostEqual(self.gr_log.get_data_at_depth(87.05), original)
-    
+
     def test_insert_data_between_samples(self):
         self.gr_log.insert_data_at_depth(87.06, 12.0)
         self.assertAlmostEqual(self.gr_log.get_data_at_depth(87.05), 12.0)
@@ -337,31 +337,31 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrEqual(self.formula_log, "formula", "{GR}/100")
         self.assertAttrChange(self.formula_log, "formula", "{GR}/1000")
         self.assertAttrChangeRaises(self.formula_log, "formula", "InvalidFormula", pywintypes.com_error)
-    
+
     def test_filter(self):
         self.assertAttrEqual(self.gr_log, "filter", 0)
         self.assertAttrChange(self.gr_log, "filter", 2)
         self.assertAttrNotChanged(self.gr_log, "filter", -1)
-    
+
     def test_fixed_bar_width(self):
         self.assertAttrEqual(self.sonic_e1_mud_log, "fixed_bar_width", 15)
         self.assertAttrChange(self.sonic_e1_mud_log, "fixed_bar_width", 10)
         self.assertAttrNotChanged(self.sonic_e1_mud_log, "fixed_bar_width", -1)
-    
+
     def test_new_interval_item_at_depth(self):
         item = self.gr_litho_interval_log.insert_new_interval_item(20.0, 22.0, 78.8)
         self.assertIsInstance(item, wellcad.com.IntervalItem)
         query = self.gr_litho_interval_log.interval_item_at_depth(21.0)
         self.assertIsNotNone(query)
         self.gr_litho_interval_log.remove_interval_item_at_depth(21.0)
-    
+
     def test_insert_interval_item_remove_by_depth(self):
         item = self.gr_litho_interval_log.insert_new_interval_item(80.0, 82.0, 23.0)
         self.assertIsInstance(item, wellcad.com.IntervalItem)
         self.gr_litho_interval_log.remove_interval_item_at_depth(81.0)
         item = self.gr_litho_interval_log.interval_item_at_depth(81.0)
         self.assertNotAlmostEqual(item.value, 23.0)
-    
+
     def test_insert_interval_item_remove_by_index(self):
         item = self.gr_litho_interval_log.insert_new_interval_item(20.0, 22.0, 78.8)
         self.assertIsInstance(item, wellcad.com.IntervalItem)
@@ -374,33 +374,33 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAlmostEqual(item.value, 72.5)
         item = self.gr_litho_interval_log.interval_item(-1)
         self.assertIsNone(item)
-    
+
     def test_interval_item_at_depth(self):
         item = self.gr_litho_interval_log.interval_item_at_depth(90.0)
         self.assertIsNone(item)
         item = self.gr_litho_interval_log.interval_item_at_depth(84.0)
         self.assertAlmostEqual(item.value, 95.0)
-    
+
     def test_pen_color(self):
         self.assertAttrEqual(self.gr_log, "pen_color", 0x00ffffff)
         self.assertAttrChange(self.gr_log, "pen_color", 0x00ff0000)
         self.assertAttrNotChanged(self.gr_log, "pen_color", -10)
-    
+
     def test_pen_style(self):
         self.assertAttrEqual(self.gr_log, "pen_style", 0)
         self.assertAttrChange(self.gr_log, "pen_style", 1)
         self.assertAttrNotChanged(self.gr_log, "pen_style", 5)
-    
+
     def test_pen_width(self):
         self.assertAttrEqual(self.gr_log, "pen_width", 3)
         self.assertAttrChange(self.gr_log, "pen_width", 5)
         self.assertAttrNotChanged(self.gr_log, "pen_width", -1)
-    
+
     def test_shading(self):
         self.assertAttrEqual(self.gr_log, "shading", 1)
         self.assertAttrChange(self.gr_log, "shading", 0)
         self.assertAttrNotChanged(self.gr_log, "shading", 3)
-    
+
     def test_style_mud_log(self):
         self.assertAttrEqual(self.sonic_e1_mud_log, "style", 1)
         self.assertAttrChange(self.sonic_e1_mud_log, "style", 3)
@@ -421,18 +421,22 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertEqual(self.analysis_log.get_component_name(0), "VXBW.ELA")
 
     def test_insert_delete_fossil_item(self):
-        self.core_desc_log.insert_new_fossil_item(top_depth=10.0, bottom_depth=11.0, litho_code="a cool litho code", abundance=5.0, dominance=0, position=0.5)
-        self.core_desc_log.insert_new_fossil_item(top_depth=14.0, bottom_depth=15.0, litho_code="a nice litho code", abundance=5.0, dominance=0, position=0.5)
+        self.core_desc_log.insert_new_fossil_item(top_depth=10.0, bottom_depth=11.0, litho_code="a cool litho code",
+                                                  abundance=5.0, dominance=0, position=0.5)
+        self.core_desc_log.insert_new_fossil_item(top_depth=14.0, bottom_depth=15.0, litho_code="a nice litho code",
+                                                  abundance=5.0, dominance=0, position=0.5)
         fossil_item1 = self.core_desc_log.fossil_item(0)
         fossil_item2 = self.core_desc_log.fossil_item_at_depth(15.0)
         self.assertAttrEqual(fossil_item1, "symbol_code", "a cool litho code")
         self.assertAttrEqual(fossil_item2, "symbol_code", "a nice litho code")
         self.core_desc_log.remove_fossil_item(0)
         self.core_desc_log.remove_fossil_item_at_depth(15.0)
-        
+
     def test_insert_delete_litho_bed(self):
-        self.litho_log.insert_new_litho_bed(top_depth=10.0, bottom_depth=12.0, litho_code="a cool litho code", value=0.2, position=0.5)
-        self.litho_log.insert_new_litho_bed(top_depth=14.0, bottom_depth=16.0, litho_code="a nice litho code", value=0.2, position=0.5)
+        self.litho_log.insert_new_litho_bed(top_depth=10.0, bottom_depth=12.0, litho_code="a cool litho code",
+                                            value=0.2, position=0.5)
+        self.litho_log.insert_new_litho_bed(top_depth=14.0, bottom_depth=16.0, litho_code="a nice litho code",
+                                            value=0.2, position=0.5)
         litho_bed1 = self.litho_log.get_litho_bed(0)
         litho_bed2 = self.litho_log.get_litho_bed_at_depth(15.0)
         self.assertAttrEqual(litho_bed1, "litho_code", "a cool litho code")
@@ -482,7 +486,6 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertEqual(self.fws_log.get_trace_data(10, 0), -999.0)
         self.fws_log.remove_trace(10)  # trace should be entirely removed (not the case for image log traces and others)
         self.assertAttrEqual(self.fws_log, "nb_of_data", 381)
-            
 
     def test_trace_at_depth(self):
         """For each log that has an insert_trace_at_depth methode, we test the following:
@@ -529,11 +532,21 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.percentage_log.remove_trace_at_depth(18.10)  # trace should be entirely removed (not the case for image log traces and others)
         self.assertAttrEqual(self.percentage_log, "nb_of_data", 289)
 
-    def test_no_access_to_trace_by_index_for_percentage_logs(self):
-        self.fail("Traces in percentage logs can only be accessed by depth, while in FWS, image and analysis logs both are possible.")
+    def test_trace_for_percentage_logs(self):
+        self.percentage_log.insert_trace(0)  # ERROR
+        self.percentage_log.insert_trace_at_depth(0)  # ok
+        self.percentage_log.get_trace_data(0, 0)  # ok
+        self.percentage_log.get_trace_data_at_depth(0, 0)  # ok
+        self.percentage_log.remove_trace(0)  # ok
+        self.percentage_log.remove_trace_at_depth(0)  # ok
 
-    def test_no_access_to_trace_for_rgb_logs(self):
-        self.fail("There is no way to add or remove trace for RGB logs, should insert and remove work here ?")
+    def test_trace_for_rgb_logs(self):
+        self.rgb_log.insert_trace(0)  # ERROR
+        self.rgb_log.insert_trace_at_depth(0)  # ERROR
+        self.rgb_log.get_trace_data(0, 0)  # ok
+        self.rgb_log.get_trace_data_at_depth(0, 0)  # ok
+        self.rgb_log.remove_trace(0)  # ERROR
+        self.rgb_log.remove_trace_at_depth(0)  # ERROR
 
     def test_trace_data(self):
         self.assertEqual(self.percentage_log.get_trace_data(0, 0), 0.14799758791923523)
@@ -554,7 +567,6 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
     def test_trace_offset(self):
         self.assertAttrEqual(self.fws_log, "trace_offset", 0.0)
         self.assertAttrChange(self.fws_log, "trace_offset", 5)
-
 
     def test_trace_length(self):
         self.assertAttrEqual(self.percentage_log, "trace_length", 3)
@@ -810,7 +822,8 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
 
     def test_insert_delete_marker(self):
         self.marker_log.insert_new_marker(depth=10.0, name="a name", comment="a comment", contact="a contact style")
-        self.marker_log.insert_new_marker(depth=15.0, name="an other name", comment="an other comment", contact="an other contact style")
+        self.marker_log.insert_new_marker(depth=15.0, name="an other name", comment="an other comment",
+                                          contact="an other contact style")
         marker1 = self.marker_log.marker(3)
         marker2 = self.marker_log.marker_by_name("an other name")
         self.assertAttrEqual(marker1, "comment", "a comment")
@@ -838,8 +851,10 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.cross_section_log.remove_cross_box_at_depth(15.0)
 
     def test_insert_delete_stack_item(self):
-        self.stacking_pattern_log.insert_new_stack_item(top_depth=10.0, bottom_depth=12.0, top_width=0.1, bottom_width=0.9)
-        self.stacking_pattern_log.insert_new_stack_item(top_depth=14.0, bottom_depth=16.0, top_width=0.1, bottom_width=0.9)
+        self.stacking_pattern_log.insert_new_stack_item(top_depth=10.0, bottom_depth=12.0, top_width=0.1,
+                                                        bottom_width=0.9)
+        self.stacking_pattern_log.insert_new_stack_item(top_depth=14.0, bottom_depth=16.0, top_width=0.1,
+                                                        bottom_width=0.9)
         stack_item1 = self.stacking_pattern_log.stack_item(0)
         stack_item2 = self.stacking_pattern_log.stack_item_at_depth(15.0)
         self.assertAttrEqual(stack_item1, "top_depth", 10.0)

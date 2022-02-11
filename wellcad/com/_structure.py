@@ -2,7 +2,7 @@ from ._dispatch_wrapper import DispatchWrapper
 
 
 class Structure(DispatchWrapper):
-    """ Structures are picked features (strata, lineations, fractures, breakouts) within a Structure, Lineation
+    r"""Structures are picked features (strata, lineations, fractures, breakouts) within a Structure, Lineation
     or Breakout Log.
 
     Sinusoidal structures (for example factures crossing a borehole) can be partial with only limited visible portions.

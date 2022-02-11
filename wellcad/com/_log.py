@@ -171,7 +171,7 @@ class Log(DispatchWrapper):
         self._dispatch.SetPosition(left, right)
 
     @property
-    def type(self):  # TODO: new lineation log should be added to documentation
+    def type(self):
         """int: The log type index.
 
         Log types are one of the below:
@@ -203,6 +203,7 @@ class Log(DispatchWrapper):
         * Marker log = 24
         * Breakout log = 25
         * Bio log = 26
+        * Lineation log = 27
         """
         return self._dispatch.Type
 
@@ -1849,7 +1850,7 @@ class Log(DispatchWrapper):
         """
         self._dispatch.RemoveSchmitBoxAtDepth(depth)
 
-    def cross_box(self, index):  # the example in the Automation module is wrong
+    def cross_box(self, index):
         """Gets a Cross Box object from the Cross Section Log at the specified index.
 
         Parameters
@@ -2238,7 +2239,7 @@ class Log(DispatchWrapper):
         """
         return self._dispatch.BackgroundHatchStyle
 
-    @background_hatch_style.setter  # code number 4 is missing
+    @background_hatch_style.setter
     def background_hatch_style(self, code):
         self._dispatch.BackgroundHatchStyle = code
 
@@ -2302,7 +2303,7 @@ class Log(DispatchWrapper):
         """
         self._dispatch.AllowModifyLogData(export, password)
 
-    def allow_modify_log_settings(self, export, password):  # TDOD Duplicate
+    def allow_modify_log_settings(self, export, password):
         """When dealing with a protected document you can use this method to enable / disable the option
         to change the settings of a log. This assumes you are in possession of the password.
 

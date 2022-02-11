@@ -209,8 +209,11 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertGreater(self.borehole.nb_of_logs, nb_of_logs)
 
     def test_normalize(self):
+        nb_of_logs = self.borehole.nb_of_logs
         config = "NormalizeAt100=yes,  CreateNewLog=yes, ComponentsToDelete=VCLA"
         self.borehole.normalize("Volume", False, config)
+        self.assertGreater(self.borehole.nb_of_logs, nb_of_logs)
+        self.fail("NormalizeAt100 should be changed in the documentation")
 
     def test_unit_conversion(self):
         self.assertEqual(self.elog_borehole.get_log("Diam").log_unit, "in")
@@ -234,7 +237,6 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         config = "NbOutputIntervals=2,IntervalMinThickness=1,UseIntervalThickness=false,UseLithoLogAsOutput=true"
         self.classic_borehole.zonation(logs, False, config)  # TODO figure out why it doesn't work with lists
         self.assertGreater(self.classic_borehole.nb_of_logs, nb_of_logs)
-
 
     def test_resample_log(self):
         config = "SamplingRate=0.05"

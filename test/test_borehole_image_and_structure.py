@@ -49,8 +49,8 @@ class TestBoreholeImageAndStructure(unittest.TestCase, ExtraAsserts, SamplePath)
         self.assertIsInstance(log, wellcad.com.Log)
         self.structure_borehole.remove_log("Structure#1")
 
-    def test_extract_structure_interval_statistics(self):
-        log = self.structure_borehole.extract_structure_interval_statistics(log="Structure", prompt_user=False, config=self.config_file)
+    def test_extract_structure_interval_statistic(self):
+        log = self.structure_borehole.extract_structure_interval_statistic(log="Structure", prompt_user=False, config=self.config_file)
         self.assertIsInstance(log, wellcad.com.Log)
         self.structure_borehole.remove_log("Ave (3D) Azimuth")
         self.structure_borehole.remove_log("Min Azimuth")
@@ -82,8 +82,8 @@ class TestBoreholeImageAndStructure(unittest.TestCase, ExtraAsserts, SamplePath)
         self.assertIsInstance(self.classic_borehole.get_log("Reflec - ICM"), wellcad.com.Log)
         self.classic_borehole.remove_log("Reflec - ICM")
 
-    def test_extract_image_log_image_statistics(self):
-        self.classic_borehole.extract_image_log_image_statistics(log="Reflec", prompt_user=False, config=self.config_file)
+    def test_extract_image_log_statistics(self):
+        self.classic_borehole.extract_image_log_statistics(log="Reflec", prompt_user=False, config=self.config_file)
         self.assertIsInstance(self.classic_borehole.get_log("Reflec - Max"), wellcad.com.Log)
         self.classic_borehole.remove_log("Reflec - Max")
 

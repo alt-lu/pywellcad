@@ -731,8 +731,6 @@ class Borehole(DispatchWrapper):
                                             apply_annotation_settings, replace_header, keep_charts, new_charts,
                                             overwrite_workspaces, new_workspaces, delete_non_associated_logs, config)
 
-    # Common log edition
-
     def slice_log(self, log, slice_depth, create_top=None, create_bottom=None, keep_original=None):
         """Allows the separation of the log data into a top and bottom section. New logs can be created \
         holding the data of the top and bottom parts of the data set.
@@ -853,8 +851,6 @@ class Borehole(DispatchWrapper):
             The title or the zero based index of the log containing the reference intervals.
         """
         self._dispatch.FillLog(log, top_depth, bottom_depth, step, thickness, user_defined_intervals, interval_log)
-
-    # Common log processes
 
     def filter_log(self, log, prompt_user=None, config=None):
         """Calculates a new filtered data set of a Well Log.
@@ -1010,9 +1006,10 @@ class Borehole(DispatchWrapper):
             .. code-block:: ini
 
                 [AnalysisLogNormalize]
-                ComponentsToDelete=20,05#1,Artifacts
+                ComponentsToDelete= 20, 05#1, Artifacts (Codes of the patterns to be
+                removed separated by commas)
                 CreateNewLog=yes
-                NormalizeAt100=yes
+                At100=yes
         """
         self._dispatch.Normalize(log, prompt_user, config)
 
@@ -1556,7 +1553,7 @@ class Borehole(DispatchWrapper):
         """
         self._dispatch.OrientImageToNorth(log, prompt_user, config)
 
-    def extract_image_log_image_statistics(self, log=None, prompt_user=None, config=None):
+    def extract_image_log_statistics(self, log=None, prompt_user=None, config=None):
         """Extracts minimum, maximum, average, median and other
         statistical values fulfilling an optional condition from each
         image log trace.
@@ -1934,7 +1931,7 @@ class Borehole(DispatchWrapper):
         """
         self._dispatch.AdjustImageBrightnessAndContrast(log, prompt_user)
 
-    def extract_structure_interval_statistics(self, log=None, prompt_user=None, config=None):
+    def extract_structure_interval_statistic(self, log=None, prompt_user=None, config=None):
         """Allows determination of statistical values (e.g. frequency
         of dips) per interval from a structure log.
 
@@ -1979,7 +1976,7 @@ class Borehole(DispatchWrapper):
         Returns
         -------
         Log
-            One of the computed log.  #TODO figure out which
+            One of the computed log.
         """
         return Log(self._dispatch.ExtractStructureIntervalStatistic(log, prompt_user, config))
 
@@ -3678,8 +3675,6 @@ class Borehole(DispatchWrapper):
 
         return Log(self._dispatch.HydraulicConductivity(log, prompt_user, config))
 
-    # CoreCAD processes
-
     def extract_grain_size_statistics(self, log=None, prompt_user=None, config=None):
         """Computes statistics from a grain size distribution curve.
 
@@ -3750,8 +3745,6 @@ class Borehole(DispatchWrapper):
         """
 
         return Log(self._dispatch.GrainSizeSorting(log_min, log_max, prompt_user, config))
-
-    # Protection options
 
     def enable_protection(self, enable, password):
         """Changes the protection status of a document using a password

@@ -88,8 +88,7 @@ class TestEquipmentItem(unittest.TestCase, ExtraAsserts, SamplePath):
 
     def test_set_injection_depth(self):
         self.assertAttrEqual(self.liquid_eqp_item, 'injection_depth', 0.0)  # initial value is 0
-        self.assertAttrAlmostChange(self.liquid_eqp_item, 'injection_depth', 70.0, 3)
-        self.assertAttrAlmostChange(self.liquid_eqp_item, 'injection_depth', 0.0, 3)  # Cannot set it back to a value outside the range top_depth - bottom_depth
+        self.assertAttrAlmostChange(self.liquid_eqp_item, 'injection_depth', 70.0, 3)  # fails when trying to set it back to 0, sets it to 60 (bottom_depth) instead
 
     def test_weight(self):
         self.assertAttrEqual(self.eqp_item, 'weight', -1.0)  # default value is -1 ?

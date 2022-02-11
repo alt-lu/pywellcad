@@ -251,7 +251,7 @@ class Workspace(DispatchWrapper):
             Always returns True except for the WellCAD Reader and
             Demo version for which the function returns False.
         """
-        self._dispatch.ApplyTemplate(path, prompt_if_not_found, config_file_name)
+        return self._dispatch.ApplyTemplate(path, prompt_if_not_found, config_file_name)
 
     def auto_joint_detection(self, config_file_name):
         """Detects the joints from the main log (data source) used
