@@ -1,11 +1,8 @@
 import pathlib
 import unittest
-
 import pywintypes
-
 import wellcad.com
 import random
-import pywintypes
 from datetime import datetime, timezone, timedelta
 from ._extra_asserts import ExtraAsserts
 from ._sample_path import SamplePath
@@ -310,8 +307,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
 
     def test_data_depth(self):
         self.assertEqual(self.gr_log.data_depth(0), 88.0)
-        self.assertIsNone(self.gr_log.data_depth(-1), "What is the behaviour of data_depth() with out-of-bound indices?")
-
+    
     def test_insert_remove_data(self):
         self.gr_log.insert_data(0, 10.0)
         self.assertEqual(self.gr_log.get_data(0), 10.0)

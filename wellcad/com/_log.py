@@ -538,7 +538,9 @@ class Log(DispatchWrapper):
         Returns
         -------
         float
-            The depth of the log data at the specified index.
+            The depth of the log data at the specified index. If the index is
+            out of bounds, this will be 0.0 for a Mud Log, and an extrapolated
+            value for a Well Log.
         """
         return self._dispatch.DataDepth(index)
 
