@@ -183,6 +183,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
     def test_log_background_color(self):
         self.assertAttrEqual(self.gr_log, "log_background_color", 0xffffff)
         self.assertAttrChange(self.gr_log, "log_background_color", 0x0000ff)
+        self.assertAttrNotChanged(self.gr_log, "log_background_color", -10)
 
     def test_border_style(self):
         self.assertAttrEqual(self.gr_log, "border_style", 0)
@@ -197,7 +198,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
     def test_border_color(self):
         self.assertAttrEqual(self.gr_log, "border_color", 0x000000)
         self.assertAttrChange(self.gr_log, "border_color", 0x0000ff)
-        self.assertAttrNotChanged(self.gr_log, "border_color", -1)
+        self.assertAttrNotChanged(self.gr_log, "border_color", -10)
 
     def test_display_border(self):
         self.assertAttrEqual(self.gr_log, "display_border", True)
@@ -399,7 +400,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
     def test_shading(self):
         self.assertAttrEqual(self.gr_log, "shading", 1)
         self.assertAttrChange(self.gr_log, "shading", 0)
-        self.assertAttrNotChanged(self.gr_log, "shading", 3)
+        self.assertAttrNotChanged(self.gr_log, "shading", 4)
 
     def test_style_mud_log(self):
         self.assertAttrEqual(self.sonic_e1_mud_log, "style", 1)

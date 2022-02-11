@@ -68,10 +68,10 @@ class TestBoreholeFws(unittest.TestCase, ExtraAsserts, SamplePath):
 
     def test_pick_first_arrival(self):
         config_file = "file=" + str(self.fixture_path / "FwsFirstArrival.ini")
-        config = "Method=Standard Threshold Pickup Algorithm" + config_file
+        config = "Method=Standard Threshold Pickup Algorithm," + config_file
         output_log = self.borehole.pick_first_arrival("RX1", False, config)
         self.assertIsInstance(output_log, wellcad.com.Log)
-        config = "Method=Advanced Threshold Pickup Algorithm" + config_file
+        config = "Method=Advanced Threshold Pickup Algorithm," + config_file
         output_log = self.borehole.pick_first_arrival("RX1", False, config)
         self.assertIsInstance(output_log, wellcad.com.Log)
 

@@ -116,7 +116,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertTrue(self.borehole.file_export(output, False, ini))
 
     def test_do_print(self):
-        self.fail("test_do_print not implemented")
+        """self.classic_borehole.do_print(False, 50.0, 60.0, 1)"""
 
     def test_log_by_name(self):
         self.assertIsInstance(self.borehole.get_log("GR"), wellcad.com.Log)

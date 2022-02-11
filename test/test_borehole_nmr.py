@@ -25,7 +25,7 @@ class TestBoreholeNmr(unittest.TestCase, ExtraAsserts, SamplePath):
 
     def test_process_nmrsa_data(self):
         nb_logs = self.borehole_proc.nb_of_logs
-        config = "UseDefautOuputs=yes"
+        config = "UseDefaultOutputs=yes"
         self.borehole_proc.process_nmrsa_data("NMR", False, config)
         self.assertGreater(self.borehole_proc.nb_of_logs, nb_logs)
 
@@ -38,12 +38,13 @@ class TestBoreholeNmr(unittest.TestCase, ExtraAsserts, SamplePath):
         self.fail("NMRTotalPorosity missing in the chm documentation")
 
     def test_nmr_permeability(self):
+        nb_logs = self.borehole.nb_of_logs
         config = "T2DistributionTraceUnit=seconds,UseTimeMaxCutoff=true,MaxCutoffValue=0, \
         DisplayTIMModel=true,VariableCforTIMModel=1,ExponentMforTIMModel=4,BFVCutoffForTIMModel=2, \
         BFVCutoffForTIMModel=0.3,FFVCutoffForTIMModel=0,DisplaySDRModel=true,VariableCforSDRModel=4, \
         ExponentMforSDRModel=4,ExponentNforSDRModel=2,DisplayT2LogMean=false"
-        output_log = self.borehole.nmr_permeability("T2DIST", False, config)
-        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.borehole.nmr_permeability("T2DIST", False, config)
+        self.assertGreater(self.borehole.nb_of_logs, nb_logs)
 
     def test_nmr_permeability_documentation(self):
         self.fail("NMRPermeability missing in the chm documentation")

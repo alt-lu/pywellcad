@@ -19,7 +19,8 @@ class Borehole(DispatchWrapper):
                          "ExtractWindowPeakAmplitude", "ApplyNaturalGammaBoreholeCorrection",
                          "ApplyTotalGammaCalibration", "CorrectDeadSensor", "CalculateFluidVelocity",
                          "CalculateApparentMetalLoss", "GetLog", "CreateNewWorkspace",  "Workspace", "FileExport",
-                         "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection", "NMRFluidVolumes",)
+                         "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
+                         "NMRFluidVolumes", )
 
     @property
     def name(self):
@@ -421,7 +422,7 @@ class Borehole(DispatchWrapper):
         nb_of_copies : int, optional
             The number of copies to be printed.
         """
-        self._dispatch.DoPrint(self, enable_dialog, top_depth, bottom_depth, nb_of_copies)
+        self._dispatch.DoPrint(enable_dialog, top_depth, bottom_depth, nb_of_copies)
 
     def read_database(self, script_path):
         """Opens and interprets an SQL script to download data from a database.

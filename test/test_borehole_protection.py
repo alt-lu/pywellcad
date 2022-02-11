@@ -42,9 +42,9 @@ class TestBoreholeProtection(unittest.TestCase, SamplePath, ExtraAsserts):
         output_path = str(self.fixture_path / "output.jpg")
         self.borehole.allow_export_file(False, "Alt123")
         self.borehole.enable_protection(True, "Alt123")
-        self.assertFalse(self.borehole.file_export(output_path), False)
-        self.borehole.allow_export_file(False, "Alt123")
-        self.assertTrue(self.borehole.file_export(output_path), False)
+        self.assertFalse(self.borehole.file_export(output_path, False))
+        self.borehole.allow_export_file(True, "Alt123")
+        self.assertTrue(self.borehole.file_export(output_path, False))
 
 
 if __name__ == '__main__':

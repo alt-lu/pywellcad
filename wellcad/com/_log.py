@@ -231,7 +231,7 @@ class Log(DispatchWrapper):
         
         Colours are specified as a 32 bit integer with an ``xBGR`` structure.
         Each of the blue (B), green (G) and red (R) components are 8 bit
-        values.
+        values. Other allowed values are : 0xFFFFFFFF (None) and 0xFF000000 (automatic color).
         """
         return self._dispatch.LogBackgroundColor
 
@@ -272,7 +272,7 @@ class Log(DispatchWrapper):
         
         Colours are specified as a 32 bit integer with an ``xBGR`` structure.
         Each of the blue (B), green (G) and red (R) components are 8 bit
-        values.
+        values. Other allowed values are : 0xFFFFFFFF (None) and 0xFF000000 (automatic color).
         """
         return self._dispatch.BorderColor
 
@@ -671,7 +671,7 @@ class Log(DispatchWrapper):
         
         Colours are specified as a 32 bit integer with an ``xBGR`` structure.
         Each of the blue (B), green (G) and red (R) components are 8 bit
-        values.
+        values.  Other allowed values are : 0xFFFFFFFF (None) and 0xFF000000 (automatic color).
         """
         return self._dispatch.PenColor
 
@@ -760,6 +760,7 @@ class Log(DispatchWrapper):
         * None = 0
         * Left = 1
         * Right = 2
+        * Full = 3
         """
         return self._dispatch.Shading
 

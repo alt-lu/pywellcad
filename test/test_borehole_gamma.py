@@ -53,7 +53,7 @@ class TestBoreholeGamma(unittest.TestCase, ExtraAsserts, SamplePath):
         nb_of_logs = self.borehole.nb_of_logs
         calib_file = str(self.fixture_path / "spectral_gamma/QL40-SGR-210304.mcf")
         config = "CalibrationFilePath=" + calib_file
-        config = config + "WinHigh=5,EnableFittedSpectrum=true,EnableStabilizationFactor=true,"
+        config = config + ",WinHigh=5,EnableFittedSpectrum=true,EnableStabilizationFactor=true,"
         config = config + "EnableConcentrationErrors=true,HoleDiameter=100,"
         config = config + "CasingThickness=,CasingType=0,FluidDensity=1.1,FluidK=0,FluidU=0,FluidTh=0,ToolPosition=1"
         self.borehole.process_medusa_spectrum_data("Spectrum", "LiveTime", False, config)
