@@ -78,6 +78,11 @@ class TestBoreholeCasedHole(unittest.TestCase, ExtraAsserts, SamplePath):
         output_log = self.borehole.cased_hole_normalization("IR", False, config)
         self.assertIsInstance(output_log, wellcad.com.Log)
 
+    def test_cased_hole_ultrasonics(self):
+        nb_of_logs = self.borehole.nb_of_logs
+        config = "Thickness=yes, Cadi=yes, Score=yes"
+        self.borehole.cased_hole_ultrasonics("Wavelet", "Zones", False, config)
+        self.assertGreater(self.borehole.nb_of_logs, nb_of_logs)
 
 if __name__ == '__main__':
     unittest.main()
