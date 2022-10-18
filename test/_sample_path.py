@@ -20,7 +20,8 @@ class SamplePath:
         wellcads = []
         for _, key in SamplePath.__subkey_iterator(install_key):
             try:
-                if winreg.QueryValueEx(key, "DisplayName")[0] == "WellCAD (x64)":
+                display_name = winreg.QueryValueEx(key, "DisplayName")[0]
+                if display_name == "WellCAD" or display_name == "WellCAD (x64)":
                     version = winreg.QueryValueEx(key, "Version")[0]
                     path = pathlib.Path(winreg.QueryValueEx(key, "InstallLocation")[0])
                     wellcads.append((version, path))
