@@ -17,6 +17,8 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.classic_borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.survey_borehole = cls.app.open_borehole(str(cls.sample_path / "Borehole Survey (Deviation Module).wcl"))
 
+        cls.app.show_window()
+
 
     @classmethod
     def tearDownClass(cls):
@@ -281,13 +283,18 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
 
     def test_calculate_borehole_volume(self):
         nb_of_logs = self.elog_borehole.nb_of_logs
-        config = "InnerDiam = Diam, InnerDiamUnit = in, AnnularVolume = False"
+        config = "InnerDiam1=Diam, OuterDiam1=Diam"
         self.elog_borehole.calculate_borehole_volume(False, config)
         self.assertGreater(self.elog_borehole.nb_of_logs, nb_of_logs)
 
     def test_elog_correction(self):
         config = str(self.fixture_path / "borehole/AutoElogCorrection.ini")
         self.assertIsInstance(self.elog_borehole.elog_correction(False, config), wellcad.com.Log)
+
+    def test_auto_joint_detection(self):
+        nb_of_logs = self.elog_borehole.nb_of_logs
+        self.classic_borehole.auto_joint_detection("Reflec", False, "Sensitivity = 5, TopAndBottom = yes")
+        self.assertGreater(self.borehole.nb_of_logs, nb_of_logs)
 
 
 if __name__ == '__main__':

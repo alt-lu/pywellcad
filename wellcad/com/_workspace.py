@@ -259,10 +259,15 @@ class Workspace(DispatchWrapper):
 
         Parameters
         ----------
-        config_file_name : str
-            \*.ini file containing the processing parameters.
-            Read the WellCAD Help for information on the
-            syntax of the file.
+        config_file_name : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [AutoJointDetection]
+                Sensitivity = 5
+                TopAndBottom = yes
         """
         self._dispatch.AutoJointDetection(config_file_name)
 
