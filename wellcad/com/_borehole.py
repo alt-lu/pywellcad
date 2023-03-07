@@ -1431,6 +1431,32 @@ class Borehole(DispatchWrapper):
 
         return Log(self._dispatch.StackTraces(is_spectrum, log, prompt_user, config))
 
+    def slice_traces(self, log=None, prompt_user=None, config=None):
+        """TODO description.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [[SliceTraces]]
+                start = 0  # in log units
+                end = 0  # in log units
+        """
+
+        self._dispatch.SliceTraces(log, prompt_user, config)
+
     def apply_conditional_testing(self, log_if=None, log_then=None, prompt_user=None, config=None):
         """Applies conditional testing (If-Then-Else) to image log
         values.
@@ -2000,6 +2026,69 @@ class Borehole(DispatchWrapper):
             contrast values will be determined automatically.
         """
         self._dispatch.AdjustImageBrightnessAndContrast(log, prompt_user)
+
+
+    def filter_rgb_log(self, log=None, prompt_user=None, config=None):
+        """TODO write description
+
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                Not used
+
+        Returns
+        -------
+        Log
+            The computed log.
+        """
+
+        return Log(self._dispatch.FilterRGBLog(log, prompt_user, config))
+
+    def sharpen_rgb_log(self, log=None, prompt_user=None, config=None):
+        """TODO write description
+
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                Not used
+
+        Returns
+        -------
+        Log
+            The computed log.
+        """
+
+        return Log(self._dispatch.SharpenRGBLog(log, prompt_user, config))
 
     def extract_structure_interval_statistic(self, log=None, prompt_user=None, config=None):
         """Allows determination of statistical values (e.g. frequency
