@@ -1432,7 +1432,7 @@ class Borehole(DispatchWrapper):
         return Log(self._dispatch.StackTraces(is_spectrum, log, prompt_user, config))
 
     def slice_traces(self, log=None, prompt_user=None, config=None):
-        """TODO description.
+        """Allows the user to keep only a portion of a FWS log's traces. Updates the log in place.
 
         Parameters
         ----------
@@ -2029,7 +2029,7 @@ class Borehole(DispatchWrapper):
 
 
     def filter_rgb_log(self, log=None, prompt_user=None, config=None):
-        """TODO write description
+        """Applies a filter to the RGB log.
 
         Parameters
         ----------
@@ -2060,7 +2060,7 @@ class Borehole(DispatchWrapper):
         return Log(self._dispatch.FilterRGBLog(log, prompt_user, config))
 
     def sharpen_rgb_log(self, log=None, prompt_user=None, config=None):
-        """TODO write description
+        """Sharpens the RGB log.
 
         Parameters
         ----------
