@@ -31,6 +31,9 @@ class TestBoreholeFws(unittest.TestCase, ExtraAsserts, SamplePath):
         output_log = self.borehole.stack_traces(False, "", False, "NumberOfStacks = 5")
         self.assertIsNone(output_log, wellcad.com.Log)
 
+    def test_slice_traces(self):
+        self.borehole.slice_traces("RX1", False, "start = 5, end = 10")
+
     def test_reverse_amplitude(self):
         self.borehole.reverse_amplitude("RX1")
 
