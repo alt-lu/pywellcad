@@ -3938,4 +3938,46 @@ class Borehole(DispatchWrapper):
         """
 
         self._dispatch.AllowModifyHeadersContent(enable, password)
+
+    def set_user_metadata(self, id, value):
+        """Sets a metadata value. If the id doesn't exist, this will create it and set the value.
+
+        Parameters
+        ----------
+        id : str
+            The metadata id.
+        value : str
+            The value to set the metadata to.
+        """
+
+        self._dispatch.SetUserMetadata(id, value)
+
+    def get_user_metadata(self, id):
+        """Gets the value metadata value.
+
+        Parameters
+        ----------
+        id : str
+            The metadata id.
+
+        Returns
+        -------
+        str
+            The value associated with the metadata.
+        """
+
+        return self._dispatch.GetUserMetadata(id)
+
+    def delete_user_metadata(self, id):
+        """Removes a user metadata id and value pair.
+        Warning: if this metadata is used within a header, the metadata id will remain valid and it's value will be set to null.
+
+        Parameters
+        ----------
+        id : str
+            The metadata id.
+
+        """
+
+        self._dispatch.DeleteUserMetadata(id)
         
