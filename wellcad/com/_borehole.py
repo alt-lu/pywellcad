@@ -3980,4 +3980,3 @@ class Borehole(DispatchWrapper):
         """
 
         self._dispatch.DeleteUserMetadata(id)
-        
