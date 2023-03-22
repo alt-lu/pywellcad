@@ -2028,7 +2028,7 @@ class Borehole(DispatchWrapper):
         self._dispatch.AdjustImageBrightnessAndContrast(log, prompt_user)
 
 
-    def filter_rgb_log(self, log=None, prompt_user=None, config=None):
+    def retinex_filter_rgb_log(self, log=None, prompt_user=None, config=None):
         """Applies a filter to the RGB log.
 
         Parameters
@@ -2057,7 +2057,7 @@ class Borehole(DispatchWrapper):
             The computed log.
         """
 
-        return Log(self._dispatch.FilterRGBLog(log, prompt_user, config))
+        return Log(self._dispatch.RetinexFilterRGBLog(log, prompt_user, config))
 
     def sharpen_rgb_log(self, log=None, prompt_user=None, config=None):
         """Sharpens the RGB log.
