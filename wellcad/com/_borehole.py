@@ -1209,6 +1209,7 @@ class Borehole(DispatchWrapper):
     def auto_joint_detection(self, log, prompt_user=None, config=None):
         """Detects the joints from the main log (data source) used
         in the workspace.
+        Note: only compatible with WellCAD version 5.7 and onwards.
 
         Parameters
         ----------
@@ -1282,6 +1283,7 @@ class Borehole(DispatchWrapper):
         config : str, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
+            Note: This configuration is for WellCAD version 5.7 and onwards. For prior version, see the next section.
 
             .. code-block:: ini
 
@@ -1329,6 +1331,32 @@ class Borehole(DispatchWrapper):
                 BottomDepth=19
                 ZonesDepthRange=
                 LogZonesDepthRange=Litho,06,05#1
+
+
+            For WellCAD version 5.5 and 5.6, use this configuration instead:
+
+            .. code-block:: ini
+
+                [VolumeProcess]
+                InnerDiam = 100 / log name
+                InnerDiamUnit = mm/in/cm/ft/yd
+                OuterDiam = 110 / log name
+                OuterDiamUnit = mm/in/cm/ft/yd
+                AnnularVolume = yes/no
+                BottomToTop = yes/no
+                VolumeUnit = litre/cu.yd/cu.ft/cu.in/cu.cm/cu.m
+                DisplayTick = yes/no
+                SmallTickFreq = 1
+                MediumTickFreq = 10
+                LargeTickFreq = 100
+                DisplayNumerical = yes/no
+                NumericalFreq = 10
+                DisplayCurve = yes/no
+                DisplayInterval = yes/no
+                IntervalRef = 10
+                MaxDepthRange = yes/no
+                TopDepth = 0.0
+                BottomDepth = 123.5
         """
         self._dispatch.CalculateBoreholeVolume(prompt_user, config)
 
@@ -2433,7 +2461,7 @@ class Borehole(DispatchWrapper):
         self._dispatch.CasedHoleUltrasonics(abiwavelet_log, zone_log, prompt_user, config)
 
     def calculate_apparent_metal_loss(self, log=None, prompt_user=None, config=None):
-        """This function is deprecated, please use calculate_apparent_metal_loss_ex instead.
+        """This function is deprecated in WellCAD 5.7 and onwards. Please use calculate_apparent_metal_loss_ex instead.
         Calculates an apparent metal loss value for each trace of radius values stored in an image log.
 
         Parameters
@@ -2467,6 +2495,7 @@ class Borehole(DispatchWrapper):
     def calculate_apparent_metal_loss_ex(self, log=None, prompt_user=None, config=None):
         """Calculates an apparent metal loss value for each trace of radius/thickness values stored in an
         image log or well log.
+        Note: only compatible with WellCAD version 5.7 and onwards.
 
         Parameters
         ----------

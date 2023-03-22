@@ -262,12 +262,21 @@ class Workspace(DispatchWrapper):
         config_file_name : str, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
+        Note: This configuration is for WellCAD version 5.7 and onwards. For prior version, see the next section.
 
             .. code-block:: ini
 
                 [AutoJointDetection]
                 Sensitivity = 5
                 TopAndBottom = yes
+
+
+            For WellCAD version 5.5 and 5.6, use this configuration instead:
+            .. code-block:: ini
+
+                [AutoJointDetection]
+                JointHeight=0.5
+                Sensitivity=100
         """
         self._dispatch.AutoJointDetection(config_file_name)
 
