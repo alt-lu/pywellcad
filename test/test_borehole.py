@@ -294,12 +294,12 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         self.classic_borehole.set_metadata("COMPANY", "ALT")
         self.assertEqual(self.classic_borehole.get_metadata("COMPANY"), "ALT")
 
-        self.assertIsNone(self.classic_borehole.get_metadata("DummyID"))
+        self.assertEqual(self.classic_borehole.get_metadata("DummyID"), "")
         self.classic_borehole.set_metadata("DummyID", "DummyValue")
         self.assertEqual(self.classic_borehole.get_metadata("DummyID"), "DummyValue")
 
         self.classic_borehole.delete_metadata("DummyID")
-        self.assertIsNone(self.classic_borehole.get_metadata("DummyID"))
+        self.assertEqual(self.classic_borehole.get_metadata("DummyID"), "")
         self.classic_borehole.delete_metadata("COMPANY")
         self.assertEqual(self.classic_borehole.get_metadata("COMPANY"), "")
 
