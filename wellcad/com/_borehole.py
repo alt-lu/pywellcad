@@ -20,7 +20,7 @@ class Borehole(DispatchWrapper):
                          "ApplyTotalGammaCalibration", "CorrectDeadSensor", "CalculateFluidVelocity",
                          "CalculateApparentMetalLoss", "GetLog", "CreateNewWorkspace",  "Workspace", "FileExport",
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
-                         "NMRFluidVolumes", "ROPAverage", )
+                         "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", )
 
     @property
     def name(self):
@@ -2028,10 +2028,10 @@ class Borehole(DispatchWrapper):
         """
         self._dispatch.AdjustImageBrightnessAndContrast(log, prompt_user)
 
-
     def retinex_filter_rgb_log(self, log=None, prompt_user=None, config=None):
-        """Applies a filter to the RGB log.
-        Only compatible with WellCAD version 5.7 and onwards.
+        """Applies a retinex filter to the RGB log.
+
+        Note: only compatible with WellCAD version 5.7 and onwards.
 
         Parameters
         ----------
@@ -2063,7 +2063,8 @@ class Borehole(DispatchWrapper):
 
     def sharpen_rgb_log(self, log=None, prompt_user=None, config=None):
         """Sharpens the RGB log.
-        Only compatible with WellCAD version 5.7 and onwards.
+
+        Note: only compatible with WellCAD version 5.7 and onwards.
 
         Parameters
         ----------
