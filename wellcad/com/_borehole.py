@@ -1291,8 +1291,10 @@ class Borehole(DispatchWrapper):
                 [VolumeProcess]
                 ; OuterDiam, InnerDiam : name of a well log, img log or a constant value
                 ; OuterDiamUnit, InnerDiamUnit : inch or mm, default to mm
-                ; OuterDiam1, InnerDiam1 : name of a well log, img log or a constant value. Use either OuterDiam, InnerDiam or OuterDiam1, InnerDiam1 but not both !
-                ; OuterDiamUnit1, InnerDiamUnit1 : inch or mm, default to mm. Use either OuterDiamUnit, InnerDiamUnit or OuterDiamUnit1, InnerDiamUnit1 but not both !
+                ; OuterDiam1, InnerDiam1 : name of a well log, img log or a constant value.
+                ; Use either OuterDiam, InnerDiam or OuterDiam1, InnerDiam1 but not both !
+                ; OuterDiamUnit1, InnerDiamUnit1 : inch or mm, default to mm.
+                ; Use either OuterDiamUnit, InnerDiamUnit or OuterDiamUnit1, InnerDiamUnit1 but not both !
                 ; OuterDiam2, InnerDiam2 : name of a well log
                 ; OuterDiamUnit2, InnerDiamUnit2 : inch or mm, default to mm
                 ; IntervalRef : name of a well log or value (if value, in depth units of the borehole doc)
