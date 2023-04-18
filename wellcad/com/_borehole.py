@@ -1433,7 +1433,8 @@ class Borehole(DispatchWrapper):
 
     def slice_traces(self, log=None, prompt_user=None, config=None):
         """Allows the user to keep only a portion of a FWS log's traces. Updates the log in place.
-        Only compatible with WellCAD version 5.7 and onwards.
+        
+        Note: only compatible with WellCAD version 5.7 and onwards.
 
         Parameters
         ----------
