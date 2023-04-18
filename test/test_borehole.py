@@ -289,6 +289,20 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         config = str(self.fixture_path / "borehole/AutoElogCorrection.ini")
         self.assertIsInstance(self.elog_borehole.elog_correction(False, config), wellcad.com.Log)
 
+    def test_metadata(self):
+        self.assertEqual(self.classic_borehole.get_metadata("COMPANY"), "Advanced Logic Technology")
+        self.classic_borehole.set_metadata("COMPANY", "ALT")
+        self.assertEqual(self.classic_borehole.get_metadata("COMPANY"), "ALT")
+
+        self.assertEqual(self.classic_borehole.get_metadata("DummyID"), "")
+        self.classic_borehole.set_metadata("DummyID", "DummyValue")
+        self.assertEqual(self.classic_borehole.get_metadata("DummyID"), "DummyValue")
+
+        self.classic_borehole.delete_metadata("DummyID")
+        self.assertEqual(self.classic_borehole.get_metadata("DummyID"), "")
+        self.classic_borehole.delete_metadata("COMPANY")
+        self.assertEqual(self.classic_borehole.get_metadata("COMPANY"), "")
+
 
 if __name__ == '__main__':
     unittest.main()

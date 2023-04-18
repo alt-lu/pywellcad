@@ -3938,4 +3938,47 @@ class Borehole(DispatchWrapper):
         """
 
         self._dispatch.AllowModifyHeadersContent(enable, password)
-        
+
+    def set_metadata(self, id, value):
+        """Sets a metadata value. If the id doesn't exist, this will create it and set the value.
+        Only compatible with WellCAD version 5.7 and onwards.
+
+        Parameters
+        ----------
+        id : str
+            The metadata id.
+        value : str
+            The value to set the metadata to.
+        """
+
+        self._dispatch.SetMetadata(id, value)
+
+    def get_metadata(self, id):
+        """Gets the value metadata value.
+        Only compatible with WellCAD version 5.7 and onwards.
+
+        Parameters
+        ----------
+        id : str
+            The metadata id.
+
+        Returns
+        -------
+        str
+            The value associated with the metadata.
+        """
+
+        return self._dispatch.GetMetadata(id)
+
+    def delete_metadata(self, id):
+        """Removes a metadata id and value pair.
+        Warning: if this metadata is used within a header, the metadata id will remain valid and it's value will be set to null.
+        Only compatible with WellCAD version 5.7 and onwards.
+
+        Parameters
+        ----------
+        id : str
+            The metadata id.
+        """
+
+        self._dispatch.DeleteMetadata(id)
