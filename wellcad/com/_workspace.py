@@ -271,7 +271,6 @@ class Workspace(DispatchWrapper):
                 Sensitivity = 5
                 TopAndBottom = yes
 
-
             For WellCAD version 5.5 and 5.6, use this configuration instead:
 
             .. code-block:: ini
