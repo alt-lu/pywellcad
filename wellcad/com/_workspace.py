@@ -262,7 +262,8 @@ class Workspace(DispatchWrapper):
         config_file_name : str, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
-        Note: This configuration is for WellCAD version 5.7 and onwards. For prior version, see the next section.
+
+            Note: This configuration is for WellCAD version 5.7 and onwards. For prior version, see the next section.
 
             .. code-block:: ini
 
@@ -272,6 +273,7 @@ class Workspace(DispatchWrapper):
 
 
             For WellCAD version 5.5 and 5.6, use this configuration instead:
+
             .. code-block:: ini
 
                 [AutoJointDetection]

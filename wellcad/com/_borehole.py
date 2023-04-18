@@ -1209,6 +1209,7 @@ class Borehole(DispatchWrapper):
     def auto_joint_detection(self, log, prompt_user=None, config=None):
         """Detects the joints from the main log (data source) used
         in the workspace.
+
         Note: only compatible with WellCAD version 5.7 and onwards.
 
         Parameters
@@ -1283,20 +1284,21 @@ class Borehole(DispatchWrapper):
         config : str, optional
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
+
             Note: This configuration is for WellCAD version 5.7 and onwards. For prior version, see the next section.
 
             .. code-block:: ini
 
                 [VolumeProcess]
-                'OuterDiam, InnerDiam : name of a well log, img log or a constant value
-                'OuterDiamUnit, InnerDiamUnit : inch or mm, default to mm
-                'OuterDiam1, InnerDiam1 : name of a well log, img log or a constant value. Use either OuterDiam, InnerDiam or OuterDiam1, InnerDiam1 but not both !
-                'OuterDiamUnit1, InnerDiamUnit1 : inch or mm, default to mm. Use either OuterDiamUnit, InnerDiamUnit or OuterDiamUnit1, InnerDiamUnit1 but not both !
-                'OuterDiam2, InnerDiam2 : name of a well log
-                'OuterDiamUnit2, InnerDiamUnit2 : inch or mm, default to mm
-                'IntervalRef : name of a well log or value (if value, in depth units of the borehole doc)
-                'DepthRange : Maximum, UserDefined, Zones, LogZones
-                'LogZonesDepthRange=logname, depthsectionName1, depthsectionName2, ....depthsectionname3
+                ; OuterDiam, InnerDiam : name of a well log, img log or a constant value
+                ; OuterDiamUnit, InnerDiamUnit : inch or mm, default to mm
+                ; OuterDiam1, InnerDiam1 : name of a well log, img log or a constant value. Use either OuterDiam, InnerDiam or OuterDiam1, InnerDiam1 but not both !
+                ; OuterDiamUnit1, InnerDiamUnit1 : inch or mm, default to mm. Use either OuterDiamUnit, InnerDiamUnit or OuterDiamUnit1, InnerDiamUnit1 but not both !
+                ; OuterDiam2, InnerDiam2 : name of a well log
+                ; OuterDiamUnit2, InnerDiamUnit2 : inch or mm, default to mm
+                ; IntervalRef : name of a well log or value (if value, in depth units of the borehole doc)
+                ; DepthRange : Maximum, UserDefined, Zones, LogZones
+                ; LogZonesDepthRange=logname, depthsectionName1, depthsectionName2, ....depthsectionname3
                 OuterDiam=
                 OuterDiamUnit=mm
                 InnerDiam=
@@ -2461,8 +2463,9 @@ class Borehole(DispatchWrapper):
         self._dispatch.CasedHoleUltrasonics(abiwavelet_log, zone_log, prompt_user, config)
 
     def calculate_apparent_metal_loss(self, log=None, prompt_user=None, config=None):
-        """This function is deprecated in WellCAD 5.7 and onwards. Please use calculate_apparent_metal_loss_ex instead.
-        Calculates an apparent metal loss value for each trace of radius values stored in an image log.
+        """Calculates an apparent metal loss value for each trace of radius values stored in an image log.
+
+        Note: This function is deprecated in WellCAD 5.7 and onwards. Please use calculate_apparent_metal_loss_ex instead.
 
         Parameters
         ----------
@@ -2495,6 +2498,7 @@ class Borehole(DispatchWrapper):
     def calculate_apparent_metal_loss_ex(self, log=None, prompt_user=None, config=None):
         """Calculates an apparent metal loss value for each trace of radius/thickness values stored in an
         image log or well log.
+
         Note: only compatible with WellCAD version 5.7 and onwards.
 
         Parameters
@@ -2514,14 +2518,14 @@ class Borehole(DispatchWrapper):
             .. code-block:: ini
 
                 [MetalLoss]
-                'ID : name of a well log or img log
-                'Thickness : name of a well log or img log
-                'NomOD : name of a well log or value
-                'NomThickness : name of a well log or value
-                'NomODUnit, NomThicknessUnit : inch or mm, default to mm
-                'DepthRange : Maximum, UserDefined, Zones, LogZones
-                'ZonesDepthRange : top1, bot1, top2, bot2, ... topN, botN
-                'LogZonesDepthRange = logname, depthsectionName1, depthsectionName2, ....depthsectionname3
+                ; ID : name of a well log or img log
+                ; Thickness : name of a well log or img log
+                ; NomOD : name of a well log or value
+                ; NomThickness : name of a well log or value
+                ; NomODUnit, NomThicknessUnit : inch or mm, default to mm
+                ; DepthRange : Maximum, UserDefined, Zones, LogZones
+                ; ZonesDepthRange : top1, bot1, top2, bot2, ... topN, botN
+                ; LogZonesDepthRange = logname, depthsectionName1, depthsectionName2, ....depthsectionname3
                 ID=
                 Thickness=
                 NomOD=50
