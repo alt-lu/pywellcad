@@ -63,6 +63,13 @@ class TestBoreholeCasedHole(unittest.TestCase, ExtraAsserts, SamplePath):
         output_log = self.borehole.calculate_apparent_metal_loss("IR", False, config)
         self.assertIsInstance(output_log, wellcad.com.Log)
 
+    def test_calculate_apparent_metal_loss_ex(self):
+        nb_of_logs = self.borehole.nb_of_logs
+        config = "Thickness=THK,NomOD=50,NomThickness=10"
+        self.borehole.calculate_apparent_metal_loss_ex("", False, config)
+        self.assertGreater(self.borehole.nb_of_logs, nb_of_logs)
+
+
     def test_radius_to_from_diameter(self):
         config = "Method = TwoTimesRadius"
         output_log = self.borehole.radius_to_from_diameter("IR", False, config)

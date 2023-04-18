@@ -1080,7 +1080,6 @@ class Borehole(DispatchWrapper):
         Log
             The newly created Log.
         """
-        
         return Log(self._dispatch.ROPAverage(log, prompt_user, config))
 
     def unit_conversion(self, log=None, prompt_user=None, config=None):
@@ -1206,6 +1205,34 @@ class Borehole(DispatchWrapper):
         """
         return Log(self._dispatch.InterpolateLog(log, prompt_user, config))
 
+    def auto_joint_detection(self, log, prompt_user=None, config=None):
+        """Detects the joints from the main log (data source) used
+        in the workspace.
+
+        Note: only compatible with WellCAD version 5.7 and onwards.
+
+        Parameters
+        ----------
+        log : str or int
+            The title or the zero based index of the log.
+            If not provided, the process returns ''None''.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [AutoJointDetection]
+                Sensitivity = 5
+                TopAndBottom = yes
+        """
+        self._dispatch.AutoJointDetection(log, prompt_user, config)
+
     def calculate_borehole_deviation(self, prompt_user=None, config=None):
         """Calculates borehole Azimuth, RBR and Tilt from magnetometer and inclinometer / accelerometer data.
 
@@ -1257,6 +1284,60 @@ class Borehole(DispatchWrapper):
             Path to a configuration file or a parameter string. The
             configuration file can contain the following options:
 
+            Note: This configuration is for WellCAD version 5.7 and onwards. For prior version, see the next section.
+
+            .. code-block:: ini
+
+                [VolumeProcess]
+                ; OuterDiam, InnerDiam : name of a well log, img log or a constant value
+                ; OuterDiamUnit, InnerDiamUnit : inch or mm, default to mm
+                ; OuterDiam1, InnerDiam1 : name of a well log, img log or a constant value.
+                ; Use either OuterDiam, InnerDiam or OuterDiam1, InnerDiam1 but not both !
+                ; OuterDiamUnit1, InnerDiamUnit1 : inch or mm, default to mm.
+                ; Use either OuterDiamUnit, InnerDiamUnit or OuterDiamUnit1, InnerDiamUnit1 but not both !
+                ; OuterDiam2, InnerDiam2 : name of a well log
+                ; OuterDiamUnit2, InnerDiamUnit2 : inch or mm, default to mm
+                ; IntervalRef : name of a well log or value (if value, in depth units of the borehole doc)
+                ; DepthRange : Maximum, UserDefined, Zones, LogZones
+                ; LogZonesDepthRange=logname, depthsectionName1, depthsectionName2, ....depthsectionname3
+                OuterDiam=
+                OuterDiamUnit=mm
+                InnerDiam=
+                InnerDiamUnit=mm
+                OuterDiam1=w_diam_ext
+                OuterDiamUnit1=mm
+                OuterDiam2=
+                OuterDiamUnit2=mm
+                OuterDiam3=
+                OuterDiamUnit3=mm
+                OuterDiam4=
+                OuterDiamUni4t=mm
+                InnerDiamUnit=mm
+                InnerDiam1=
+                InnerDiamUnit1=mm
+                OuterDiamAsDiameter=yes
+                InnerDiamAsDiameter=yes
+                AnnularVolume=no
+                BottomToTop=yes
+                VolumeUnit=litre
+                DisplayTick=no
+                SmallTickFreq=1
+                MediumTickFreq=10
+                LargeTickFreq=100
+                DisplayNumerical=no
+                NumericalFreq=10
+                DisplayInterval=no
+                IntervalRef=10
+                DisplayCurve=yes
+                DepthRange=Maximum
+                TopDepth=10
+                BottomDepth=19
+                ZonesDepthRange=
+                LogZonesDepthRange=Litho,06,05#1
+
+
+            For WellCAD version 5.5 and 5.6, use this configuration instead:
+
             .. code-block:: ini
 
                 [VolumeProcess]
@@ -1279,7 +1360,6 @@ class Borehole(DispatchWrapper):
                 MaxDepthRange = yes/no
                 TopDepth = 0.0
                 BottomDepth = 123.5
-
         """
         self._dispatch.CalculateBoreholeVolume(prompt_user, config)
 
@@ -2480,6 +2560,8 @@ class Borehole(DispatchWrapper):
     def calculate_apparent_metal_loss(self, log=None, prompt_user=None, config=None):
         """Calculates an apparent metal loss value for each trace of radius values stored in an image log.
 
+        Note: This function is deprecated in WellCAD 5.7 and onwards. Please use calculate_apparent_metal_loss_ex instead.
+
         Parameters
         ----------
         log : int or str, optional
@@ -2507,6 +2589,51 @@ class Borehole(DispatchWrapper):
             A log giving the metal loss.
         """
         return Log(self._dispatch.CalculateApparentMetalLoss(log, prompt_user, config))
+
+    def calculate_apparent_metal_loss_ex(self, log=None, prompt_user=None, config=None):
+        """Calculates an apparent metal loss value for each trace of radius/thickness values stored in an
+        image log or well log.
+
+        Note: only compatible with WellCAD version 5.7 and onwards.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, either here or in the config, the process dialog box will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [MetalLoss]
+                ; ID : name of a well log or img log
+                ; Thickness : name of a well log or img log
+                ; NomOD : name of a well log or value
+                ; NomThickness : name of a well log or value
+                ; NomODUnit, NomThicknessUnit : inch or mm, default to mm
+                ; DepthRange : Maximum, UserDefined, Zones, LogZones
+                ; ZonesDepthRange : top1, bot1, top2, bot2, ... topN, botN
+                ; LogZonesDepthRange = logname, depthsectionName1, depthsectionName2, ....depthsectionname3
+                ID=
+                Thickness=
+                NomOD=50
+                NomODUnit=mm
+                NomThickness=10
+                NomThicknessUnit=mm
+                DepthRange=Maximum
+                TopDepth = 10
+                BottomDepth = 19
+                ZonesDepthRange=
+                LogZonesDepthRange = Litho,06,05#1
+        """
+        self._dispatch.CalculateApparentMetalLossEx(log, prompt_user, config)
 
     def radius_to_from_diameter(self, log=None, prompt_user=None, config=None):
         """Converts values data in an Image log from radius to diameter values or vice versa.
