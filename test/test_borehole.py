@@ -296,6 +296,20 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         self.classic_borehole.auto_joint_detection("Reflec", False, "Sensitivity = 5, TopAndBottom = yes")
         self.assertGreater(self.borehole.nb_of_logs, nb_of_logs)
 
+    def test_metadata(self):
+        self.assertEqual(self.classic_borehole.get_metadata("COMPANY"), "Advanced Logic Technology")
+        self.classic_borehole.set_metadata("COMPANY", "ALT")
+        self.assertEqual(self.classic_borehole.get_metadata("COMPANY"), "ALT")
+
+        self.assertEqual(self.classic_borehole.get_metadata("DummyID"), "")
+        self.classic_borehole.set_metadata("DummyID", "DummyValue")
+        self.assertEqual(self.classic_borehole.get_metadata("DummyID"), "DummyValue")
+
+        self.classic_borehole.delete_metadata("DummyID")
+        self.assertEqual(self.classic_borehole.get_metadata("DummyID"), "")
+        self.classic_borehole.delete_metadata("COMPANY")
+        self.assertEqual(self.classic_borehole.get_metadata("COMPANY"), "")
+
 
 if __name__ == '__main__':
     unittest.main()

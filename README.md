@@ -31,7 +31,7 @@ import wellcad.com
 app = wellcad.com.Application()
 sample_file_path = r"C:\Program Files\Advanced Logic Technology\WellCAD\Samples\Classic Sample.wcl"
 borehole = app.open_borehole(sample_file_path)
-gr_log = borehole.log("GR")
+gr_log = borehole.get_log("GR")
 gr_log.file_export(r"C:\Temp", "sample_gr", "csv")
 ```
 
