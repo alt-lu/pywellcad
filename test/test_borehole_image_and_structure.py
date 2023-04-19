@@ -122,5 +122,14 @@ class TestBoreholeImageAndStructure(unittest.TestCase, ExtraAsserts, SamplePath)
         self.assertIsInstance(log, wellcad.com.Log)
         self.atv_borehole.remove_log("RQD")
 
+    def test_retinex_filter_rgb_log(self):
+        log = self.obi_borehole.retinex_filter_rgb_log(log="CORE", prompt_user=False, config="")
+        self.assertIsInstance(log, wellcad.com.Log)
+
+    def test_sharpen_rgb_log(self):
+        log = self.obi_borehole.sharpen_rgb_log(log="CORE", prompt_user=False, config="")
+        self.assertIsInstance(log, wellcad.com.Log)
+
+
 if __name__ == '__main__':
     unittest.main()

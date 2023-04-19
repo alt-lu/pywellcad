@@ -20,7 +20,7 @@ class Borehole(DispatchWrapper):
                          "ApplyTotalGammaCalibration", "CorrectDeadSensor", "CalculateFluidVelocity",
                          "CalculateApparentMetalLoss", "GetLog", "CreateNewWorkspace",  "Workspace", "FileExport",
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
-                         "NMRFluidVolumes", "ROPAverage", )
+                         "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", )
 
     @property
     def name(self):
@@ -1511,6 +1511,34 @@ class Borehole(DispatchWrapper):
 
         return Log(self._dispatch.StackTraces(is_spectrum, log, prompt_user, config))
 
+    def slice_traces(self, log=None, prompt_user=None, config=None):
+        """Allows the user to keep only a portion of a FWS log's traces. Updates the log in place.
+        
+        Note: only compatible with WellCAD version 5.7 and onwards.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the log to process.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [SliceTraces]
+                start = 0  ; in log units
+                end = 0  ; in log units
+        """
+
+        self._dispatch.SliceTraces(log, prompt_user, config)
+
     def apply_conditional_testing(self, log_if=None, log_then=None, prompt_user=None, config=None):
         """Applies conditional testing (If-Then-Else) to image log
         values.
@@ -2081,6 +2109,62 @@ class Borehole(DispatchWrapper):
         """
         self._dispatch.AdjustImageBrightnessAndContrast(log, prompt_user)
 
+    def retinex_filter_rgb_log(self, log=None, prompt_user=None, config=None):
+        """Applies a retinex filter to the RGB log.
+
+        Note: only compatible with WellCAD version 5.7 and onwards.
+
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Not Used for this function.
+
+        Returns
+        -------
+        Log
+            The computed log.
+        """
+
+        return Log(self._dispatch.RetinexFilterRGBLog(log, prompt_user, config))
+
+    def sharpen_rgb_log(self, log=None, prompt_user=None, config=None):
+        """Sharpens the RGB log.
+
+        Note: only compatible with WellCAD version 5.7 and onwards.
+
+        Parameters
+        ----------
+        log : str or int, optional
+            Zero based index (integer) or title (string) of
+            the log to process. If not provided, a dialog box
+            displaying a list of available logs will be displayed.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with
+            the user. If set to  ``False`` the processing parameters
+            will be retrieved from the specified configuration
+            file. If no configuration file has been specified,
+            default values will be used.
+        config : str, optional
+            Not Used for this function.
+
+        Returns
+        -------
+        Log
+            The computed log.
+        """
+
+        return Log(self._dispatch.SharpenRGBLog(log, prompt_user, config))
+
     def extract_structure_interval_statistic(self, log=None, prompt_user=None, config=None):
         """Allows determination of statistical values (e.g. frequency
         of dips) per interval from a structure log.
@@ -2431,12 +2515,12 @@ class Borehole(DispatchWrapper):
         """
         self._dispatch.CalculateCasingThickness(log, prompt_user, config)
 
-    def cased_hole_ultrasonics(self, abiwavelet_log=None, zone_log=None, prompt_user=None, config=None):
+    def cased_hole_ultrasonics(self, wavelet_log=None, zone_log=None, prompt_user=None, config=None):
         """Processes ultrasonic waveforms from a wavelet log using the processing parameters from a zone log.
 
         Parameters
         ----------
-        abiwavelet_log : int or str, optional
+        wavelet_log : int or str, optional
             Zero based index or title of the wavelet log to process.
             If not provided, the process dialog box will be displayed.
         zone_log : int or str, optional
@@ -2461,7 +2545,7 @@ class Borehole(DispatchWrapper):
                 Cadi = yes / no
                 Score = yes / no
         """
-        self._dispatch.CasedHoleUltrasonics(abiwavelet_log, zone_log, prompt_user, config)
+        self._dispatch.CasedHoleUltrasonics(wavelet_log, zone_log, prompt_user, config)
 
     def calculate_apparent_metal_loss(self, log=None, prompt_user=None, config=None):
         """Calculates an apparent metal loss value for each trace of radius values stored in an image log.
