@@ -1532,9 +1532,9 @@ class Borehole(DispatchWrapper):
 
             .. code-block:: ini
 
-                [[SliceTraces]]
-                start = 0  # in log units
-                end = 0  # in log units
+                [SliceTraces]
+                start = 0  ; in log units
+                end = 0  ; in log units
         """
 
         self._dispatch.SliceTraces(log, prompt_user, config)
@@ -2127,12 +2127,7 @@ class Borehole(DispatchWrapper):
             file. If no configuration file has been specified,
             default values will be used.
         config : str, optional
-            Path to a configuration file or a parameter string. The
-            configuration file can contain the following options:
-
-            .. code-block:: ini
-
-                Not used
+            Not Used for this function.
 
         Returns
         -------
@@ -2160,12 +2155,7 @@ class Borehole(DispatchWrapper):
             file. If no configuration file has been specified,
             default values will be used.
         config : str, optional
-            Path to a configuration file or a parameter string. The
-            configuration file can contain the following options:
-
-            .. code-block:: ini
-
-                Not used
+            Not Used for this function.
 
         Returns
         -------
@@ -2525,12 +2515,12 @@ class Borehole(DispatchWrapper):
         """
         self._dispatch.CalculateCasingThickness(log, prompt_user, config)
 
-    def cased_hole_ultrasonics(self, abiwavelet_log=None, zone_log=None, prompt_user=None, config=None):
+    def cased_hole_ultrasonics(self, wavelet_log=None, zone_log=None, prompt_user=None, config=None):
         """Processes ultrasonic waveforms from a wavelet log using the processing parameters from a zone log.
 
         Parameters
         ----------
-        abiwavelet_log : int or str, optional
+        wavelet_log : int or str, optional
             Zero based index or title of the wavelet log to process.
             If not provided, the process dialog box will be displayed.
         zone_log : int or str, optional
@@ -2555,7 +2545,7 @@ class Borehole(DispatchWrapper):
                 Cadi = yes / no
                 Score = yes / no
         """
-        self._dispatch.CasedHoleUltrasonics(abiwavelet_log, zone_log, prompt_user, config)
+        self._dispatch.CasedHoleUltrasonics(wavelet_log, zone_log, prompt_user, config)
 
     def calculate_apparent_metal_loss(self, log=None, prompt_user=None, config=None):
         """Calculates an apparent metal loss value for each trace of radius values stored in an image log.
