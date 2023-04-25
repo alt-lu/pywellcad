@@ -7,3 +7,6 @@ dist/
 /doc/_build
 venv/
 .coverage
+test/fixtures/borehole/trashme.las
+test/fixtures/output.jpg
+test/fixtures/borehole/trashme.wcl
