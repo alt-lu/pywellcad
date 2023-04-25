@@ -285,7 +285,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         original_data = self.gr_log.data_table
         new_data = tuple([original_data[0]] + [(row[0], random.random() * 200.0) for row in original_data[1:]])
         self.gr_log.data_table = new_data
-        self.assertEqual(self.gr_log.data_table, original_data)
+        self.assertEqual(self.gr_log.data_table, original_data)  # Fails, LockLogData does not work
         self.gr_log.lock_log_data = False
 
     def test_data(self):

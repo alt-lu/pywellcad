@@ -91,7 +91,7 @@ class TestTitle(unittest.TestCase, SamplePath, ExtraAsserts):
         self.assertAttrChange(self.title, "frame_style", 4)
 
     def test_frame_style_out_of_bounds(self):
-        self.assertAttrNotChanged(self.title, "frame_style", 9999)
+        self.assertAttrNotChanged(self.title, "frame_style", 9999)  # Fails
 
     def test_title_top_bottom(self):
         self.assertAttrEqual(self.title, "title_top", 0.0)
