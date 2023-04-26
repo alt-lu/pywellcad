@@ -292,6 +292,8 @@ class Workspace(DispatchWrapper):
         """Adds the Engineering Log from the Navigation Bar
         of the Casing Integrity Workspace displaying the
         drillers casing info back to the borehole document.
+
+        Note: this function is deprecated in WellCAD 5.7 and onwards
         """
         self._dispatch.AddEnginLogFromDrillerCasingTableToBHole()
 

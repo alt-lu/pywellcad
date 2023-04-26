@@ -54,7 +54,7 @@ class TestWorkspace(unittest.TestCase, SamplePath):
         self.casing_borehole.remove_log("Joints")
 
     def test_add_engin_log_from_driller_casing_table_to_b_hole(self):
-        self.casing_workspace.add_engin_log_from_driller_casing_table_to_b_hole()
+        self.casing_workspace.add_engin_log_from_driller_casing_table_to_b_hole()  # Fails in WellCAD 5.7+, functionality removed.
         self.assertIsInstance(self.casing_borehole.get_log("#1"), wellcad.com.Log)
         self.casing_borehole.remove_log("#1")
 
