@@ -1,5 +1,6 @@
 import unittest
 import pathlib
+import re
 import wellcad.com
 from ._extra_asserts import ExtraAsserts
 from ._sample_path import SamplePath
@@ -10,6 +11,10 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
     def setUpClass(cls):
         cls.app = wellcad.com.Application()
         cls.fixture_path = pathlib.Path(__file__).parent / "fixtures"
+        with open(cls.fixture_path / "database" / "load_header.sql.tmpl") as template_file, open(cls.fixture_path / "database" / "load_header.sql", "w") as script_file:
+            template = template_file.read()
+            script = re.sub(r"\{\{\s*fixtures_path\s*\}\}", str(cls.fixture_path).replace("\\", r"\\\\"), template)
+            script_file.write(script)
         cls.sample_path = cls._find_sample_path()
         cls.borehole = cls.app.open_borehole(str(cls.fixture_path / "borehole/Well1.wcl"))
         cls.rop_borehole = cls.app.open_borehole(str(cls.fixture_path / "rop_average.wcl"))

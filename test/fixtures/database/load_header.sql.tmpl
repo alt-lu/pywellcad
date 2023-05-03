@@ -15,7 +15,7 @@ $Password =
 # Register and open the data source dynamically
 $dsnname = DSN=Demo
 $driver = Microsoft Access Driver (*.mdb, *.accdb)
-$dbq = DBQ=\\MAIA\\Public\\WCad\\pywellcad-tests\\Demo.mdb
+$dbq = DBQ={{ fixtures_path }}\\database\\Demo.mdb
 REGISTERDATABASEDYN($driver, $dsnname,$dbq)
 
 
