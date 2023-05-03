@@ -33,7 +33,7 @@ class TestBoreholeProtection(unittest.TestCase, SamplePath, ExtraAsserts):
         self.borehole.enable_protection(True, "Alt123")
         org_txt = self.header.get_item_text("Main_Title")
         self.header.set_item_text("Main_Title", "Nothing")
-        self.assertEqual(org_txt, self.header.get_item_text("Main_Title"))
+        self.assertEqual(org_txt, self.header.get_item_text("Main_Title"))  # Fails
         self.borehole.allow_modify_headers_content(True, "Alt123")
         self.header.set_item_text("Main_Title", "Nothing")
         self.assertEqual("Nothing", self.header.get_item_text("Main_Title"))

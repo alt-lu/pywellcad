@@ -28,7 +28,7 @@ class TestBoreholeCasedHole(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertIsInstance(output_log, wellcad.com.Log)
 
     def test_shift_correction(self):
-        config = "Zone1=ref1, 24.5, 26.0, 93, Zone2=ref2, 44.5, 45.1, 90,\
+        config = "Zone1=24.5, 26.0, 93, Zone2=44.5, 45.1, 90,\
                  OutputCorrections = yes, ExtendTrends = yes"
         output_log = self.borehole.shift_correction("TravelTime", False, config)
         self.assertIsInstance(output_log, wellcad.com.Log)

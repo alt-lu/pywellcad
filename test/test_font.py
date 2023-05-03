@@ -23,8 +23,8 @@ class TestFont(unittest.TestCase, SamplePath, ExtraAsserts):
 
     def test_size(self):
         self.assertAttrEqual(self.font, "size", -21)
-        self.assertAttrChange(self.font, "size", -8)  # actually sets it to -7
-        self.assertAttrChange(self.font, "size", 15)  # actually sets it to -20
+        self.assertAttrChange(self.font, "size", -8)  # fails, actually sets it to -7
+        self.assertAttrChange(self.font, "size", 15)  # fails, actually sets it to -20
 
     def test_weight(self):
         self.assertAttrEqual(self.font, "weight", 400)

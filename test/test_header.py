@@ -45,7 +45,7 @@ class TestHeader(unittest.TestCase, SamplePath):
 
     def test_invalid_allow_export_trailer(self):
         with self.assertRaises(pywintypes.com_error):
-            self.header.allow_export_trailer(0, False, "Alt123")
+            self.header.allow_export_trailer(0, False, "Alt123")  # Doesn't raise an exception
 
 
 if __name__ == '__main__':
