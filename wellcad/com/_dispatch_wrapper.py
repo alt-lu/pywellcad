@@ -55,7 +55,7 @@ class DispatchWrapper:
                 self._dispatch._FlagAsMethod(method_name)
             except pywintypes.com_error as e:
                 if e.args[0] == -2147352570:
-                    print(f"{method_name} doesn't exist in this version of wellcad or was not found, ignoring.")
+                    pass  # method_name doesn't exist in this version of wellcad or was not found, ignoring.")
                 else:
                     raise
 
@@ -65,7 +65,7 @@ class DispatchWrapper:
                 self._dispatch._olerepr_.propMap[attribute_name] = entry
             except pywintypes.com_error as e:
                 if e.args[0] == -2147352570:
-                    print(f"{attribute_name} doesn't exist in this version of wellcad or was not found, ignoring.")
+                    pass  # attribute_name doesn't exist in this version of wellcad or was not found, ignoring.")
                 else:
                     raise
 
