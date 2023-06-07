@@ -8,7 +8,7 @@ Currently it is just a thin wrapper around the COM API, but future plans will be
 the interface to be more Pythonic.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: COM API
 
    application
