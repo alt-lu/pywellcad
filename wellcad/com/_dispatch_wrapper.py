@@ -1,3 +1,4 @@
+import pywintypes
 import win32com.client.build
 from win32com.client.dynamic import CDispatch
 
@@ -50,7 +51,21 @@ class DispatchWrapper:
     def __init__(self, dispatch):
         self._dispatch = dispatch
         for method_name in self._DISPATCH_METHODS:
-            self._dispatch._FlagAsMethod(method_name)
+            try:
+                self._dispatch._FlagAsMethod(method_name)
+            except pywintypes.com_error as e:
+                if e.args[0] == -2147352570:
+                    pass  # method_name doesn't exist in this version of wellcad or was not found, ignoring.")
+                else:
+                    raise
+
         for attribute_name in self._DISPATCH_ATTRIBUTES:
-            entry = win32com.client.build.MapEntry(self._dispatch._oleobj_.GetIDsOfNames(0, attribute_name), (attribute_name,))
-            self._dispatch._olerepr_.propMap[attribute_name] = entry
+            try:
+                entry = win32com.client.build.MapEntry(self._dispatch._oleobj_.GetIDsOfNames(0, attribute_name), (attribute_name,))
+                self._dispatch._olerepr_.propMap[attribute_name] = entry
+            except pywintypes.com_error as e:
+                if e.args[0] == -2147352570:
+                    pass  # attribute_name doesn't exist in this version of wellcad or was not found, ignoring.")
+                else:
+                    raise
+
