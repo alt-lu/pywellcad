@@ -37,7 +37,7 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-autodoc_mock_imports = ["win32com"]
+autodoc_mock_imports = ["win32com", "pywintypes"]
 
 # -- Options for HTML output -------------------------------------------------
 
