@@ -4192,7 +4192,7 @@ class Borehole(DispatchWrapper):
 
         Returns
         -------
-        str
+        List
             The keys associated with the metadata.
         """
 
