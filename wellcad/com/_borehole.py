@@ -4152,6 +4152,7 @@ class Borehole(DispatchWrapper):
 
     def set_metadata(self, id, value):
         """Sets a metadata value. If the id doesn't exist, this will create it and set the value.
+
         Only compatible with WellCAD version 5.7 and onwards.
 
         Parameters
@@ -4166,6 +4167,7 @@ class Borehole(DispatchWrapper):
 
     def get_metadata(self, id):
         """Gets the value metadata value.
+
         Only compatible with WellCAD version 5.7 and onwards.
 
         Parameters
@@ -4181,9 +4183,37 @@ class Borehole(DispatchWrapper):
 
         return self._dispatch.GetMetadata(id)
 
+
+    def get_metadata_keys(self):
+        """Get the keys associated with the metadata.
+
+        Only compatible with WellCAD version 5.7 and onwards.
+
+        Returns
+        -------
+        str
+            The keys associated with the metadata.
+        """
+
+        return self._dispatch.GetMetadataKeys()
+
+    def get_nb_metadata(self):
+        """Get the number of metadata.
+
+        Only compatible with WellCAD version 5.7 and onwards.
+
+        Returns
+        -------
+        int
+            The number of metadata.
+        """
+
+        return self._dispatch.GetNbMetadata()
+
     def delete_metadata(self, id):
         """Removes a metadata id and value pair.
         Warning: if this metadata is used within a header, the metadata id will remain valid and it's value will be set to null.
+
         Only compatible with WellCAD version 5.7 and onwards.
 
         Parameters
@@ -4193,3 +4223,5 @@ class Borehole(DispatchWrapper):
         """
 
         self._dispatch.DeleteMetadata(id)
+
+
