@@ -1326,7 +1326,7 @@ class Borehole(DispatchWrapper):
                 LargeTickFreq=100
                 DisplayNumerical=no
                 NumericalFreq=10
-                NbDecimals=2 ; Specify the number of digits.
+                NbDecimals=2 ; Specify the number of digits if DisplayNumerical is on.
                 DisplayInterval=no
                 IntervalRef=10
                 DisplayCurve=yes

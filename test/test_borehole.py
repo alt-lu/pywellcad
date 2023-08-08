@@ -288,7 +288,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
 
     def test_calculate_borehole_volume(self):
         nb_of_logs = self.elog_borehole.nb_of_logs
-        config = "InnerDiam1=Diam, OuterDiam1=Diam"
+        config = "InnerDiam1=Diam, OuterDiam1=Diam, DisplayNumerical=yes, NbDecimals=6"
         self.elog_borehole.calculate_borehole_volume(False, config)
         self.assertGreater(self.elog_borehole.nb_of_logs, nb_of_logs)
 
