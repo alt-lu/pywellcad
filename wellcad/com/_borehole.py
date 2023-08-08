@@ -4184,32 +4184,15 @@ class Borehole(DispatchWrapper):
 
         return self._dispatch.GetMetadata(id)
 
+    @property
+    def metadata_keys(self):
+        """tuple: A Tuple of strings containing the metadata keys. (WellCAD 5.7 and onwards)"""
+        return self._dispatch.MetadataKeys
 
-    def get_metadata_keys(self):
-        """Get the keys associated with the metadata.
-
-        Only compatible with WellCAD version 5.7 and onwards.
-
-        Returns
-        -------
-        List
-            The keys associated with the metadata.
-        """
-
-        return self._dispatch.GetMetadataKeys()
-
-    def get_nb_metadata(self):
-        """Get the number of metadata.
-
-        Only compatible with WellCAD version 5.7 and onwards.
-
-        Returns
-        -------
-        int
-            The number of metadata.
-        """
-
-        return self._dispatch.GetNbMetadata()
+    @property
+    def nb_metadata(self):
+        """int: The number of metadata. (WellCAD 5.7 and onwards)"""
+        return self._dispatch.NbMetadata
 
     def delete_metadata(self, id):
         """Removes a metadata id and value pair.
