@@ -1326,6 +1326,7 @@ class Borehole(DispatchWrapper):
                 LargeTickFreq=100
                 DisplayNumerical=no
                 NumericalFreq=10
+                NbDecimals=2 ; Specify the number of digits if DisplayNumerical is on.
                 DisplayInterval=no
                 IntervalRef=10
                 DisplayCurve=yes
@@ -4152,6 +4153,7 @@ class Borehole(DispatchWrapper):
 
     def set_metadata(self, id, value):
         """Sets a metadata value. If the id doesn't exist, this will create it and set the value.
+
         Only compatible with WellCAD version 5.7 and onwards.
 
         Parameters
@@ -4166,6 +4168,7 @@ class Borehole(DispatchWrapper):
 
     def get_metadata(self, id):
         """Gets the value metadata value.
+
         Only compatible with WellCAD version 5.7 and onwards.
 
         Parameters
@@ -4181,9 +4184,20 @@ class Borehole(DispatchWrapper):
 
         return self._dispatch.GetMetadata(id)
 
+    @property
+    def metadata_keys(self):
+        """tuple: A Tuple of strings containing the metadata keys. (WellCAD 5.7 and onwards)"""
+        return self._dispatch.MetadataKeys
+
+    @property
+    def nb_metadata(self):
+        """int: The number of metadata. (WellCAD 5.7 and onwards)"""
+        return self._dispatch.NbMetadata
+
     def delete_metadata(self, id):
         """Removes a metadata id and value pair.
         Warning: if this metadata is used within a header, the metadata id will remain valid and it's value will be set to null.
+
         Only compatible with WellCAD version 5.7 and onwards.
 
         Parameters
@@ -4193,3 +4207,5 @@ class Borehole(DispatchWrapper):
         """
 
         self._dispatch.DeleteMetadata(id)
+
+

@@ -288,7 +288,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
 
     def test_calculate_borehole_volume(self):
         nb_of_logs = self.elog_borehole.nb_of_logs
-        config = "InnerDiam1=Diam, OuterDiam1=Diam"
+        config = "InnerDiam1=Diam, OuterDiam1=Diam, DisplayNumerical=yes, NbDecimals=6"
         self.elog_borehole.calculate_borehole_volume(False, config)
         self.assertGreater(self.elog_borehole.nb_of_logs, nb_of_logs)
 
@@ -305,12 +305,15 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertEqual(self.classic_borehole.get_metadata("COMPANY"), "Advanced Logic Technology")
         self.classic_borehole.set_metadata("COMPANY", "ALT")
         self.assertEqual(self.classic_borehole.get_metadata("COMPANY"), "ALT")
-
+        init_nb_metadata = self.classic_borehole.nb_metadata
+        self.assertEqual(init_nb_metadata, len(self.classic_borehole.metadata_keys))
+        self.assertTrue("COMPANY" in self.classic_borehole.metadata_keys)
         self.assertEqual(self.classic_borehole.get_metadata("DummyID"), "")
         self.classic_borehole.set_metadata("DummyID", "DummyValue")
         self.assertEqual(self.classic_borehole.get_metadata("DummyID"), "DummyValue")
-
+        self.assertNotEqual(init_nb_metadata, self.classic_borehole.nb_metadata)
         self.classic_borehole.delete_metadata("DummyID")
+        self.assertEqual(init_nb_metadata, self.classic_borehole.nb_metadata)
         self.assertEqual(self.classic_borehole.get_metadata("DummyID"), "")
         self.classic_borehole.delete_metadata("COMPANY")
         self.assertEqual(self.classic_borehole.get_metadata("COMPANY"), "")
