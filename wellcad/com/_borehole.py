@@ -4209,3 +4209,82 @@ class Borehole(DispatchWrapper):
         self._dispatch.DeleteMetadata(id)
 
 
+    def transmissivity(self, log=None, prompt_user=None, config=None):
+        """Computes the transmissivity from hydraulic conductivity data.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the well or mud log containing the hydraulic conductivity values.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [Transmissivity]
+                ; default is false
+                BottomToTop=yes
+                ;OutputUnit allowed : ft^2/day, ft^2/s, m^2/s, mm^2/day
+                OutputUnit=m^2/day
+                ;DepthRange : Maximum, UserDefined, Zones, LogZones
+                DepthRange=Maximum
+                TopDepth=10
+                BottomDepth=19
+                ;LogZones : top1, bot1, top2, bot2, ... topN, botN
+                LogZones=
+                ; LogZonesDepthRange=logname, depthsectionName1, depthsectionName2, ....depthsectionname3
+                LogZonesDepthRange=Litho,06,05#1
+
+        Returns
+        -------
+        Log
+            A log of the resulting transmissivity.
+        """
+
+        return Log(self._dispatch.Transmissivity(log, prompt_user, config))
+
+    def shear_wave_velocity(self, log=None, prompt_user=None, config=None):
+        """Computes the shear wave velocity from pressure wave velocity data.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the well or mud log containing the pressure wave velocity values.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [ShearWaveVelocity]
+                ; Density, PressureWaveVelocity : log name or value
+                ; Density units : kg/m3, g/cc, lb/ft3, lb/in3
+                ; PressureWaveVelocity units : m/s, ft/us, us/m, us/ft
+
+                Density = 3000
+                DensityUnit = kg/m3
+                PressureWaveVelocity = log name or constant value
+                PressureWaveVelocityUnit = m/s
+
+
+        Returns
+        -------
+        Log
+            A log of the resulting shear wave velocity.
+        """
+
+        return Log(self._dispatch.ShearWaveVelocity(log, prompt_user, config))
+
