@@ -77,6 +77,10 @@ class TestBoreholeGroundWater(unittest.TestCase, ExtraAsserts, SamplePath):
         output_log = self.borehole.hydraulic_conductivity("Permeability", False, config)
         self.assertIsInstance(output_log, wellcad.com.Log)
 
+    def test_transmissivity(self):
+        config = str(self.fixture_path / "groundwater/transmissivity.ini")
+        output_log = self.borehole.transmissivity("Conductivity", False, config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
 
 if __name__ == '__main__':
     unittest.main()
