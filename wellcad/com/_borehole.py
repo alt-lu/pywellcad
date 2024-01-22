@@ -4270,15 +4270,14 @@ class Borehole(DispatchWrapper):
             .. code-block:: ini
 
                 [ShearWaveVelocity]
-                ; Density, PressureWaveVelocity : log name or value
+                ; input : Vp in m/s, ft/us, us/m, us/ft
+                ; Density, Vp : log name or constant value (for density)
                 ; Density units : kg/m3, g/cc, lb/ft3, lb/in3
-                ; PressureWaveVelocity units : m/s, ft/us, us/m, us/ft
+                ; Methods allowed : 0 (Castagna), 1 (Brocher), 2 (Carroll), 3 (Christensen)
 
-                Density = 3000
-                DensityUnit = kg/m3
-                PressureWaveVelocity = log name or constant value
-                PressureWaveVelocityUnit = m/s
-
+                Density = 3
+                DensityUnit = g/cc
+                Method = 0
 
         Returns
         -------
