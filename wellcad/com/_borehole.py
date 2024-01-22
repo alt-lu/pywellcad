@@ -20,7 +20,7 @@ class Borehole(DispatchWrapper):
                          "ApplyTotalGammaCalibration", "CorrectDeadSensor", "CalculateFluidVelocity",
                          "CalculateApparentMetalLoss", "GetLog", "CreateNewWorkspace",  "Workspace", "FileExport",
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
-                         "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", )
+                         "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", "Transmissivity", "ShearWaveVelocity" )
 
     @property
     def name(self):
