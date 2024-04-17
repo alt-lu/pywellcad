@@ -131,8 +131,8 @@ class TestBoreholeFws(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertIsInstance(output_log, wellcad.com.Log)
 
     def test_shear_wave_velocity(self):
-        config = "PressureWaveVelocity=P slowness (RX1-RX2), PressureWaveVelocityUnit=us/m, Density=3000, DensityUnit=kg/m3"
-        output_log = self.borehole.shear_wave_velocity("Vs", False, config)
+        config = "Density=3000, DensityUnit=kg/m3, Method=0"
+        output_log = self.borehole.shear_wave_velocity("P slowness (RX1-RX2)", False, config)
         self.assertIsInstance(output_log, wellcad.com.Log)
 
 
