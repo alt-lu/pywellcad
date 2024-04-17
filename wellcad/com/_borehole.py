@@ -20,7 +20,7 @@ class Borehole(DispatchWrapper):
                          "ApplyTotalGammaCalibration", "CorrectDeadSensor", "CalculateFluidVelocity",
                          "CalculateApparentMetalLoss", "GetLog", "CreateNewWorkspace",  "Workspace", "FileExport",
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
-                         "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", )
+                         "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", "EllipseFitting", "BreakoutAutoPick", "HorzStress")
 
     @property
     def name(self):
@@ -4208,4 +4208,125 @@ class Borehole(DispatchWrapper):
 
         self._dispatch.DeleteMetadata(id)
 
+    def horz_stress(self, log=None, prompt_user=None, config=None):
+        """Computes the hydraulic conductivity from permeability data.
+
+        Parameters
+        ----------
+        log : image log
+            Title of the log containing the televiewer data.
+            If not provided, the process doesn't run.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [HorzStress]
+                ; input : log (image log), borehole pressure, pore pressure, compressive strength, min horizontal stress, young's modulus, poisson's ratio, borehole radius
+                ; units : MPa, Pa, GPa (pressure), us, s, ms (radius traveltime)
+                ; output : log (major stress + minor stress + deformation azimut  or major stress + deformation azimut)
+
+                ClipLow = 0
+                ClipHigh = 100
+                EnableClipping = yes
+                Sensitivity = 7
+
+                Deformation = 1
+                BHPressure = 20
+                BHPressureUnit = MPa
+                PorePressure = 18
+                PorePressureUnit = MPa
+                CompStrength = 30
+                CompStrengthUnit = MPa
+                ShMin = 23
+                ShMinUnit = MPa
+
+        Returns
+        -------
+        Log
+            Three logs containing the minor stress, the major stress and the minor stress direction (elastic deformation)
+            Two logs containing the major horizontal stress and the minor stress direction (breakout)
+        """
+
+        return Log(self._dispatch.HorzStress(log, prompt_user, config))
+
+
+    def ellipse_fitting(self, log=None, prompt_user=None, config=None):
+        """Computes an image log with the estimated ellipses from televiewer data.
+
+        Parameters
+        ----------
+        log : image log
+            Title of the log containing the televiewer data.
+            If not provided, the process doesn't run.
+
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [EllipseFitting]
+                ; input : log (image log)
+                ; output : log (image log + semi minor-axis log + semi-major axis log + ellipse orientation log)
+
+                ClipLow = 0
+                ClipHigh = 100
+                EnableClipping = yes
+                OutputEllipseParameters = yes
+
+        Returns
+        -------
+        Log
+            An image log containing the ellipses calculated from the input log
+            Three logs (optionnal) containing the ellipse parameters (semi-major axis, semi-minor axis, direction of the ellipse)
+        """
+
+        return Log(self._dispatch.EllipseFitting(log, prompt_user, config))
+
+
+    def breakout_auto_pick(self, log=None, prompt_user=None, config=None):
+        """Computes the estimated breakout hydraulic conductivity from permeability data.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the well or mud log containing the permeability values.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [BreakoutAutoPick]
+                ; input : log (image log), sensitivity
+                ; output : breakout log + breakout length log
+
+                Sensitivity = 5
+
+        Returns
+        -------
+        Log
+            A breakout log of the detected breakouts
+            A log object of the breakout diameter
+        """
+
+        return Log(self._dispatch.BreakoutAutoPick(log, prompt_user, config))
 
