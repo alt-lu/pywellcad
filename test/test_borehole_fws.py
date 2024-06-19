@@ -130,6 +130,11 @@ class TestBoreholeFws(unittest.TestCase, ExtraAsserts, SamplePath):
         output_log = self.borehole.compressive_strength("RX1 - dt", False, config)
         self.assertIsInstance(output_log, wellcad.com.Log)
 
+    def test_shear_wave_velocity(self):
+        config = "Density=3000, DensityUnit=kg/m3, Method=0"
+        output_log = self.borehole.shear_wave_velocity("P slowness (RX1-RX2)", False, config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+
 
 if __name__ == '__main__':
     unittest.main()
