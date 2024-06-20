@@ -130,6 +130,30 @@ class TestBoreholeImageAndStructure(unittest.TestCase, ExtraAsserts, SamplePath)
         log = self.obi_borehole.sharpen_rgb_log(log="CORE", prompt_user=False, config="")
         self.assertIsInstance(log, wellcad.com.Log)
 
+    def test_ellipse_fitting(self):
+        self.orient_borehole.ellipse_fitting(log="Amplitude", prompt_user=False, config=self.config_file)
+        self.assertIsInstance(self.orient_borehole.get_log("EllipseAmplitude"), wellcad.com.Log)
+        self.assertIsInstance(self.orient_borehole.get_log("Ellipse semi major axis"), wellcad.com.Log)
+        self.assertIsInstance(self.orient_borehole.get_log("Ellipse semi minor axis"), wellcad.com.Log)
+        self.assertIsInstance(self.orient_borehole.get_log("Ellipse orientation"), wellcad.com.Log)
+        self.orient_borehole.remove_log("EllipseAmplitude")
+        self.orient_borehole.remove_log("Ellipse semi major axis")
+        self.orient_borehole.remove_log("Ellipse semi minor axis")
+        self.orient_borehole.remove_log("Ellipse orientation")
+
+    def test_breakout_auto_pick(self):
+        self.orient_borehole.breakout_auto_pick(log="Amplitude", prompt_user=False, config=self.config_file)
+        self.assertIsInstance(self.orient_borehole.get_log("Breakout Log"), wellcad.com.Log)
+        self.assertIsInstance(self.orient_borehole.get_log("Breakout Diameter"), wellcad.com.Log)
+        self.orient_borehole.remove_log("Breakout Log")
+        self.orient_borehole.remove_log("Breakout Diameter")
+
+    def test_horz_stress(self):
+        self.orient_borehole.horz_stress(log="Amplitude", prompt_user=False, config=self.config_file)
+        self.assertIsInstance(self.orient_borehole.get_log("Major stress (breakout)"), wellcad.com.Log)
+        self.assertIsInstance(self.orient_borehole.get_log("Minor stress orientation"), wellcad.com.Log)
+        self.orient_borehole.remove_log("Major stress (breakout)")
+        self.orient_borehole.remove_log("Minor stress orientation")
 
 if __name__ == '__main__':
     unittest.main()
