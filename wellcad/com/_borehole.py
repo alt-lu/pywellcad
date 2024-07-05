@@ -21,7 +21,7 @@ class Borehole(DispatchWrapper):
                          "CalculateApparentMetalLoss", "GetLog", "CreateNewWorkspace",  "Workspace", "FileExport",
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
-                         "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick", "HorzStress")
+                         "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick", "HorzStress", "DuplicateLog")
 
     @property
     def name(self):
@@ -4419,4 +4419,4 @@ class Borehole(DispatchWrapper):
         log : str or int
             The title or the zero based index of the log to duplicate.
         """
-        self._dispatch.DuplicateLog(log)
+        return Log(self._dispatch.DuplicateLog(log))
