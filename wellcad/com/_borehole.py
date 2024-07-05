@@ -4409,3 +4409,14 @@ class Borehole(DispatchWrapper):
         """
 
         return Log(self._dispatch.ShearWaveVelocity(log, prompt_user, config))
+
+
+    def duplicate_log(self, log):
+        """Duplicates the specified log from the borehole document.
+
+        Parameters
+        ----------
+        log : str or int
+            The title or the zero based index of the log to duplicate.
+        """
+        self._dispatch.DuplicateLog(log)

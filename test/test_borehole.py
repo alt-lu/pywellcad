@@ -318,6 +318,9 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         self.classic_borehole.delete_metadata("COMPANY")
         self.assertEqual(self.classic_borehole.get_metadata("COMPANY"), "")
 
+    def test_duplicate_log(self):
+        self.assertIsInstance(self.borehole.duplicate_log("GR"), wellcad.com.Log)
+
 
 if __name__ == '__main__':
     unittest.main()
