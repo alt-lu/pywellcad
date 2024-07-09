@@ -23,6 +23,9 @@ class Borehole(DispatchWrapper):
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick", "HorzStress")
 
+    def __iter__(self):
+        return (self.get_log(i) for i in range(self.nb_of_logs))
+
     @property
     def name(self):
         """str: The title of a borehole document."""
