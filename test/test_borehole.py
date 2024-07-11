@@ -83,7 +83,6 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
     def test_write_database(self):
         script = str(self.fixture_path / "database/store_header.sql")
         success = self.borehole.write_database(script)
-        success = self.borehole.write_database(script)
         self.assertEqual(success, True)
 
     def test_set_visible_depth_range(self):
@@ -328,9 +327,9 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         log_litho.remove_litho_bed(3)
         self.assertIsInstance(duplicate_log_litho1, wellcad.com.Log)
         self.assertIsInstance(duplicate_log_litho2, wellcad.com.Log)
-        log_TT = self.borehole.get_log("TT")
-        duplicate_logTT = self.borehole.duplicate_log(str(log_TT._dispatch))
-        self.assertIsInstance(duplicate_logTT, wellcad.com.Log)
+        log_tt = self.borehole.get_log("TT")
+        duplicate_log_tt = self.borehole.duplicate_log(str(log_tt._dispatch))
+        self.assertIsInstance(duplicate_log_tt, wellcad.com.Log)
 
 if __name__ == '__main__':
     unittest.main()
