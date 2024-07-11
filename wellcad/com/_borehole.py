@@ -21,7 +21,7 @@ class Borehole(DispatchWrapper):
                          "CalculateApparentMetalLoss", "GetLog", "CreateNewWorkspace",  "Workspace", "FileExport",
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
-                         "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick", "HorzStress", "DuplicateLog")
+                         "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick", "HorzStress")
 
     @property
     def name(self):
