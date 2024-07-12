@@ -44,7 +44,7 @@ class Borehole(DispatchWrapper):
 
     @property
     def version_build(self):
-        """int: The build number of WellCAD."""
+        """int: The build number of WellCAD (deprecated)."""
         return self._dispatch.VersionBuild
 
     @property
