@@ -40,6 +40,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertIsInstance(self.borehole.version_major, int)
         self.assertIsInstance(self.borehole.version_minor, int)
         self.assertIsInstance(self.borehole.version_build, int)
+        self.assertIsInstance(self.borehole.version_patch, int)
 
     def test_extents(self):
         self.assertIsInstance(self.borehole.bottom_depth, float)
