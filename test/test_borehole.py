@@ -318,18 +318,35 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         self.classic_borehole.delete_metadata("COMPANY")
         self.assertEqual(self.classic_borehole.get_metadata("COMPANY"), "")
 
-    def test_duplicate_log(self):
-        log_litho = self.borehole.get_log("Litho")
-        copy_log = self.borehole.add_log(log_litho)
-        self.assertIsInstance(copy_log, wellcad.com.Log)
-        duplicate_log_litho1 = self.borehole.duplicate_log(str(log_litho._dispatch))
-        duplicate_log_litho2 = self.borehole.duplicate_log(str(duplicate_log_litho1._dispatch))
-        log_litho.remove_litho_bed(3)
-        self.assertIsInstance(duplicate_log_litho1, wellcad.com.Log)
-        self.assertIsInstance(duplicate_log_litho2, wellcad.com.Log)
-        log_tt = self.borehole.get_log("TT")
-        duplicate_log_tt = self.borehole.duplicate_log(str(log_tt._dispatch))
-        self.assertIsInstance(duplicate_log_tt, wellcad.com.Log)
+    def test_create_linked_log(self):
+        # Get an original log, then create two linked logs from them.
+        original_log = self.borehole.get_log("Litho")
+        linked_log = self.borehole.create_linked_log("Litho")
+        linked_linked_log = self.borehole.create_linked_log(linked_log.name)
+        self.assertIsInstance(linked_log, wellcad.com.Log)
+        self.assertIsInstance(linked_linked_log, wellcad.com.Log)
+
+        # Make sure the litho code of one of the beds matches across all.
+        original_litho_code = original_log.get_litho_bed(3).litho_code
+        self.assertEqual(linked_log.get_litho_bed(3).litho_code, original_litho_code)
+        self.assertEqual(linked_linked_log.get_litho_bed(3).litho_code, original_litho_code)
+
+        # Modify the litho code and make sure it changes across all.
+        original_log.get_litho_bed(3).litho_code = "Foo"
+        self.assertEqual(linked_log.get_litho_bed(3).litho_code, "Foo")
+        self.assertEqual(linked_linked_log.get_litho_bed(3).litho_code, "Foo")
+
+        # Delete the intermediate linked log and test to see if the link still exists.
+        self.borehole.remove_log(linked_log.name)
+        linked_linked_log.get_litho_bed(3).litho_code = "Bar"
+        self.assertEqual(original_log.get_litho_bed(3).litho_code, "Bar")
+
+        # Delete the original log.
+        self.borehole.remove_log("Litho")
+        self.assertEqual(linked_linked_log.get_litho_bed(3).litho_code, "Bar")
+
+        # Rename the log and hope we haven't broken other tests from our manipulations
+        linked_linked_log.name = "Litho"
 
 if __name__ == '__main__':
     unittest.main()
