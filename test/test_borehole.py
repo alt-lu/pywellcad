@@ -31,11 +31,11 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
     
     def test_invalid_borehole(self):
         self.assertIsNone(wellcad.com.Borehole(None))
-
+    
     def test_name(self):
         self.assertAttrEqual(self.borehole, "name", "Well1.wcl")
         self.assertAttrChange(self.borehole, "name", "Holey McHoleface")
-
+    
     def test_borehole_version(self):
         self.assertIsInstance(self.borehole.version_major, int)
         self.assertIsInstance(self.borehole.version_minor, int)
@@ -47,14 +47,14 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
 
     def test_log_count(self):
         self.assertGreaterEqual(self.borehole.nb_of_logs, 0)
-
+    
     def test_auto_update(self):
         self.borehole.auto_update = False
         self.assertEqual(self.borehole.auto_update, False)
         self.borehole.auto_update = True
         self.assertEqual(self.borehole.auto_update, True)
         self.assertAttrChange(self.borehole, "auto_update", False)
-
+    
     def test_refresh_window(self):
         self.borehole.refresh_window()
 
@@ -68,10 +68,10 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
 
     def test_set_draft_mode_wrong(self):
         self.borehole.set_draft_mode(4)
-
+    
     def test_minimize_window(self):
         self.borehole.minimize_window()
-
+    
     def test_maximize_window(self):
         self.borehole.maximize_window()
 
@@ -135,7 +135,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
 
     def test_get_log_by_name(self):
         self.assertIsInstance(self.borehole.get_log("GR"), wellcad.com.Log)
-
+    
     def test_get_log_by_index(self):
         self.assertIsInstance(self.borehole.get_log(0), wellcad.com.Log)
 
