@@ -345,7 +345,8 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         self.borehole.remove_log("Litho")
         self.assertEqual(linked_linked_log.get_litho_bed(3).litho_code, "Bar")
 
-        # Rename the log and hope we haven't broken other tests from our manipulations
+        # Reset the log and hope we haven't broken other tests from our manipulations
+        linked_linked_log.get_litho_bed(3).litho_code = original_litho_code
         linked_linked_log.name = "Litho"
 
 if __name__ == '__main__':
