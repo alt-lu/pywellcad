@@ -1,11 +1,6 @@
 EnableTrace(true)
 
-Include('database_open.sql')
+$Foo = 10
+$Bar = randomstring
+$Baz = 2.3
 
-$VERSID = 75
-
-$Form = select HeaderForm, versID 
-+ from Versions
-+ where versID = $VERSID
-LoadHeaderForm($Form, TRUE)
-close($Form)
