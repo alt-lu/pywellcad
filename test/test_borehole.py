@@ -91,6 +91,12 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         script = str(self.fixture_path / "database/lf_line_endings.sql")
         success = self.borehole.read_database(script)
         self.assertTrue(success)
+    
+    def test_read_database_fail(self):
+        # The script below *should* fail, but does not.
+        script = str(self.fixture_path / "database/failing.sql")
+        success = self.borehole.read_database(script)
+        self.assertFalse(success)
 
     def test_set_visible_depth_range(self):
         self.borehole.set_visible_depth_range(10, 20)
