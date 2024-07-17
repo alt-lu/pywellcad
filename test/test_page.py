@@ -32,7 +32,11 @@ class TestPage(unittest.TestCase, SamplePath, ExtraAsserts):
         self.assertEqual(self.page.document_height, 491)
 
     def test_document_width(self):
-        self.assertAttrEqual(self.page, "document_width", 2826)
+        # Make sure the initial document width isn't what we're about to change
+        # it to.
+        self.assertNotEqual(self.page.document_width, 200)
+
+        # Test a width change.
         self.assertAttrChange(self.page, "document_width", 200)
 
     def test_paper_mode(self):

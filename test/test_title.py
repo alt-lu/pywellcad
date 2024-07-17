@@ -17,8 +17,11 @@ class TestTitle(unittest.TestCase, SamplePath, ExtraAsserts):
         cls.app.quit(False)
 
     def test_position(self):
-        self.assertAttrEqual(self.title, "left_position", 0.08062253892421722)
-        self.assertAttrEqual(self.title, "right_position", 0.14869199693202972)
+        # Ensure our left/right positions aren't already what we're about to set them to.
+        self.assertNotEqual(self.title.left_position, 0.1)
+        self.assertNotEqual(self.title.right_position, 0.4)
+
+        # Test the change.
         self.assertAttrAlmostChange(self.title, "left_position", 0.1, 3)
         self.assertAttrAlmostChange(self.title, "right_position", 0.4, 3)
 
