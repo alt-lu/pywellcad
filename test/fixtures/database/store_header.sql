@@ -1,21 +1,6 @@
-# WellCAD ODBC connector script:
-# This script stores a version to the database
-#
-#
-
-######################################################################
-# Global defines & switches
-
-$MaxStringSize = 65535
-$DepthUnit = m
-$Server = Demo
-$User = 
-$Password = 
-#
-# open data source
-
 EnableTrace(true)
-$dsn = OpenDatabase($Server, $User, false, false, $Password)
+
+Include('database_open.sql')
 
 
 ######################################################################

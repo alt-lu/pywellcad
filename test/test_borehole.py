@@ -11,7 +11,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
     def setUpClass(cls):
         cls.app = wellcad.com.Application()
         cls.fixture_path = pathlib.Path(__file__).parent / "fixtures"
-        with open(cls.fixture_path / "database" / "load_header.sql.tmpl") as template_file, open(cls.fixture_path / "database" / "load_header.sql", "w") as script_file:
+        with open(cls.fixture_path / "database" / "database_open.sql.tmpl") as template_file, open(cls.fixture_path / "database" / "database_open.sql", "w") as script_file:
             template = template_file.read()
             script = re.sub(r"\{\{\s*fixtures_path\s*\}\}", str(cls.fixture_path).replace("\\", r"\\\\"), template)
             script_file.write(script)
@@ -79,12 +79,24 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
     def test_read_database(self):
         script = str(self.fixture_path / "database/load_header.sql")
         success = self.borehole.read_database(script)
-        self.assertEqual(success, True)
+        self.assertTrue(success)
 
     def test_write_database(self):
         script = str(self.fixture_path / "database/store_header.sql")
         success = self.borehole.write_database(script)
-        self.assertEqual(success, True)
+        self.assertTrue(success)
+    
+    def test_read_database_lf_endings(self):
+        # The script below has <LF> instead of <CR><LF> line endings.
+        script = str(self.fixture_path / "database/lf_line_endings.sql")
+        success = self.borehole.read_database(script)
+        self.assertTrue(success)
+    
+    def test_read_database_fail(self):
+        # The script below *should* fail, but does not.
+        script = str(self.fixture_path / "database/failing.sql")
+        success = self.borehole.read_database(script)
+        self.assertFalse(success)
 
     def test_set_visible_depth_range(self):
         self.borehole.set_visible_depth_range(10, 20)

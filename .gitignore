@@ -10,4 +10,4 @@ venv/
 /test/fixtures/borehole/trashme.las
 /test/fixtures/output.jpg
 /test/fixtures/borehole/trashme.wcl
-/test/fixtures/database/load_header.sql
+/test/fixtures/database/database_open.sql
