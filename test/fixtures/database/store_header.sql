@@ -1,6 +1,6 @@
 EnableTrace(true)
 
-Include('database_definition.sql')
+Include('database_open.sql')
 
 
 ######################################################################
