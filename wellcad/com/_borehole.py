@@ -21,7 +21,8 @@ class Borehole(DispatchWrapper):
                          "CalculateApparentMetalLoss", "GetLog", "CreateNewWorkspace",  "Workspace", "FileExport",
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
-                         "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick", "HorzStress")
+                         "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick", "HorzStress",
+                         "CreateLinkedLog")
 
     @property
     def name(self):
@@ -4414,3 +4415,14 @@ class Borehole(DispatchWrapper):
         """
 
         return Log(self._dispatch.ShearWaveVelocity(log, prompt_user, config))
+
+    def create_linked_log(self, log):
+        """Creates a linked log that shares data with the specified log.
+
+        Parameters
+        ----------
+        log : str or int
+            The title or the zero based index of the log to create the linked
+            log from.
+        """
+        return Log(self._dispatch.CreateLinkedLog(log))
