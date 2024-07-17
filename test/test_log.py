@@ -404,11 +404,30 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrNotChanged(self.sonic_e1_mud_log, "style", 0)
 
     def test_litho_dictionary(self):
-        original_dict = self.litho_log.litho_dictionary
-        self.assertIsInstance(original_dict, wellcad.com.LithoDictionary)
+        # Copy the original litho log.
+        copied_litho_log = self.litho_borehole.add_log(self.litho_log)
+
+        # Make sure we can get a litho dictionary.
+        self.assertIsInstance(self.litho_log.litho_dictionary, wellcad.com.LithoDictionary)
+
+        # Update the litho dictionary.
         new_dict = self.litho_log.attach_litho_dictionary(self.litho_dict)
         self.assertIsInstance(new_dict, wellcad.com.LithoDictionary)
-        self.litho_log.litho_dictionary = original_dict
+
+        # Revert it back and delete the copied litho log.
+        self.litho_log.litho_dictionary = copied_litho_log.litho_dictionary
+        self.litho_borehole.remove_log(copied_litho_log.name)
+    
+    def test_litho_dictionary_scope(self):
+        copied_litho_log = self.litho_borehole.add_log(self.litho_log)
+        litho_dictionary = copied_litho_log.litho_dictionary
+        copied_litho_log.attach_litho_dictionary(self.litho_dict)
+
+        # The below will fail, because the litho dictionary went out of scope
+        # and was destroyed by WellCAD (when the new one was attached). Should
+        # it? Is this the correct behaviour?
+        copied_litho_log.litho_dictionary = litho_dictionary
+
 
     def test_component_name(self):
         self.assertEqual(self.analysis_log.get_component_name(0), "VXBW.ELA")
