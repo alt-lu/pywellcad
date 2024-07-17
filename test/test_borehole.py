@@ -11,7 +11,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
     def setUpClass(cls):
         cls.app = wellcad.com.Application()
         cls.fixture_path = pathlib.Path(__file__).parent / "fixtures"
-        with open(cls.fixture_path / "database" / "load_header.sql.tmpl") as template_file, open(cls.fixture_path / "database" / "load_header.sql", "w") as script_file:
+        with open(cls.fixture_path / "database" / "database_open.sql.tmpl") as template_file, open(cls.fixture_path / "database" / "database_open.sql", "w") as script_file:
             template = template_file.read()
             script = re.sub(r"\{\{\s*fixtures_path\s*\}\}", str(cls.fixture_path).replace("\\", r"\\\\"), template)
             script_file.write(script)

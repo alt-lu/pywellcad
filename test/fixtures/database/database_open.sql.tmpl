@@ -1,0 +1,16 @@
+######################################################################
+# Global defines & switches
+
+$MaxStringSize = 65535
+$DepthUnit = m
+$DBPath = {{ fixtures_path }}\\database\\Demo.mdb
+
+
+######################################################################
+# Open the data source dynamically
+
+$driver = Microsoft Access Driver (*.mdb, *.accdb)
+$dsnname = DSN=WellCAD
+$dbq = DBQ=$DBPath
+
+$dsn = OpenDatabaseDyn($driver, $dsnname, $dbq)
