@@ -1,0 +1,2 @@
+# Extra requirements (besides Sphinx) for building documentation
+sphinx-rtd-theme==2.0.0
