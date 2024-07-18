@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'pywellcad'
-copyright = '2021-2022, Advanced Logic Technology'
+copyright = '2021-2024, Advanced Logic Technology'
 author = 'Advanced Logic Technology'
 
 
