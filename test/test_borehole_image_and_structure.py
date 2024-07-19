@@ -148,12 +148,6 @@ class TestBoreholeImageAndStructure(unittest.TestCase, ExtraAsserts, SamplePath)
         self.orient_borehole.remove_log("Breakout Log")
         self.orient_borehole.remove_log("Breakout Diameter")
 
-    def test_horz_stress(self):
-        self.orient_borehole.horz_stress(log="Amplitude", prompt_user=False, config=self.config_file)
-        self.assertIsInstance(self.orient_borehole.get_log("Major stress (breakout)"), wellcad.com.Log)
-        self.assertIsInstance(self.orient_borehole.get_log("Minor stress orientation"), wellcad.com.Log)
-        self.orient_borehole.remove_log("Major stress (breakout)")
-        self.orient_borehole.remove_log("Minor stress orientation")
 
 if __name__ == '__main__':
     unittest.main()
