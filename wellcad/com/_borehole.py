@@ -4217,14 +4217,17 @@ class Borehole(DispatchWrapper):
 
 
     def ellipse_fitting(self, log=None, prompt_user=None, config=None):
-        """Computes an image log with the estimated ellipses from televiewer data.
+        """Computes an image log with best fit ellipses from travel time or radius logs
+        
+        Optionally, this will also add three extra logs to the workspace:
+        * Semi-minor axis log
+        * Semi-major axis log
+        * Ellipse orientation (semi-major axis from 0 to 180 degrees)
 
         Parameters
         ----------
-        log : image log
-            Title of the log containing the televiewer data.
-            If not provided, the process doesn't run.
-
+        log : int or str, optional
+            Title or index of the log containing travel time or radius values.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with the user.
             If set to ``False`` the processing parameters will be retrieved from the specified
@@ -4238,7 +4241,7 @@ class Borehole(DispatchWrapper):
 
                 [EllipseFitting]
                 ; input : log (image log)
-                ; output : log (image log + semi minor-axis log + semi-major axis log + ellipse orientation log)
+                ; output : log (image log)
 
                 ClipLow = 0
                 ClipHigh = 100
@@ -4249,20 +4252,22 @@ class Borehole(DispatchWrapper):
         -------
         Log
             An image log containing the ellipses calculated from the input log
-            Three logs (optionnal) containing the ellipse parameters (semi-major axis, semi-minor axis, direction of the ellipse)
         """
 
         return Log(self._dispatch.EllipseFitting(log, prompt_user, config))
 
 
     def breakout_auto_pick(self, log=None, prompt_user=None, config=None):
-        """Computes the estimated breakout hydraulic conductivity from permeability data.
+        """Autodetects breakouts from a travel time or radius image log.
+
+        The return value is a breakout log. Additionally, a log representing
+        breakout "length" (radial breakout distance) is added to the borehole
+        document.
 
         Parameters
         ----------
         log : int or str, optional
-            Zero based index or title of the well or mud log containing the permeability values.
-            If not provided, the process returns None.
+            Title or index of the log containing travel time or radius values.
         prompt_user : bool, optional
             Whether dialog boxes are displayed to interact with the user.
             If set to ``False`` the processing parameters will be retrieved from the specified
@@ -4275,8 +4280,8 @@ class Borehole(DispatchWrapper):
             .. code-block:: ini
 
                 [BreakoutAutoPick]
-                ; input : log (image log), sensitivity
-                ; output : breakout log + breakout length log
+                ; input : log
+                ; output : log
 
                 Sensitivity = 5
 
@@ -4284,7 +4289,6 @@ class Borehole(DispatchWrapper):
         -------
         Log
             A breakout log of the detected breakouts
-            A log object of the breakout diameter
         """
 
         return Log(self._dispatch.BreakoutAutoPick(log, prompt_user, config))
