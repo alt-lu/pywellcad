@@ -318,6 +318,29 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         self.classic_borehole.delete_metadata("COMPANY")
         self.assertEqual(self.classic_borehole.get_metadata("COMPANY"), "")
 
+    def test_fracture_length(self):
+        # Select a structure log
+        structure_log = self.survey_borehole.get_log("BH Azimuth & Tilt")
+
+        # Create a copy of this structure log, select one attribute name and one attribute value
+        structure_log_copy = self.survey_borehole.add_log(structure_log)
+        attribute_name = structure_log_copy.get_attribute_name(0)
+        structure = structure_log_copy.structure(3)
+        attribute_value = structure.get_attribute_value(attribute_name)
+
+        # Change the selected fracture into a partial fracture
+        structure.visible_azimuth_ranges = "70.00-250.00"
+
+        # Create configuration and test the function
+        config_correct = "AttributeName1=" + attribute_name + ", AttributeList1=" + attribute_value
+        correct_log_length = self.survey_borehole.fracture_length(str(structure_log_copy._dispatch), False, config_correct)
+        self.assertIsInstance(correct_log_length, wellcad.com.Log)
+
+        # Create incorrect configuration with no attribute value and test the function
+        config_incorrect = "AttributeName1=" + attribute_name
+        incorrect_log_length = self.survey_borehole.fracture_length(str(structure_log_copy._dispatch), False, config_incorrect)
+        incorrect_log_length.name = "Incorrect Length Ratio"
+        self.assertIsInstance(correct_log_length, wellcad.com.Log)
 
 if __name__ == '__main__':
     unittest.main()

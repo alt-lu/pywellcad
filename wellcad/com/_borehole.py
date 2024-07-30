@@ -21,7 +21,7 @@ class Borehole(DispatchWrapper):
                          "CalculateApparentMetalLoss", "GetLog", "CreateNewWorkspace",  "Workspace", "FileExport",
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
-                         "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick", "HorzStress")
+                         "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick", "HorzStress", "FractureLength")
 
     @property
     def name(self):
@@ -4409,3 +4409,38 @@ class Borehole(DispatchWrapper):
         """
 
         return Log(self._dispatch.ShearWaveVelocity(log, prompt_user, config))
+
+    def fracture_length(self, log=None, prompt_user=None, config=None):
+        """Computes the length ratio (length of the partial sinusoid/length of the total sinusoid) for the selected categories of fracture in a structure log
+        Returns a mud log. Each bar has a value between 0 and 1, representing the length ratio of a fracture (1 if the fracture is an entire sinusoid, less than 1 if the sinusoid is partial).
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the structure log.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+            .. code-block:: ini
+
+                [FractureLength]
+                ; input : log (structure log), attribute name and attribute values
+                ; output : length ratio mud log
+
+                AttributeName1 = Type
+                AttributeList1 = 2, 3, 4
+
+        Returns
+        -------
+        Log
+            A mud log of the resulting length ratios
+        """
+
+        return Log(self._dispatch.FractureLength(log, prompt_user, config))
