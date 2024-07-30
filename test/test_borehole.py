@@ -340,7 +340,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         config_incorrect = "AttributeName1=" + attribute_name
         incorrect_log_length = self.survey_borehole.fracture_length(str(structure_log_copy._dispatch), False, config_incorrect)
         incorrect_log_length.name = "Incorrect Length Ratio"
-        self.assertIsInstance(correct_log_length, wellcad.com.Log)
+        self.assertIsInstance(incorrect_log_length, wellcad.com.Log)
 
 if __name__ == '__main__':
     unittest.main()
