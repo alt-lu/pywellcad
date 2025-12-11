@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "FractureHeight", "Spectrum", "DriftCorrection", "Drillability")
 
     @property
     def name(self):
@@ -523,6 +523,7 @@ class Borehole(DispatchWrapper):
                     * 25 = Breakout Log
                     * 26 = Bio Log
                     * 27 = Lineation Log
+                    * 28 = 3D Log
         Returns
         -------
         Log
@@ -4381,3 +4382,328 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def fracture_height(self, log=None, prompt_user=None, config=None):
+        """Computes the height for the selected categories of fracture in a structure log
+        Returns a mud log. Each bar corresponds to the height of a fracture (or of an offset if it's a partial fracture). The log's unit can be defined by the user (by default it's in mm).
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the structure log.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+                [FractureHeight]
+                ; input : log (structure log), caliper (log or float), depth of image (log or float), caliper unit, output log unit, attribute name and attribute values
+                ; caliper unit : mm, inch
+                ; output unit : mm, inch
+                ; output : mud log
+                Caliper=100
+                DepthOfImage=0
+                CaliperUnit=mm
+                OutputUnit=mm
+                AttributeName1 = Type
+                AttributeList1 = 2, 3, 4
+        Returns
+        -------
+        Log
+            A mud log of the resulting fracture heights
+        """
+
+        return Log(self._dispatch.FractureHeight(log, prompt_user, config))
+
+    def spectrum(self, log=None):
+        """Creates a new FWSLog corresponding to the spectrum of the input log (FWSLog).
+        Parameters
+        ----------
+        log : str or int
+            The title or the zero based index of the FWSLog used to create the spectrum log from.
+
+        Returns
+        -------
+        Log
+            A FWS log corresponding to the spectrum of the input log.
+        """
+        return Log(self._dispatch.Spectrum(log))
+
+    def drift_correction(self, log_src=None, log_temp=None, prompt_user=None, config=None):
+        """ Correct the peak shifts caused by temperature gradients.
+        Return a new FWSLog, which corresponds to the corrected version of the FWSLog used as input.
+        Parameters
+        ----------
+        log_src : int or str, optional
+            Zero based index or title of the source log (FWSLog).
+            If not provided, the process returns None.
+        log_src : int or str, optional
+            Zero based index or title of the temperature log (WellLog or MudLog).
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+                [DriftCorrection]
+                ; input : source log (FWSLog), temperature log (WellLog or MudLog), Stations (temp1, peak11, peak12, temp2, peak21, peak22, ...)
+                ; output : new corrected source log (FWSLog)
+                Stations = 10.58, 125, 136, 12.24, 134, 184
+        Returns
+        -------
+        Log
+            A new FWSLog corresponding to the corrected version of the source log.
+        """
+
+        return Log(self._dispatch.DriftCorrection(log_src, log_temp, prompt_user, config))
+
+    def drillability(self, log=None, prompt_user=None, config=None):
+        """ Computes the D-Exponent using the Rate of Penetration, Rotary Speed, Weight on Bit and Bit Diameter.
+        If the user wants to take into account the variations of the fluid density, a correction can be applied using the Normal Pressure Gradient and the Mud Weight.
+        Returns a Well Log containing the (corrected) D-Exponent.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the Rate of Penetration (ROP) log (SingleLog).
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+                [Drillability]
+                RotarySpeed = value, single log
+                RotarySpeedUnit = rpm, deg/sec, rad/sec
+                WOB = value, single log
+                WOBUnit = lb, kg, tonne, klb
+                BitDiameter = value, single log
+                BitDiameterUnit = inch, cm, mm
+                Correction = True, False
+                NormPressureGrad = value, single log
+                NormPressureGradUnit = ppg, psi/ft, kPa/m, Pa/m, bar/m, g/cc, lb/ft3, kg/m3, lb/gal
+                MudWeight = value, single log
+                MudWeightUnit = ppg, psi/ft, kPa/m, Pa/m, bar/m, g/cc, lb/ft3, kg/m3, lb/gal
+        Returns
+        -------
+        Log
+            A new Well Log corresponding to the (corrected) D-Exponent.
+        """
+
+        return Log(self._dispatch.Drillability(log, prompt_user, config))
+
+    @property
+    def snap_grid(self):
+        """BOOL: Specifies whether the snap grid is enabled or not."""
+        return self._dispatch.SnapGrid
+
+    @snap_grid.setter
+    def snap_grid(self, enable):
+        self._dispatch.SnapGrid = enable
+
+    @property
+    def snap_step(self):
+        """float: The value of the step used for the snap grid."""
+        return self._dispatch.SnapStep
+
+    @snap_step.setter
+    def snap_step(self, value):
+        self._dispatch.SnapStep = value
+
+    @property
+    def ruler_unit(self):
+        """int: The index of the snap step's unit. When changing it, the snap step is automatically updated in order to keep the layout intact.
+
+        Available units are :
+        * 0: percent
+        * 1: inch
+        * 2: mm
+        * 3: cm
+        """
+        return self._dispatch.RulerUnit
+
+    @ruler_unit.setter
+    def ruler_unit(self, index_unit):
+        self._dispatch.RulerUnit = index_unit
+
+    def insert_title_after(self, title, title_after):
+        """Modify the layout in order to position the first title on the right border of the second title.
+
+        Parameters
+        ----------
+        title : str or int
+            The title or the zero based index of the title that will be displaced.
+
+        title_after : str or int
+            The title or the zero based index of the title that we target.
+        """
+        self._dispatch.InsertAfter(title, title_after)
+
+    def insert_title_before(self, title, title_before):
+        """Modify the layout in order to position the first title on the left border of the second title.
+
+        Parameters
+        ----------
+        title : str or int
+            The title or the zero based index of the title that will be displaced.
+
+        title_before : str or int
+            The title or the zero based index of the title that we target.
+        """
+        self._dispatch.InsertBefore(title, title_before)
+
+    def group(self, array):
+        """Create a group containing the titles in the array.
+
+        Parameters
+        ----------
+        array : array
+            The array containing the titles that will be grouped.
+
+        Returns
+        -------
+        GroupTitle
+            A new GroupTitle containing the titles.
+        """
+        return Title(self._dispatch.Group(array))
+
+    def add_to_group(self, title_group, array):
+        """Add an array of titles to an existing group.
+
+        Parameters
+        ----------
+        title_group : str
+            The name of an existing group.
+        array : array
+            The array containing the titles to add to the group.
+        """
+        self._dispatch.AddToGroup(title_group, array)
+
+    def align_left(self, array):
+        """The titles contained in the array are aligned with the left side of the first title of the array.
+
+        Parameters
+        ----------
+        array : array
+            The array containing the titles to displace.
+        """
+        self._dispatch.AlignLeft(array)
+
+    def align_right(self, array):
+        """The titles contained in the array are aligned with the right side of the first title of the array.
+
+        Parameters
+        ----------
+        array : array
+            The array containing the titles to displace.
+        """
+        self._dispatch.AlignRight(array)
+
+    def align_left_right(self, array):
+        """The titles contained in the array are aligned with the left side and the right side of the first title of the array.
+
+        Parameters
+        ----------
+        array : array
+            The array containing the titles to displace.
+        """
+        self._dispatch.AlignLeftAndRight(array)
+
+    def align_side_by_side(self, array):
+        """Aligns side by side the titles containing in the array.
+
+        Parameters
+        ----------
+        array : array
+            The array containing the titles to align.
+        """
+        self._dispatch.AlignSideBySide(array)
+
+
+    def make_same_width(self, array):
+        """Uses the width of the first title for the other titles of the array.
+
+        Parameters
+        ----------
+        array : array
+            The array containing the titles to modify.
+        """
+        self._dispatch.SameWidth(array)
+
+    def make_same_height(self, array):
+        """Uses the height of the first title for the other titles of the array.
+
+        Parameters
+        ----------
+        array : array
+            The array containing the titles to modify.
+        """
+        self._dispatch.SameHeight(array)
+
+    def move_left(self):
+        """Removes the gaps between logs and place them side by side, starting from the left border of the document."""
+        self._dispatch.MoveLeft()
+
+    def autofit(self):
+        """Removes all the gaps between logs and adjust the document width so that the right border is lined up with the right border of the last log."""
+        self._dispatch.AutoFit()
+
+    def move_up(self, title):
+        """Moves the title box to the top of the document title.
+
+        Parameters
+        ----------
+        title : str
+            The name of the title we want to move.
+        """
+        self._dispatch.MoveUp(title)
+
+    def move_down(self, title):
+        """Moves the title box to the bottom of the document title.
+
+        Parameters
+        ----------
+        title : str
+            The name of the title we want to move.
+        """
+        self._dispatch.MoveDown(title)
+
+    def ungroup(self, array):
+        """Destroys the groups.
+
+        Parameters
+        ----------
+        array : array
+            An array containing the names of the groups to destroy.
+        """
+        self._dispatch.Ungroup(array)
+
+    def remove_from_group(self, array):
+        """Removes the titles in the array from the group.
+
+        Parameters
+        ----------
+        array : array
+            An array containing the names of the titles to remove from the group.
+        """
+        self._dispatch.RemoveFromGroup(array)
+
+    def remove_group(self, group):
+        """Delete the group and the logs it contains.
+
+        Parameters
+        ----------
+        group : str
+            The name of the group.
+        """
+        self._dispatch.RemoveGroup(group)

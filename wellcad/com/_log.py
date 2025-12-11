@@ -12,7 +12,9 @@ from ._marker_item import MarkerItem
 from ._stacking_pattern_item import StackingPatternItem
 from ._cross_section_box import CrossSectionBox
 from ._litho_dictionary import LithoDictionary
-
+from ._classifier_dictionary import ClassifierDictionary
+from ._contact_dictionary import ContactDictionary
+from ._attribute_dictionary import AttributeDictionary
 
 class Log(DispatchWrapper):
     """The Log class represents a depth or time referenced set of data displayed as a column in a borehole document.
@@ -2248,13 +2250,16 @@ class Log(DispatchWrapper):
 
     @property
     def background_style(self):
-        """int: The background style for the Engineering Log.
+        """int: The background style for the Engineering Log and for the Depth Column Log.
 
         Available styles are:
-
+        For the Engineering Log:
         * 0: none
         * 1: solid
         * 2: hatch
+        For the Depth Column Log:
+        * 0: opaque
+        * 1: transparent
 
         If an invalid style is set, nothing will happen.
         """
@@ -2357,3 +2362,1457 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+
+    def set_caliper_component(self, caliper_log):
+        """caliper_log: The index or the title of the caliper log"""
+        return self._dispatch.SetCaliperComponent(caliper_log)
+
+    def set_amplitude_component(self, amplitude_log):
+        """amplitude_log: The index or the title of the amplitude log"""
+        return self._dispatch.SetAmplitudeComponent(amplitude_log)
+
+    def set_structure_component(self, structure_log):
+        """structure_log: The index or the title of the structure log"""
+        return self._dispatch.SetStructureComponent(structure_log)
+
+    def set_lineation_component(self, lineation_log):
+        """lineation_log: The index or the title of the lineation log"""
+        return self._dispatch.SetLineationComponent(lineation_log)
+
+    @property
+    def maj_grid_color(self):
+        """int: The background color of the major vertical grid.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.MajGridColor
+
+    @maj_grid_color.setter
+    def maj_grid_color(self, color):
+        self._dispatch.MajGridColor = color
+
+    @property
+    def min_grid_color(self):
+        """int: The background color of the minor vertical grids.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.MinGridColor
+
+    @min_grid_color.setter
+    def min_grid_color(self, color):
+        self._dispatch.MinGridColor = color
+
+    @property
+    def maj_grid_width(self):
+        """int: The width of the major vertical grid lines (in mm/10)."""
+        return self._dispatch.MajGridWidth
+
+    @maj_grid_width.setter
+    def maj_grid_width(self, width):
+        self._dispatch.MajGridWidth = width
+
+    @property
+    def min_grid_width(self):
+        """int: The width of the minor vertical grid lines (in mm/10)."""
+        return self._dispatch.MinGridWidth
+
+    @min_grid_width.setter
+    def min_grid_width(self, width):
+        self._dispatch.MinGridWidth = width
+
+    @property
+    def maj_grid_style(self):
+        """int: The pen style of the major vertical grid lines.
+
+        Styles are specified as an integer:
+
+        * Solid = 0
+        * Dashed = 1
+        * Dotted = 2
+        * Dash-Dot = 3
+        * Dash-dot-dot = 4
+        """
+        return self._dispatch.MajGridStyle
+
+    @maj_grid_style.setter
+    def maj_grid_style(self, style):
+        self._dispatch.MajGridStyle = style
+
+    @property
+    def min_grid_style(self):
+        """int: The pen style of the minor vertical grid lines.
+
+        Styles are specified as an integer:
+
+        * Solid = 0
+        * Dashed = 1
+        * Dotted = 2
+        * Dash-Dot = 3
+        * Dash-dot-dot = 4
+        """
+        return self._dispatch.MinGridStyle
+
+    @min_grid_style.setter
+    def min_grid_style(self, style):
+        self._dispatch.MinGridStyle = style
+
+    @property
+    def overwrite_depth_grids(self):
+        """bool: Whether the depth grids shall be overwritten or not."""
+        return self._dispatch.OverwriteDepthGrids
+
+    @overwrite_depth_grids.setter
+    def overwrite_depth_grids(self, overwrite):
+        self._dispatch.OverwriteDepthGrids = overwrite
+
+    @property
+    def overflow_type(self):
+        """int: The type of overflow."""
+        return self._dispatch.OverflowType
+
+    @overflow_type.setter
+    def overflow_type(self, type):
+        self._dispatch.OverflowType = type
+
+    @property
+    def decades(self):
+        """int: The number of decades for the logarithmic scale."""
+        return self._dispatch.Decades
+
+    @decades.setter
+    def decades(self, dec):
+        self._dispatch.Decades = dec
+
+    @property
+    def cardinal_points_color(self):
+        """int: The color of the cardinal points.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.CardinalPointsColor
+
+    @cardinal_points_color.setter
+    def cardinal_points_color(self, color):
+        self._dispatch.CardinalPointsColor = color
+
+    @property
+    def left_shading_color(self):
+        """int: The color of the left shading.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.LeftShadingColor
+
+    @left_shading_color.setter
+    def left_shading_color(self, color):
+        self._dispatch.LeftShadingColor = color
+
+    @property
+    def right_shading_color(self):
+        """int: The color of the right shading.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.RightShadingColor
+
+    @right_shading_color.setter
+    def right_shading_color(self, color):
+        self._dispatch.RightShadingColor = color
+
+    @property
+    def curves_count(self):
+        """int: The index multiplier of the displayed traces."""
+        return self._dispatch.CurvesCount
+
+    @curves_count.setter
+    def curves_count(self, count):
+        self._dispatch.CurvesCount = count
+
+    @property
+    def shading_type(self):
+        """int: The type of shading."""
+        return self._dispatch.ShadingType
+
+    @shading_type.setter
+    def shading_type(self, type):
+        self._dispatch.ShadingType = type
+
+    def get_attribute_dictionary(self, name):
+        """CFracDatabase: The dictionary of the selected attribute."""
+        return AttributeDictionary(self._dispatch.GetAttributeDictionary(name))
+
+    @property
+    def text_format(self):
+        """int: The index corresponding to the text format.
+        0 = Plain Text
+        1 = Rich Text
+        """
+        return self._dispatch.TextFormat
+
+    @text_format.setter
+    def text_format(self, format_index):
+        self._dispatch.TextFormat = format_index
+
+    @property
+    def horz_text_align(self):
+        """
+        int: The index corresponding to the horizontal text alignment.
+        0 = Left
+        1 = Center
+        2 = Right
+        """
+        return self._dispatch.HorzTextAlignment
+
+    @horz_text_align.setter
+    def horz_text_align(self, align_index):
+        self._dispatch.HorzTextAlignment = align_index
+
+    @property
+    def vert_text_align(self):
+        """
+        int: The index corresponding to the vertical text alignment.
+        0 = Top
+        1 = Center
+        2 = Bottom
+        """
+        return self._dispatch.VertTextAlignment
+
+    @vert_text_align.setter
+    def vert_text_align(self, align_index):
+        self._dispatch.VertTextAlignment = align_index
+
+    @property
+    def text_orientation(self):
+        """
+        int: The index corresponding to the text orientation.
+        0 = Normal
+        1 = Left
+        2 = Right
+        3 = Reverse (only for Comment Log)
+        """
+        return self._dispatch.TextOrientation
+
+    @text_orientation.setter
+    def text_orientation(self, orientation_index):
+        self._dispatch.TextOrientation = orientation_index
+
+    @property
+    def repeat_text(self):
+        """bool: Whether the text will be repeated in a text box or not."""
+        return self._dispatch.RepeatText
+
+    @repeat_text.setter
+    def repeat_text(self, repeat):
+        self._dispatch.RepeatText = repeat
+
+    @property
+    def repeat_text_spacing(self):
+        """int: The spacing (in mm/10) between each repeated text box."""
+        return self._dispatch.RepeatTextSpacing
+
+    @repeat_text_spacing.setter
+    def repeat_text_spacing(self, spacing):
+        self._dispatch.RepeatTextSpacing = spacing
+
+    @property
+    def top_depth_indicator(self):
+        """
+        int: The index corresponding to the top depth indicator.
+        0 = None
+        1 = Left
+        2 = Center
+        3 = Right
+        """
+        return self._dispatch.TopDepthIndicator
+
+    @top_depth_indicator.setter
+    def top_depth_indicator(self, indicator_index):
+        self._dispatch.TopDepthIndicator = indicator_index
+
+    @property
+    def bottom_depth_indicator(self):
+        """
+        int: The index corresponding to the bottom depth indicator.
+        0 = None
+        1 = Left
+        2 = Center
+        3 = Right
+        """
+        return self._dispatch.BottomDepthIndicator
+
+    @bottom_depth_indicator.setter
+    def bottom_depth_indicator(self, indicator_index):
+        self._dispatch.BottomDepthIndicator = indicator_index
+
+    @property
+    def depth_font(self):
+        """Gets the font used in a Comment Log for the depth."""
+        return Font(self._dispatch.DepthFont)
+
+    @depth_font.setter
+    def depth_font(self, font):
+        self._dispatch.DepthFont = font._dispatch
+
+    @property
+    def depth_digits(self):
+        """int: The number of digits used for the depth."""
+        return self._dispatch.DepthDigits
+
+    @depth_digits.setter
+    def depth_digits(self, nb_digits):
+        self._dispatch.DepthDigits = nb_digits
+
+    @property
+    def pinches_position(self):
+        """
+        int: The index corresponding to the position of the pinches.
+        1 = Left
+        2 = Right
+        3 = Center
+        4 = None
+        """
+        return self._dispatch.PinchesPosition
+
+    @pinches_position.setter
+    def pinches_position(self, position_index):
+        self._dispatch.PinchesPosition = position_index
+
+    @property
+    def allow_pinches(self):
+        """bool: Whether pinches are allowed (height of the box optimized) or not (height of the box corresponding to the depth interval)."""
+        return self._dispatch.AllowPinches
+
+    @allow_pinches.setter
+    def allow_pinches(self, allow):
+        self._dispatch.AllowPinches = allow
+
+    @property
+    def classifier_dictionary(self):
+        """ClassifierDictionary: The classifier library used by the log (Well/Mud/Interval)."""
+        return ClassifierDictionary(self._dispatch.ClassifierDictionary)
+
+    @classifier_dictionary.setter
+    def classifier_dictionary(self, dictionary):
+        self._dispatch.ClassifierDictionary = dictionary._dispatch
+
+    def attach_classifier_dictionary(self, dictionary_name):
+        """Attaches a new classifier dictionary to the Well/Mud/Interval Log.
+
+        Parameters
+        ----------
+        dictionary : str
+            path and name of the file to attach
+
+        Returns
+        -------
+            ClassifierDictionary
+                The ClassifierDictionary object
+        """
+        return ClassifierDictionary(self._dispatch.AttachClassifierDictionary(dictionary_name))
+
+    @property
+    def display_depth(self):
+        """bool: Whether or not the markers' depths are displayed."""
+        return self._dispatch.DisplayDepth
+
+    @display_depth.setter
+    def display_depth(self, display):
+        self._dispatch.DisplayDepth = display
+
+    @property
+    def display_name(self):
+        """bool: Whether or not the markers' names are displayed."""
+        return self._dispatch.DisplayName
+
+    @display_name.setter
+    def display_name(self, display):
+        self._dispatch.DisplayName = display
+
+    @property
+    def name_font(self):
+        """Gets the font used in a Marker Log for the names."""
+        return Font(self._dispatch.NameFont)
+
+    @name_font.setter
+    def name_font(self, font):
+        self._dispatch.NameFont = font._dispatch
+
+    @property
+    def display_comment(self):
+        """bool: Whether or not the markers' comments are displayed."""
+        return self._dispatch.DisplayComment
+
+    @display_comment.setter
+    def display_comment(self, display):
+        self._dispatch.DisplayComment = display
+
+    @property
+    def shading_color_up(self):
+        """int: The color of the shading used for the upper amplitudes.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.ShadingColorUp
+
+    @shading_color_up.setter
+    def shading_color_up(self, color):
+        self._dispatch.ShadingColorUp = color
+
+    @property
+    def shading_color_down(self):
+        """int: The color of the shading used for the lower amplitudes.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.ShadingColorDown
+
+    @shading_color_down.setter
+    def shading_color_down(self, color):
+        self._dispatch.ShadingColorDown = color
+
+    @property
+    def zero_line(self):
+        """float: The amplitude corresponding to the zero line."""
+        return self._dispatch.ZeroLine
+
+    @zero_line.setter
+    def zero_line(self, value):
+        self._dispatch.ZeroLine = value
+
+    @property
+    def scale_factor(self):
+        """float: The scale factor of the amplitude."""
+        return self._dispatch.ScaleFactor
+
+    @scale_factor.setter
+    def scale_factor(self, value):
+        self._dispatch.ScaleFactor = value
+
+    @property
+    def use_associated_color(self):
+        """BOOL: Specifies whether the beds will be filled with the associated colors instead of the patterns."""
+        return self._dispatch.UseAssociatedColor
+
+    @use_associated_color.setter
+    def use_associated_color(self, enable):
+        self._dispatch.UseAssociatedColor = enable
+
+    @property
+    def hide_symbol_background(self):
+        """BOOL: Specifies whether or not the symbols' background will be transparent."""
+        return self._dispatch.HideSymbolBackground
+
+    @hide_symbol_background.setter
+    def hide_symbol_background(self, hide):
+        self._dispatch.HideSymbolBackground = hide
+
+    @property
+    def symbol_scale(self):
+        """float: The scale factor for the symbols' size.
+        1.0 corresponds to 100%."""
+        return self._dispatch.SymbolScale
+
+    @symbol_scale.setter
+    def symbol_scale(self, value):
+        self._dispatch.SymbolScale = value
+
+    @property
+    def display_contact(self):
+        """BOOL: Specifies whether or not the contacts are displayed on the log."""
+        return self._dispatch.DisplayContact
+
+    @display_contact.setter
+    def display_contact(self, display):
+        self._dispatch.DisplayContact = display
+
+    @property
+    def display_text(self):
+        """BOOL: Specifies whether or not the text will be displayed."""
+        return self._dispatch.DisplayText
+
+    @display_text.setter
+    def display_text(self, display):
+        self._dispatch.DisplayText = display
+
+    @property
+    def label_mode(self):
+        """int: The index of the text displaying mode.
+        0: Code only
+        1: Description
+        2: Code and description.
+        """
+        return self._dispatch.LabelMode
+
+    @label_mode.setter
+    def label_mode(self, mode):
+        self._dispatch.LabelMode = mode
+
+    @property
+    def drawing_mode(self):
+        """int: The index of the drawing mode.
+        0: All slices in interval superimposed
+        1: Interval average slice
+        """
+        return self._dispatch.DrawingMode
+
+    @drawing_mode.setter
+    def drawing_mode(self, mode):
+        self._dispatch.DrawingMode = mode
+
+    @property
+    def display_internal_circle(self):
+        """BOOL: Specifies whether or not we display the internal circle."""
+        return self._dispatch.DisplayInternalCircle
+
+    @display_internal_circle.setter
+    def display_internal_circle(self, display):
+        self._dispatch.DisplayInternalCircle = display
+
+    @property
+    def internal_radius(self):
+        """float: The radius of the internal circle."""
+        return self._dispatch.InternalRadius
+
+    @internal_radius.setter
+    def internal_radius(self, radius):
+        self._dispatch.InternalRadius = radius
+
+    @property
+    def internal_shading_position(self):
+        """int: The index of the internal shading position.
+        0: None
+        1: Inside
+        2: Outside
+        3: Both
+        """
+        return self._dispatch.InternalShadingPosition
+
+    @internal_shading_position.setter
+    def internal_shading_position(self, pos):
+        self._dispatch.InternalShadingPosition = pos
+
+    @property
+    def internal_shading_color(self):
+        """int: The color of the internal shading.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.InternalShadingColor
+
+    @internal_shading_color.setter
+    def internal_shading_color(self, color):
+        self._dispatch.InternalShadingColor = color
+
+    @property
+    def internal_shading_style(self):
+        """int: The index of the internal shading's style.
+        0: None
+        1: Solid
+        2: Horizontal Hatch
+        3: Vertical Hatch
+        4: Downward Diagonal Hatch
+        5: Upward Diagonal Hatch
+        6: Cross Hatch
+        7: Diagonal Cross Hatch
+        """
+        return self._dispatch.InternalShadingStyle
+
+    @internal_shading_style.setter
+    def internal_shading_style(self, style):
+        self._dispatch.InternalShadingStyle = style
+
+    @property
+    def display_external_circle(self):
+        """BOOL: Specifies whether or not we display the external circle."""
+        return self._dispatch.DisplayExternalCircle
+
+    @display_external_circle.setter
+    def display_external_circle(self, display):
+        self._dispatch.DisplayExternalCircle = display
+
+    @property
+    def external_radius(self):
+        """float: The radius of the external circle."""
+        return self._dispatch.ExternalRadius
+
+    @external_radius.setter
+    def external_radius(self, radius):
+        self._dispatch.ExternalRadius = radius
+
+    @property
+    def external_shading_position(self):
+        """int: The index of the external shading position.
+        0: None
+        1: Inside
+        2: Outside
+        3: Both
+        """
+        return self._dispatch.ExternalShadingPosition
+
+    @external_shading_position.setter
+    def external_shading_position(self, pos):
+        self._dispatch.ExternalShadingPosition = pos
+
+    @property
+    def external_shading_color(self):
+        """int: The color of the external shading.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.ExternalShadingColor
+
+    @external_shading_color.setter
+    def external_shading_color(self, color):
+        self._dispatch.ExternalShadingColor = color
+
+    @property
+    def external_shading_style(self):
+        """int: The index of the external shading's style.
+        0: None
+        1: Solid
+        2: Horizontal Hatch
+        3: Vertical Hatch
+        4: Downward Diagonal Hatch
+        5: Upward Diagonal Hatch
+        6: Cross Hatch
+        7: Diagonal Cross Hatch
+        """
+        return self._dispatch.ExternalShadingStyle
+
+    @external_shading_style.setter
+    def external_shading_style(self, style):
+        self._dispatch.ExternalShadingStyle = style
+
+    @property
+    def display_azimuth(self):
+        """BOOL: Specifies whether or not we display the azimuth grid."""
+        return self._dispatch.DisplayAzimuth
+
+    @display_azimuth.setter
+    def display_azimuth(self, display):
+        self._dispatch.DisplayAzimuth = display
+
+    @property
+    def azimuth_spacing(self):
+        """int: The step (in degree) between two azimuth tick marks."""
+        return self._dispatch.AzimuthSpacing
+
+    @azimuth_spacing.setter
+    def azimuth_spacing(self, spacing):
+        self._dispatch.AzimuthSpacing = spacing
+
+    @property
+    def display_caliper(self):
+        """BOOL: Specifies whether or not we display the caliper grid."""
+        return self._dispatch.DisplayCaliper
+
+    @display_caliper.setter
+    def display_caliper(self, display):
+        self._dispatch.DisplayCaliper = display
+
+    @property
+    def caliper_spacing(self):
+        """float: The step (in degree) between two concentric circles of the caliper grid."""
+        return self._dispatch.CaliperSpacing
+
+    @caliper_spacing.setter
+    def caliper_spacing(self, spacing):
+        self._dispatch.CaliperSpacing = spacing
+
+    @property
+    def display_labels(self):
+        """BOOL: Specifies whether or not we display the labels."""
+        return self._dispatch.DisplayLabels
+
+    @display_labels.setter
+    def display_labels(self, display):
+        self._dispatch.DisplayLabels = display
+
+    @property
+    def retrogradation_color(self):
+        """int: The color of the retrogradation patterns.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.RetrogradationColor
+
+    @retrogradation_color.setter
+    def retrogradation_color(self, color):
+        self._dispatch.RetrogradationColor = color
+
+    @property
+    def progradation_color(self):
+        """int: The color of the progradation patterns.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.ProgradationColor
+
+    @progradation_color.setter
+    def progradation_color(self, color):
+        self._dispatch.ProgradationColor = color
+
+    @property
+    def aggradation_color(self):
+        """int: The color of the aggradation patterns.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.AggradationColor
+
+    @aggradation_color.setter
+    def aggradation_color(self, color):
+        self._dispatch.AggradationColor = color
+
+    @property
+    def display_limits(self):
+        """BOOL: Specifies if the limits of the intervals are displayed."""
+        return self._dispatch.DisplayLimits
+
+    @display_limits.setter
+    def display_limits(self, display):
+        self._dispatch.DisplayLimits = display
+
+    @property
+    def display_structure_aperture(self):
+        """BOOL: Specifies if the aperture of the structures is displayed on the 3D Log."""
+        return self._dispatch.DisplayStructureAperture
+
+    @display_structure_aperture.setter
+    def display_structure_aperture(self, display):
+        self._dispatch.DisplayStructureAperture = display
+
+    @property
+    def projection_type(self):
+        """int: The index of the projection type.
+        0: Perspective
+        1: 3rd Angle
+        2: None
+        """
+        return self._dispatch.Projection
+
+    @projection_type.setter
+    def projection_type(self, projection_index):
+        self._dispatch.Projection = projection_index
+
+    @property
+    def frame_type(self):
+        """int: The index of the frame type.
+        0: No Frame
+        1: Frame Only
+        2: Frame & Surface
+        """
+        return self._dispatch.Frame
+
+    @frame_type.setter
+    def frame_type(self, frame_index):
+        self._dispatch.Frame = frame_index
+
+    @property
+    def min_cylinder_faces(self):
+        """int: The minimum number of faces rendered for each slice."""
+        return self._dispatch.MinCylinderFaces
+
+    @min_cylinder_faces.setter
+    def min_cylinder_faces(self, min_faces):
+        self._dispatch.MinCylinderFaces = min_faces
+
+    @property
+    def ambient_intensity(self):
+        """float: The intensity of the ambient light, between 0 and 1."""
+        return self._dispatch.AmbientIntensity
+
+    @ambient_intensity.setter
+    def ambient_intensity(self, intensity):
+        self._dispatch.AmbientIntensity = intensity
+
+    @property
+    def spot_intensity(self):
+        """float: The intensity of the spotlight."""
+        return self._dispatch.SpotIntensity
+
+    @spot_intensity.setter
+    def spot_intensity(self, intensity):
+        self._dispatch.SpotIntensity = intensity
+
+    @property
+    def spot_vert_pos(self):
+        """float: The angle of the spotlight (between 5° and 175°)."""
+        return self._dispatch.SpotVerticalPos
+
+    @spot_vert_pos.setter
+    def spot_vert_pos(self, angle):
+        self._dispatch.SpotVerticalPos = angle
+
+    @property
+    def view_angle(self):
+        """float: The angular position of the user's point of view."""
+        return self._dispatch.ViewAngle
+
+    @view_angle.setter
+    def view_angle(self, angle):
+        self._dispatch.ViewAngle = angle
+
+    @property
+    def caliper_low(self):
+        """float: The low scale value of the caliper component."""
+        return self._dispatch.CaliperLow
+
+    @caliper_low.setter
+    def caliper_low(self, value):
+        self._dispatch.CaliperLow = value
+
+    @property
+    def caliper_high(self):
+        """float: The high scale value of the caliper component."""
+        return self._dispatch.CaliperHigh
+
+    @caliper_high.setter
+    def caliper_high(self, value):
+        self._dispatch.CaliperHigh = value
+
+    @property
+    def caliper_from_log(self):
+        """BOOL: Specifies whether we extract the caliper values from the caliper log or not (then we use the fixed value)."""
+        return self._dispatch.CaliperFromLog
+
+    @caliper_from_log.setter
+    def caliper_from_log(self, enable):
+        self._dispatch.CaliperFromLog = enable
+
+    @property
+    def depth_of_img_from_log(self):
+        """BOOL: Specifies whether we extract the DoI values from the DoI log or not (then we use the fixed value)."""
+        return self._dispatch.DepthOfImgFromLog
+
+    @depth_of_img_from_log.setter
+    def depth_of_img_from_log(self, enable):
+        self._dispatch.DepthOfImgFromLog = enable
+
+    @property
+    def caliper_value(self):
+        """float: The caliper fixed value."""
+        return self._dispatch.CaliperValue
+
+    @caliper_value.setter
+    def caliper_value(self, value):
+        self._dispatch.CaliperValue = value
+
+    @property
+    def depth_of_img_value(self):
+        """float: The depth of image fixed value."""
+        return self._dispatch.DepthOfImgValue
+
+    @depth_of_img_value.setter
+    def depth_of_img_value(self, value):
+        self._dispatch.DepthOfImgValue = value
+
+    @property
+    def slabcore_azimuth(self):
+        """float: The slabcore azimuth of the structure log."""
+        return self._dispatch.SlabCoreAzimuth
+
+    @slabcore_azimuth.setter
+    def slabcore_azimuth(self, value):
+        self._dispatch.SlabCoreAzimuth = value
+
+    @property
+    def slabcore_style(self):
+        """int: The index of the slabcore style.
+        0: Full Size
+        1: Fixed Size
+        """
+        return self._dispatch.SlabCoreStyle
+
+    @slabcore_style.setter
+    def slabcore_style(self, style_index):
+        self._dispatch.SlabCoreStyle = style_index
+
+    @property
+    def display_full_partial_picks(self):
+        """BOOL: Specifies whether or not the sinusoids are entirely drawn when dealing with partial picks (with a dotted line for parts not included in the offsets of the fracture)."""
+        return self._dispatch.DisplayFullPartialPicks
+
+    @display_full_partial_picks.setter
+    def display_full_partial_picks(self, display):
+        self._dispatch.DisplayFullPartialPicks = display
+
+    @property
+    def display_nodes(self):
+        """BOOL: Specifies whether the nodes of a structure log are displayed or not."""
+        return self._dispatch.DisplayNodes
+
+    @display_nodes.setter
+    def display_nodes(self, display):
+        self._dispatch.DisplayNodes = display
+
+    @property
+    def display_opening(self):
+        """BOOL: Specifies for a breakout log using a symbol style whether the opening angles are displayed or not."""
+        return self._dispatch.DisplayOpening
+
+    @display_opening.setter
+    def display_opening(self, display):
+        self._dispatch.DisplayOpening = display
+
+    def set_caliper_log(self, caliper_log):
+        """caliper_log: The index or the title of the caliper log"""
+        self._dispatch.SetCaliperLog(caliper_log)
+
+    def set_depth_of_img_log(self, depth_of_img_log):
+        """depth_of_img_log: The index or the title of the depth of image log"""
+        self._dispatch.SetDepthOfImgLog(depth_of_img_log)
+
+    @property
+    def shading_style(self):
+        """int: The index of the shading style.
+        0: None
+        1: Solid
+        2: Horizontal Hatch
+        3: Vertical Hatch
+        4: Downward Diagonal Hatch
+        5: Upward Diagonal Hatch
+        6: Cross Hatch
+        7: Diagonal Cross Hatch
+        """
+        return self._dispatch.ShadingStyle
+
+    @shading_style.setter
+    def shading_style(self, style):
+        self._dispatch.ShadingStyle = style
+
+    @property
+    def shading_color(self):
+        """int: The color of the shading.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.ShadingColor
+
+    @shading_color.setter
+    def shading_color(self, color):
+        self._dispatch.ShadingColor = color
+
+    @property
+    def opacity(self):
+        """int: The opacity of the shading, between 0 (transparent) and 100 (opaque)."""
+        return self._dispatch.Opacity
+
+    @opacity.setter
+    def opacity(self, value):
+        self._dispatch.Opacity = value
+
+    @property
+    def top_arrow_shape(self):
+        """int: The index of the top arrow shape.
+        0: None
+        1: Flat
+        2: Semi Flat Left
+        3: Semi Flat Right
+        4: Arrow
+        5: Semi Arrow Left
+        6: Semi Arrow Right
+        7: Empty Triangle
+        8: Fill Triangle
+        9: Empty Rounded Triangle
+        10: Fill Rounded Triangle
+        11: Empty Rectangle
+        12: Fill Rectangle
+        13: Empty Circle
+        14: Fill Circle
+        15: Empty Lozenge
+        16: Fill Lozenge
+        """
+        return self._dispatch.TopArrowShape
+
+    @top_arrow_shape.setter
+    def top_arrow_shape(self, shape):
+        self._dispatch.TopArrowShape = shape
+
+    @property
+    def top_arrow_width(self):
+        """int: Top arrow width, between 0 and 1000."""
+        return self._dispatch.TopArrowWidth
+
+    @top_arrow_width.setter
+    def top_arrow_width(self, width):
+        self._dispatch.TopArrowWidth = width
+
+    @property
+    def top_arrow_height(self):
+        """int: Top arrow height, between 0 and 1000."""
+        return self._dispatch.TopArrowHeight
+
+    @top_arrow_height.setter
+    def top_arrow_height(self, height):
+        self._dispatch.TopArrowHeight = height
+
+    @property
+    def bottom_arrow_shape(self):
+        """int: The index of the bottom arrow shape.
+        0: None
+        1: Flat
+        2: Semi Flat Left
+        3: Semi Flat Right
+        4: Arrow
+        5: Semi Arrow Left
+        6: Semi Arrow Right
+        7: Empty Triangle
+        8: Fill Triangle
+        9: Empty Rounded Triangle
+        10: Fill Rounded Triangle
+        11: Empty Rectangle
+        12: Fill Rectangle
+        13: Empty Circle
+        14: Fill Circle
+        15: Empty Lozenge
+        16: Fill Lozenge
+        """
+        return self._dispatch.BottomArrowShape
+
+    @bottom_arrow_shape.setter
+    def bottom_arrow_shape(self, shape):
+        self._dispatch.BottomArrowShape = shape
+
+    @property
+    def bottom_arrow_width(self):
+        """int: Bottom arrow width, between 0 and 1000."""
+        return self._dispatch.BottomArrowWidth
+
+    @bottom_arrow_width.setter
+    def bottom_arrow_width(self, width):
+        self._dispatch.BottomArrowWidth = width
+
+    @property
+    def bottom_arrow_height(self):
+        """int: Bottom arrow height, between 0 and 1000."""
+        return self._dispatch.BottomArrowHeight
+
+    @bottom_arrow_height.setter
+    def bottom_arrow_height(self, height):
+        self._dispatch.BottomArrowHeight = height
+
+    @property
+    def classified(self):
+        """BOOL: Whether or not the log (well, mud or interval) is classified."""
+        return self._dispatch.Classified
+
+    @classified.setter
+    def classified(self, classified):
+        self._dispatch.Classified = classified
+
+    @property
+    def symbol_style(self):
+        """int: The index of the symbol style.
+        0: Circle
+        1: Disk
+        2: Square
+        3: Box
+        4: Triangle
+        5: Pyramid
+        6: Lozenge
+        7: Diamond
+        8: Cross
+        9: Star
+        """
+        return self._dispatch.SymbolStyle
+
+    @symbol_style.setter
+    def symbol_style(self, style):
+        self._dispatch.SymbolStyle = style
+
+    @property
+    def symbol_color(self):
+        """int: The color of the symbols.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.SymbolColor
+
+    @symbol_color.setter
+    def symbol_color(self, color):
+        self._dispatch.SymbolColor = color
+
+    @property
+    def symbol_size(self):
+        """int: The size of the symbol (in mm/10)."""
+        return self._dispatch.SymbolSize
+
+    @symbol_size.setter
+    def symbol_size(self, size):
+        self._dispatch.SymbolSize = size
+
+    @property
+    def attach_depth_to(self):
+        """int: The index indicating if the depth is attached to the top, the middle or the bottom of the bar.
+        1: Attach to top
+        2: Attach to middle
+        3: Attach to bottom
+        """
+        return self._dispatch.AttachDepthTo
+
+    @attach_depth_to.setter
+    def attach_depth_to(self, size):
+        self._dispatch.AttachDepthTo = size
+
+    @property
+    def digits(self):
+        """int: The number of displayed digits."""
+        return self._dispatch.Digits
+
+    @digits.setter
+    def digits(self, nb):
+        self._dispatch.Digits = nb
+
+    def attach_palette(self, palette_name):
+        """Attaches an existing palette to the log.
+
+        Parameters
+        ----------
+        palette_name : str
+            path and name of the palette file to attach
+        """
+        self._dispatch.AttachPalette(palette_name)
+
+    @property
+    def scale(self):
+        """float: The scale factor of a depth log."""
+        return self._dispatch.Scale
+
+    @scale.setter
+    def scale(self, value):
+        self._dispatch.Scale = value
+
+    @property
+    def paper_scale_unit(self):
+        """int: The index of the unit used by the plot paper.
+        0: meter
+        1: foot
+        2: inch
+        3: cm
+        4: mm
+        """
+        return self._dispatch.PaperScaleUnit
+
+    @paper_scale_unit.setter
+    def paper_scale_unit(self, index):
+        self._dispatch.PaperScaleUnit = index
+
+    @property
+    def data_scale_unit(self):
+        """int: The index of the data scale unit. This parameters will always be equal to the
+        log unit and can't be changed, except when unit the Date/Time format. In this case,
+        the unit can be chosen between option 5 and option 9.
+        Possible options :
+        0: meters
+        1: feet
+        2: inch
+        3: cm
+        4: mm
+        5: days
+        6: hours
+        7: minutes
+        8: seconds
+        9: milliseconds
+        """
+        return self._dispatch.DataScaleUnit
+
+    @data_scale_unit.setter
+    def data_scale_unit(self, value):
+        self._dispatch.DataScaleUnit = value
+
+    @property
+    def display_data(self):
+        """int: The index of the data display mode.
+        0: Standard Depth Scale
+        1: Data Spacing
+        """
+        return self._dispatch.DisplayData
+
+    @display_data.setter
+    def display_data(self, index):
+        self._dispatch.DisplayData = index
+
+    @property
+    def data_spacing(self):
+        """int: The rank multiplier of the data that will be displayed. If it's equal to 1, all data points will be displayed. If it's equal to 2, every 2nd point will be displayed and so on."""
+        return self._dispatch.DataSpacing
+
+    @data_spacing.setter
+    def data_spacing(self, value):
+        self._dispatch.DataSpacing = value
+
+    @property
+    def date_format(self):
+        """int: The index of the date format.
+        0: Date not displayed
+        1: DD/MM/YY (default format)
+        2: DD/MM/YYYY
+        3: DD-MMM-YY
+        4: DD-MMM-YYYY
+        5: MM/DD/YY
+        6: MM/DD/YYYY
+        7: DD-MMM
+        8: DD/MM
+        """
+        return self._dispatch.DateFormat
+
+    @date_format.setter
+    def date_format(self, index):
+        self._dispatch.DateFormat = index
+
+    @property
+    def date_stamp(self):
+        """int: The frequency (in minutes) at which a date stamp will be displayed."""
+        return self._dispatch.DateStamp
+
+    @date_stamp.setter
+    def date_stamp(self, value):
+        self._dispatch.DateStamp = value
+
+    @property
+    def time_format(self):
+        """int: The index of the date format.
+        0: Date not displayed
+        1: HH:MM:SS (default format)
+        2: HH:MM:SS.0
+        3: HH:MM
+        4: MM:SS.0
+        5: SS.0
+        6: UNIX Time
+        7: seconds since Time Zero
+        """
+        return self._dispatch.TimeFormat
+
+    @time_format.setter
+    def time_format(self, index):
+        self._dispatch.TimeFormat = index
+
+    @property
+    def gmt_offset(self):
+        """int: The value (in minutes) of the GMT correction."""
+        return self._dispatch.GMTOffset
+
+    @gmt_offset.setter
+    def gmt_offset(self, value):
+        self._dispatch.GMTOffset = value
+
+    @property
+    def indicators_per_spacing(self):
+        """int: The number of depth strings per spacing."""
+        return self._dispatch.IndicatorsPerSpacing
+
+    @indicators_per_spacing.setter
+    def indicators_per_spacing(self, value):
+        self._dispatch.IndicatorsPerSpacing = value
+
+    @property
+    def ticks_position(self):
+        """int: The index corresponding to the position of the ticks.
+        0: None
+        1: Left
+        2: Right
+        3: Both
+        """
+        return self._dispatch.TicksPosition
+
+    @ticks_position.setter
+    def ticks_position(self, value):
+        self._dispatch.TicksPosition = value
+
+    @property
+    def min_grid_number(self):
+        """int: The number of minor lines per spacing."""
+        return self._dispatch.MinGridNumber
+
+    @min_grid_number.setter
+    def min_grid_number(self, value):
+        self._dispatch.MinGridNumber = value
+
+    @property
+    def maj_grid_number(self):
+        """int: The number of major lines per spacing."""
+        return self._dispatch.MajGridNumber
+
+    @maj_grid_number.setter
+    def maj_grid_number(self, value):
+        self._dispatch.MajGridNumber = value
+
+    @property
+    def min_grid_tick_style(self):
+        """int: The index corresponding to the tick style of the minor grid's lines.
+        0: Small Line
+        1: Large Line
+        2: Small Triangle
+        3: Large Triangle
+        """
+        return self._dispatch.MinGridTickStyle
+
+    @min_grid_tick_style.setter
+    def min_grid_tick_style(self, value):
+        self._dispatch.MinGridTickStyle = value
+
+    @property
+    def maj_grid_tick_style(self):
+        """int: The index corresponding to the tick style of the major grid's lines.
+        0: Small Line
+        1: Large Line
+        2: Small Triangle
+        3: Large Triangle
+        """
+        return self._dispatch.MajGridTickStyle
+
+    @maj_grid_tick_style.setter
+    def maj_grid_tick_style(self, value):
+        self._dispatch.MajGridTickStyle = value
+
+    def attach_contact_dictionary(self, dictionary):
+        """Attaches a new contact library (\*.ctd file) to a Litho, Strata or Marker Log.
+
+        Parameters
+        ----------
+        dictionary : str
+            path and name of the .CTD file to attach
+
+        Returns
+        -------
+            ContactDictionary
+                The ContactDictionary object
+        """
+        return ContactDictionary(self._dispatch.AttachContactDictionary(dictionary))
+
+    @property
+    def contact_dictionary(self):
+        """ContactDictionary: The contact database used by the log (Litho/Strata/Marker Log)."""
+        return ContactDictionary(self._dispatch.ContactDictionary)
+
+    @contact_dictionary.setter
+    def contact_dictionary(self, dictionary):
+        self._dispatch.ContactDictionary = dictionary._dispatch
+
+    @property
+    def limit_contact_to_column(self):
+        """BOOL: Whether or not the contacts are limited to non empty columns."""
+        return self._dispatch.LimitContactToColumn
+
+    @limit_contact_to_column.setter
+    def limit_contact_to_column(self, enable):
+        self._dispatch.LimitContactToColumn = enable
+
+    @property
+    def display_background(self):
+        """BOOL: Whether or not the background is filled with a pattern/color."""
+        return self._dispatch.DisplayBackground
+
+    @display_background.setter
+    def display_background(self, enable):
+        self._dispatch.DisplayBackground = enable
+
+    @property
+    def time_zero(self):
+        """int: The initial time of the Date/Time column in seconds with 0 corresponding to the 01/01/1970 at 00:00:00.
+        For example, choosing 90130 will make it start on the 02/01/1970 at 01:02:10."""
+        return self._dispatch.TimeZero
+
+    @time_zero.setter
+    def time_zero(self, enable):
+        self._dispatch.TimeZero = enable
+
+    def remove_attribute(self, name):
+        """Remove the chosen attribute from a Breakout/Lineation/Structure Log.
+
+        Parameters
+        ----------
+        name : str
+            Name of the attribute to delete.
+        """
+        self._dispatch.RemoveAttribute(name)
+
+    @property
+    def nb_of_attributes(self):
+        """int: The number of attributes associated to the Structure/Breakout/Lineation Log."""
+        return self._dispatch.NbOfAttributes
+
+
+    def set_left_right_border(self, left_border, right_border):
+        """Selects the left and right borders of the zone where the shading will be painted.
+
+        Parameters
+        ----------
+        left_border : str or float
+            Can be a constant value, the name of a log or the left border of the shading log (if the log's right border has not already been selected.
+
+
+        right_border : str or float
+            Can be a constant value, the name of a log or the right border of the shading log (if the log's left border has not already been selected).
+        """
+        self._dispatch.SetLeftRightBorder(left_border, right_border)
+
+    @property
+    def get_left_border(self):
+        """str: The name of the left border. It can be the name of a log, the left border of the shading log or a string containing a number."""
+        return self._dispatch.LeftBorder
+
+    @property
+    def get_right_border(self):
+        """str: The name of the right border. It can be the name of a log, the right border of the shading log or a string containing a number."""
+        return self._dispatch.RightBorder
+
+    def remove_component(self, index):
+        """Remove the component of a Percentage/Analysis Log.
+
+        Parameters
+        ----------
+        index : int
+            Index of the component to delete.
+        """
+        self._dispatch.RemoveComponent(index)
+
+    @property
+    def nb_of_columns(self):
+        """int: The number of columns in the Strata Log."""
+        return self._dispatch.NbOfColumns
+
+    def insert_new_strata_column(self, name):
+        """Insert a new column (comment log) into a strata log.
+
+        Parameters
+        ----------
+        name : str
+            The name of the new column.
+
+        Returns
+        -------
+        CommentLog
+            The CommentLog corresponding to the newly created column.
+        """
+        return Log(self._dispatch.InsertNewStrataColumn(name))

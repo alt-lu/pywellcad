@@ -68,3 +68,12 @@ class FossilItem(DispatchWrapper):
     @dominance.setter
     def dominance(self, value):
         self._dispatch.Dominance = value
+
+    @property
+    def position(self):
+        """float: The horizontal position of the fossil item in the log, between 0 (left border) and 1 (right border)."""
+        return self._dispatch.Position
+
+    @position.setter
+    def position(self, value):
+        self._dispatch.Position = value
