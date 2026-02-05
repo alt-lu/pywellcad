@@ -204,6 +204,7 @@ class Log(DispatchWrapper):
         * Breakout log = 25
         * Bio log = 26
         * Lineation log = 27
+        * 3D log = 28
         """
         return self._dispatch.Type
 
@@ -2357,3 +2358,117 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+
+    def set_caliper_component(self, caliper_log):
+        """caliper_log: The index or the title of the caliper log"""
+        return self._dispatch.SetCaliperComponent(caliper_log)
+
+    def set_amplitude_component(self, amplitude_log):
+        """amplitude_log: The index or the title of the amplitude log"""
+        return self._dispatch.SetAmplitudeComponent(amplitude_log)
+
+    def set_structure_component(self, structure_log):
+        """structure_log: The index or the title of the structure log"""
+        return self._dispatch.SetStructureComponent(structure_log)
+
+    def set_lineation_component(self, lineation_log):
+        """lineation_log: The index or the title of the lineation log"""
+        return self._dispatch.SetLineationComponent(lineation_log)
+
+    @property
+    def display_structure_aperture(self):
+        """BOOL: Specifies if the aperture of the structures is displayed on the 3D Log."""
+        return self._dispatch.DisplayStructureAperture
+
+    @display_structure_aperture.setter
+    def display_structure_aperture(self, display):
+        self._dispatch.DisplayStructureAperture = display
+
+    @property
+    def projection_type(self):
+        """int: The index of the projection type.
+        0: Perspective
+        1: 3rd Angle
+        2: None
+        """
+        return self._dispatch.Projection
+
+    @projection_type.setter
+    def projection_type(self, projection_index):
+        self._dispatch.Projection = projection_index
+
+    @property
+    def frame_type(self):
+        """int: The index of the frame type.
+        0: No Frame
+        1: Frame Only
+        2: Frame & Surface
+        """
+        return self._dispatch.Frame
+
+    @frame_type.setter
+    def frame_type(self, frame_index):
+        self._dispatch.Frame = frame_index
+
+    @property
+    def min_cylinder_faces(self):
+        """int: The minimum number of faces rendered for each slice."""
+        return self._dispatch.MinCylinderFaces
+
+    @min_cylinder_faces.setter
+    def min_cylinder_faces(self, min_faces):
+        self._dispatch.MinCylinderFaces = min_faces
+
+    @property
+    def ambient_intensity(self):
+        """float: The intensity of the ambient light, between 0 and 1."""
+        return self._dispatch.AmbientIntensity
+
+    @ambient_intensity.setter
+    def ambient_intensity(self, intensity):
+        self._dispatch.AmbientIntensity = intensity
+
+    @property
+    def spot_intensity(self):
+        """float: The intensity of the spotlight."""
+        return self._dispatch.SpotIntensity
+
+    @spot_intensity.setter
+    def spot_intensity(self, intensity):
+        self._dispatch.SpotIntensity = intensity
+
+    @property
+    def spot_vert_pos(self):
+        """float: The angle of the spotlight (between 5° and 175°)."""
+        return self._dispatch.SpotVerticalPos
+
+    @spot_vert_pos.setter
+    def spot_vert_pos(self, angle):
+        self._dispatch.SpotVerticalPos = angle
+
+    @property
+    def view_angle(self):
+        """float: The angular position of the user's point of view."""
+        return self._dispatch.ViewAngle
+
+    @view_angle.setter
+    def view_angle(self, angle):
+        self._dispatch.ViewAngle = angle
+
+    @property
+    def caliper_low(self):
+        """float: The low scale value of the caliper component."""
+        return self._dispatch.CaliperLow
+
+    @caliper_low.setter
+    def caliper_low(self, value):
+        self._dispatch.CaliperLow = value
+
+    @property
+    def caliper_high(self):
+        """float: The high scale value of the caliper component."""
+        return self._dispatch.CaliperHigh
+
+    @caliper_high.setter
+    def caliper_high(self, value):
+        self._dispatch.CaliperHigh = value

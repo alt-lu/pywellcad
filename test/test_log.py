@@ -39,6 +39,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.fmi_borehole = cls.app.open_borehole(str(cls.sample_path / "FMI and Net Sand Estimation.wcl"))
         cls.structure_log = cls.fmi_borehole.get_log("Structure")
         cls.image_log = cls.fmi_borehole.get_log("FMI Image")
+        cls.log_3d = cls.fmi_borehole.get_log("FMI")
 
         cls.breakout_borehole = cls.app.open_borehole(str(cls.fixture_path / "Breakout Picking.WCL"))
         cls.breakout_log = cls.breakout_borehole.get_log("Breakouts")
@@ -46,6 +47,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.lineation_borehole = cls.app.open_borehole(str(cls.fixture_path / "Lineation Example.WCL"))
         cls.lineation_log = cls.lineation_borehole.get_log("Lineations")
         cls.rgb_log = cls.lineation_borehole.get_log("OPTV (High side)")
+        cls.log_3d_lin = cls.lineation_borehole.get_log("3D Log")
 
         cls.litho_borehole = cls.app.open_borehole(str(cls.sample_path / "Core Description.wcl"))
         cls.core_desc_log = cls.litho_borehole.get_log("Bio qualifier")
@@ -878,6 +880,105 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item(0)
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
+
+    def test_set_caliper_component(self):
+        # use a well log as a caliper component of a 3D log
+        self.log_3d.set_caliper_component(str(self.caliper_log._dispatch))
+
+    def test_set_amplitude_component(self):
+        # use a well log as an amplitude component of a 3D log
+        self.log_3d.set_amplitude_component(str(self.fmi_mean._dispatch))
+
+    def test_set_structure_component(self):
+        # use a structure log as a structure component of a 3D log
+        self.log_3d.set_structure_component(str(self.structure_true_log._dispatch))
+
+    def test_set_lineation_component(self):
+        # use a lineation log as the lineation component of a 3D log
+        self.log_3d_lin.set_lineation_component(str(self.lineation_log._dispatch))
+
+
+    def test_display_structure_aperture(self):
+        # verify that the property is initially set to True, then set it to False
+        self.assertEqual(self.log_3d.display_structure_aperture, True)
+        self.log_3d.display_structure_aperture = False
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.log_3d.display_structure_aperture, True)
+        self.log_3d.display_structure_aperture = True
+
+    def test_projection_type(self):
+        # verify that the property is initially set to 2 (None), then set it to 1 (3rd Angle)
+        self.assertEqual(self.log_3d.projection_type, 2)
+        self.log_3d.projection_type = 1
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.log_3d.projection_type, 2)
+        self.log_3d.projection_type = 2
+
+    def test_frame_type(self):
+        # verify that the property is initially set to 0 (No Frame), then set it to 1 (Frame Only)
+        self.assertEqual(self.log_3d.frame_type, 0)
+        self.log_3d.frame_type = 1
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.log_3d.frame_type, 0)
+        self.log_3d.frame_type = 0
+
+    def test_min_cylinder_faces(self):
+        # verify that the property is initially set to 36, then set it to 72
+        self.assertEqual(self.log_3d.min_cylinder_faces, 36)
+        self.log_3d.min_cylinder_faces = 72
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.log_3d.min_cylinder_faces, 36)
+        self.log_3d.min_cylinder_faces = 36
+
+    def test_ambient_intensity(self):
+        # verify that the property is initially set to 0.2, then set it to 0.5
+        intensity = self.log_3d.ambient_intensity
+        self.assertEqual(self.log_3d.ambient_intensity, intensity)
+        self.log_3d.ambient_intensity = 0.5
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.log_3d.ambient_intensity, intensity)
+        self.log_3d.ambient_intensity = intensity
+
+    def test_spot_intensity(self):
+        # verify that the property is initially set to 1, then set it to 0.7
+        self.assertEqual(self.log_3d.spot_intensity, 1)
+        self.log_3d.spot_intensity = 0.7
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.log_3d.spot_intensity, 1)
+        self.log_3d.spot_intensity = 1
+
+    def test_spot_vert_pos(self):
+        # verify that the property is initially set to 106.0, then set it to 130
+        self.assertEqual(self.log_3d.spot_vert_pos, 106)
+        self.log_3d.spot_vert_pos = 130
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.log_3d.spot_vert_pos, 106)
+        self.log_3d.spot_vert_pos = 106
+
+    def test_view_angle(self):
+        # verify that the property is initially set to 343, then set it to 200
+        angle = self.log_3d.view_angle
+        self.assertEqual(self.log_3d.view_angle, angle)
+        self.log_3d.view_angle = 200
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.log_3d.view_angle, angle)
+        self.log_3d.view_angle = angle
+
+    def test_caliper_low(self):
+        # verify that the property is initially set to 0, then set it to 5
+        self.assertEqual(self.log_3d.caliper_low, 0)
+        self.log_3d.caliper_low = 5
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.log_3d.caliper_low, 0)
+        self.log_3d.caliper_low = 0
+
+    def test_caliper_high(self):
+        # verify that the property is initially set to 20, then set it to 15
+        self.assertEqual(self.log_3d.caliper_high, 20)
+        self.log_3d.caliper_high = 15
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.log_3d.caliper_high, 20)
+        self.log_3d.caliper_high = 20
 
 if __name__ == '__main__':
     unittest.main()

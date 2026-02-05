@@ -523,6 +523,7 @@ class Borehole(DispatchWrapper):
                     * 25 = Breakout Log
                     * 26 = Bio Log
                     * 27 = Lineation Log
+                    * 28 = 3D Log
         Returns
         -------
         Log
