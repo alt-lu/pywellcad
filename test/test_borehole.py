@@ -362,5 +362,19 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         linked_linked_log.get_litho_bed(3).litho_code = original_litho_code
         linked_linked_log.name = "Litho"
 
+    def test_fracture_height(self):
+        # Select a structure log
+        structure_log = self.survey_borehole.get_log("BH Azimuth & Tilt")
+        attribute_name = structure_log.get_attribute_name(0)
+        structure = structure_log.structure(3)
+        attribute_value = structure.get_attribute_value(attribute_name)
+        caliper = 110
+        depth_of_img = 0
+
+        # Create configuration and test the function
+        config = "Caliper="+ str(caliper) + ", DepthOfImage=" + str(depth_of_img) + ", CaliperUnit=mm, OutputUnit =mm, AttributeName1=" + attribute_name + ", AttributeValues1=" + attribute_value
+        log_height = self.survey_borehole.fracture_height(str(structure_log._dispatch), False, config)
+        self.assertIsInstance(log_height, wellcad.com.Log)
+
 if __name__ == '__main__':
     unittest.main()

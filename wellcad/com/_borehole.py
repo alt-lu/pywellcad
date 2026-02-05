@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "FractureHeight")
 
     @property
     def name(self):
@@ -4381,3 +4381,39 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def fracture_height(self, log=None, prompt_user=None, config=None):
+        """Computes the height for the selected categories of fracture in a structure log
+        Returns a mud log. Each bar corresponds to the height of a fracture (or of an offset if it's a partial fracture). The log's unit can be defined by the user (by default it's in mm).
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the structure log.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+                [FractureHeight]
+                ; input : log (structure log), caliper (log or float), depth of image (log or float), caliper unit, output log unit, attribute name and attribute values
+                ; caliper unit : mm, inch
+                ; output unit : mm, inch
+                ; output : mud log
+                Caliper=100
+                DepthOfImage=0
+                CaliperUnit=mm
+                OutputUnit=mm
+                AttributeName1 = Type
+                AttributeList1 = 2, 3, 4
+        Returns
+        -------
+        Log
+            A mud log of the resulting fracture heights
+        """
+
+        return Log(self._dispatch.FractureHeight(log, prompt_user, config))
