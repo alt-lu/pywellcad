@@ -12,7 +12,7 @@ from ._marker_item import MarkerItem
 from ._stacking_pattern_item import StackingPatternItem
 from ._cross_section_box import CrossSectionBox
 from ._litho_dictionary import LithoDictionary
-
+from ._attribute_dictionary import AttributeDictionary
 
 class Log(DispatchWrapper):
     """The Log class represents a depth or time referenced set of data displayed as a column in a borehole document.
@@ -2357,3 +2357,7 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+
+    def get_attribute_dictionary(self, name):
+        """CFracDatabase: The dictionary of the selected attribute."""
+        return AttributeDictionary(self._dispatch.GetAttributeDictionary(name))

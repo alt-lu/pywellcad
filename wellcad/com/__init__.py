@@ -21,3 +21,5 @@ from ._stacking_pattern_item import StackingPatternItem
 from ._litho_dictionary import LithoDictionary
 from ._litho_pattern import LithoPattern
 from ._fossil_item import FossilItem
+from ._attribute_dictionary import AttributeDictionary
+from ._attribute_category import AttributeCategory

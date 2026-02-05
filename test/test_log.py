@@ -879,5 +879,10 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
 
+    def test_get_attribute_dictionary(self):
+        attrib_name = self.structure_log.get_attribute_name(0)
+        self.structure_log.get_attribute_dictionary(attrib_name)
+
+
 if __name__ == '__main__':
     unittest.main()
