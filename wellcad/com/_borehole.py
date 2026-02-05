@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "Drillability")
 
     @property
     def name(self):
@@ -4381,3 +4381,40 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def drillability(self, log=None, prompt_user=None, config=None):
+        """ Computes the D-Exponent using the Rate of Penetration, Rotary Speed, Weight on Bit and Bit Diameter.
+        If the user wants to take into account the variations of the fluid density, a correction can be applied using the Normal Pressure Gradient and the Mud Weight.
+        Returns a Well Log containing the (corrected) D-Exponent.
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the Rate of Penetration (ROP) log (SingleLog).
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+                [Drillability]
+                RotarySpeed = value, single log
+                RotarySpeedUnit = rpm, deg/sec, rad/sec
+                WOB = value, single log
+                WOBUnit = lb, kg, tonne, klb
+                BitDiameter = value, single log
+                BitDiameterUnit = inch, cm, mm
+                Correction = True, False
+                NormPressureGrad = value, single log
+                NormPressureGradUnit = ppg, psi/ft, kPa/m, Pa/m, bar/m, g/cc, lb/ft3, kg/m3, lb/gal
+                MudWeight = value, single log
+                MudWeightUnit = ppg, psi/ft, kPa/m, Pa/m, bar/m, g/cc, lb/ft3, kg/m3, lb/gal
+        Returns
+        -------
+        Log
+            A new Well Log corresponding to the (corrected) D-Exponent.
+        """
+
+        return Log(self._dispatch.Drillability(log, prompt_user, config))
