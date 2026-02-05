@@ -4381,3 +4381,209 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    @property
+    def snap_grid(self):
+        """BOOL: Specifies whether the snap grid is enabled or not."""
+        return self._dispatch.SnapGrid
+
+    @snap_grid.setter
+    def snap_grid(self, enable):
+        self._dispatch.SnapGrid = enable
+
+    @property
+    def snap_step(self):
+        """float: The value of the step used for the snap grid."""
+        return self._dispatch.SnapStep
+
+    @snap_step.setter
+    def snap_step(self, value):
+        self._dispatch.SnapStep = value
+
+    @property
+    def ruler_unit(self):
+        """int: The index of the snap step's unit. When changing it, the snap step is automatically updated in order to keep the layout intact.
+
+        Available units are :
+        * 0: percent
+        * 1: inch
+        * 2: mm
+        * 3: cm
+        """
+        return self._dispatch.RulerUnit
+
+    @ruler_unit.setter
+    def ruler_unit(self, index_unit):
+        self._dispatch.RulerUnit = index_unit
+
+    def insert_title_after(self, title, title_after):
+        """Modify the layout in order to position the first title on the right border of the second title.
+
+        Parameters
+        ----------
+        title : str or int
+            The title or the zero based index of the title that will be displaced.
+
+        title_after : str or int
+            The title or the zero based index of the title that we target.
+        """
+        self._dispatch.InsertAfter(title, title_after)
+
+    def insert_title_before(self, title, title_before):
+        """Modify the layout in order to position the first title on the left border of the second title.
+
+        Parameters
+        ----------
+        title : str or int
+            The title or the zero based index of the title that will be displaced.
+
+        title_before : str or int
+            The title or the zero based index of the title that we target.
+        """
+        self._dispatch.InsertBefore(title, title_before)
+
+    def group(self, array):
+        """Create a group containing the titles in the array.
+
+        Parameters
+        ----------
+        array : array
+            The array containing the titles that will be grouped.
+
+        Returns
+        -------
+        GroupTitle
+            A new GroupTitle containing the titles.
+        """
+        return Title(self._dispatch.Group(array))
+
+    def add_to_group(self, title_group, array):
+        """Add an array of titles to an existing group.
+
+        Parameters
+        ----------
+        title_group : str
+            The name of an existing group.
+        array : array
+            The array containing the titles to add to the group.
+        """
+        self._dispatch.AddToGroup(title_group, array)
+
+    def align_left(self, array):
+        """The titles contained in the array are aligned with the left side of the first title of the array.
+
+        Parameters
+        ----------
+        array : array
+            The array containing the titles to displace.
+        """
+        self._dispatch.AlignLeft(array)
+
+    def align_right(self, array):
+        """The titles contained in the array are aligned with the right side of the first title of the array.
+
+        Parameters
+        ----------
+        array : array
+            The array containing the titles to displace.
+        """
+        self._dispatch.AlignRight(array)
+
+    def align_left_right(self, array):
+        """The titles contained in the array are aligned with the left side and the right side of the first title of the array.
+
+        Parameters
+        ----------
+        array : array
+            The array containing the titles to displace.
+        """
+        self._dispatch.AlignLeftAndRight(array)
+
+    def align_side_by_side(self, array):
+        """Aligns side by side the titles containing in the array.
+
+        Parameters
+        ----------
+        array : array
+            The array containing the titles to align.
+        """
+        self._dispatch.AlignSideBySide(array)
+
+
+    def make_same_width(self, array):
+        """Uses the width of the first title for the other titles of the array.
+
+        Parameters
+        ----------
+        array : array
+            The array containing the titles to modify.
+        """
+        self._dispatch.SameWidth(array)
+
+    def make_same_height(self, array):
+        """Uses the height of the first title for the other titles of the array.
+
+        Parameters
+        ----------
+        array : array
+            The array containing the titles to modify.
+        """
+        self._dispatch.SameHeight(array)
+
+    def move_left(self):
+        """Removes the gaps between logs and place them side by side, starting from the left border of the document."""
+        self._dispatch.MoveLeft()
+
+    def autofit(self):
+        """Removes all the gaps between logs and adjust the document width so that the right border is lined up with the right border of the last log."""
+        self._dispatch.AutoFit()
+
+    def move_up(self, title):
+        """Moves the title box to the top of the document title.
+
+        Parameters
+        ----------
+        title : str
+            The name of the title we want to move.
+        """
+        self._dispatch.MoveUp(title)
+
+    def move_down(self, title):
+        """Moves the title box to the bottom of the document title.
+
+        Parameters
+        ----------
+        title : str
+            The name of the title we want to move.
+        """
+        self._dispatch.MoveDown(title)
+
+    def ungroup(self, array):
+        """Destroys the groups.
+
+        Parameters
+        ----------
+        array : array
+            An array containing the names of the groups to destroy.
+        """
+        self._dispatch.Ungroup(array)
+
+    def remove_from_group(self, array):
+        """Removes the titles in the array from the group.
+
+        Parameters
+        ----------
+        array : array
+            An array containing the names of the titles to remove from the group.
+        """
+        self._dispatch.RemoveFromGroup(array)
+
+    def remove_group(self, group):
+        """Delete the group and the logs it contains.
+
+        Parameters
+        ----------
+        group : str
+            The name of the group.
+        """
+        self._dispatch.RemoveGroup(group)

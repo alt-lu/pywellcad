@@ -362,5 +362,118 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         linked_linked_log.get_litho_bed(3).litho_code = original_litho_code
         linked_linked_log.name = "Litho"
 
+
+    def test_snap_grid(self):
+        # Verify that the property is initially set to False, then set it to True
+        self.assertEqual(self.borehole.snap_grid, False)
+        self.borehole.snap_grid = True
+        # Verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.borehole.snap_grid, False)
+        self.borehole.snap_grid = False
+
+    def test_ruler_unit(self):
+        # Get the initial value in mm of the snap step
+        snap_step_mm = self.borehole.snap_step
+
+        # Verify that the property is initially set to mm (2), then set it to cm (3)
+        self.assertEqual(self.borehole.ruler_unit, 2)
+        self.borehole.ruler_unit = 3
+
+        # Verify that the property has been changed
+        self.assertNotEqual(self.borehole.ruler_unit, 2)
+
+        # Verify that the value of the snap step has been correctly converted in cm
+        self.assertAlmostEqual(self.borehole.snap_step, snap_step_mm * 0.1, 3)
+
+        # Return to the original unit
+        self.borehole.ruler_unit = 2
+
+    def test_snap_step(self):
+        # Verify that the property is initially set to 1 (mm), then set it to 2 (mm)
+        init_value = self.survey_borehole.snap_step
+        self.assertAlmostEqual(self.survey_borehole.snap_step, 1, 3)
+        self.survey_borehole.snap_step = 2
+        # Verify that the property has been changed and turn it back to the original value
+        self.assertNotAlmostEqual(self.survey_borehole.snap_step, 1, 3)
+        self.survey_borehole.snap_step = init_value
+
+    def test_insert_title_after(self):
+        # insert the "Tilt" log after the "TVD" log
+        self.survey_borehole.insert_title_after("Tilt", "TVD")
+
+    def test_insert_title_before(self):
+        # insert the "Northing" log before the "Easting" log
+        self.survey_borehole.insert_title_before("Northing", "Easting")
+
+    def test_group(self):
+        # Create an array of titles
+        array = ["TVD","Tilt"]
+
+        # Create a new group "New Group" from this array and verify that it belongs to the class Title
+        group = self.survey_borehole.group(array)
+        group.title_text = "New Group"
+        self.assertIsInstance(group, wellcad.com.Title)
+
+        # Create an additional array and add it to the existing group
+        add_array = ["Northing"]
+        self.survey_borehole.add_to_group("New Group", add_array)
+
+        # Remove it from the group
+        remove_array = ["TVD"]
+        self.survey_borehole.remove_from_group(remove_array)
+
+        # Ungroup
+        group_array = ["New Group"]
+        self.survey_borehole.ungroup(group_array)
+
+    def test_align_left_right(self):
+        # Create an array of titles
+        array = ["TVD", "Tilt", "Northing"]
+
+        # Align them of the left of the "TVD" titles, then on its right, then of both
+        self.survey_borehole.align_left(array)
+        self.survey_borehole.align_right(array)
+        self.survey_borehole.align_left_right(array)
+
+    def test_same_width(self):
+        # Create an array of titles
+        array = ["TVD", "Tilt", "Northing"]
+        # Make them share the same width as the "TVD" title
+        self.survey_borehole.make_same_width(array)
+
+    def test_same_height(self):
+        # Create an array of titles
+        array = ["TVD", "Tilt", "Northing"]
+        # Make them share the same height as the "TVD" title
+        self.survey_borehole.make_same_height(array)
+
+    def test_move_left(self):
+        self.survey_borehole.move_left()
+
+    def test_autofit(self):
+        self.survey_borehole.autofit()
+
+    def test_move_up_down(self):
+        # The move up/down function is not compatible with the snap grid, so we have to disable it first.
+        self.survey_borehole.snap_grid = False
+
+        # Move up then down the "BH Azimuth & Tilt" title
+        self.survey_borehole.move_up("BH Azimuth & Tilt")
+        self.survey_borehole.move_down("BH Azimuth & Tilt")
+
+    def test_remove_group(self):
+        # Create a copy of 2 log
+        east_copy = self.survey_borehole.add_log(self.survey_borehole.get_log("Easting"))
+        north_copy = self.survey_borehole.add_log(self.survey_borehole.get_log("Northing"))
+
+        # Group them
+        array = [east_copy.name, north_copy.name]
+        grp = self.survey_borehole.group(array)
+        grp.title_text = "Group"
+        self.assertIsInstance(grp, wellcad.com.Title)
+
+        # Remove the group
+        self.survey_borehole.remove_group("Group")
+
 if __name__ == '__main__':
     unittest.main()
