@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "DriftCorrection")
 
     @property
     def name(self):
@@ -4381,3 +4381,35 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def drift_correction(self, log_src=None, log_temp=None, prompt_user=None, config=None):
+        """ Correct the peak shifts caused by temperature gradients.
+        Return a new FWSLog, which corresponds to the corrected version of the FWSLog used as input.
+        Parameters
+        ----------
+        log_src : int or str, optional
+            Zero based index or title of the source log (FWSLog).
+            If not provided, the process returns None.
+        log_src : int or str, optional
+            Zero based index or title of the temperature log (WellLog or MudLog).
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : bool, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+            .. code-block:: ini
+                [DriftCorrection]
+                ; input : source log (FWSLog), temperature log (WellLog or MudLog), Stations (temp1, peak11, peak12, temp2, peak21, peak22, ...)
+                ; output : new corrected source log (FWSLog)
+                Stations = 10.58, 125, 136, 12.24, 134, 184
+        Returns
+        -------
+        Log
+            A new FWSLog corresponding to the corrected version of the source log.
+        """
+
+        return Log(self._dispatch.DriftCorrection(log_src, log_temp, prompt_user, config))

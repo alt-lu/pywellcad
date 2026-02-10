@@ -362,5 +362,16 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         linked_linked_log.get_litho_bed(3).litho_code = original_litho_code
         linked_linked_log.name = "Litho"
 
+    def test_drift_correction(self):
+        # Prepare the stations (temp, peak1, peak2) in the config
+        config = "Stations=10.58, 125, 136, 12.24, 134, 184"
+        nb_of_logs = self.classic_borehole.nb_of_logs
+
+        # Apply the drift correction process
+        self.classic_borehole.drift_correction("Sonic", "Sonic - E1", False, config)
+
+        # Verify that a new log has been added to the borehole document
+        self.assertGreater(self.classic_borehole.nb_of_logs, nb_of_logs)
+
 if __name__ == '__main__':
     unittest.main()
