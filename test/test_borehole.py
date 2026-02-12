@@ -362,5 +362,13 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         linked_linked_log.get_litho_bed(3).litho_code = original_litho_code
         linked_linked_log.name = "Litho"
 
+    def test_spectrum(self):
+        # Apply the spectrum process on the sonic log
+        nb_of_logs = self.classic_borehole.nb_of_logs
+        self.classic_borehole.spectrum("Sonic")
+
+        # Verify that a new log (spectrum) has been added to the borehole document
+        self.assertGreater(self.classic_borehole.nb_of_logs, nb_of_logs)
+
 if __name__ == '__main__':
     unittest.main()

@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "Spectrum")
 
     @property
     def name(self):
@@ -4381,3 +4381,17 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def spectrum(self, log=None):
+        """Creates a new FWSLog corresponding to the spectrum of the input log (FWSLog).
+        Parameters
+        ----------
+        log : str or int
+            The title or the zero based index of the FWSLog used to create the spectrum log from.
+
+        Returns
+        -------
+        Log
+            A FWS log corresponding to the spectrum of the input log.
+        """
+        return Log(self._dispatch.Spectrum(log))
