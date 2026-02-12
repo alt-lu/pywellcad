@@ -34,7 +34,10 @@ class Application(DispatchWrapper):
     
     def __init__(self):
         super().__init__(Dispatch("WellCAD.Application"))
-        
+
+    def __iter__(self):
+        return (self.get_borehole(i) for i in range(self.nb_of_documents))
+
     def show_window(self):
         """Attempts to display the WellCAD workspace on screen.
         

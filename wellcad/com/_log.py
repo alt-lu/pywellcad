@@ -27,6 +27,9 @@ class Log(DispatchWrapper):
     _DISPATCH_METHODS = ("Structure",)
     _DISPATCH_ATTRIBUTES = ("Style",)
 
+    def __iter__(self):
+        return (self.get_data(i) for i in range(self.nb_of_data))
+
     def file_export(self, directory, file_title=None, extension=None, prompt_user=None, config_filename=None):
         """Exports the data of the log in the specified format (TXT, CSV, ASC,
         WA* for all log types, BMP, TIF, GIF, JPG, PNG in addition for RGB and
