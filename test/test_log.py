@@ -39,6 +39,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.fmi_borehole = cls.app.open_borehole(str(cls.sample_path / "FMI and Net Sand Estimation.wcl"))
         cls.structure_log = cls.fmi_borehole.get_log("Structure")
         cls.image_log = cls.fmi_borehole.get_log("FMI Image")
+        cls.caliper_log = cls.fmi_borehole.get_log("C1")
 
         cls.breakout_borehole = cls.app.open_borehole(str(cls.fixture_path / "Breakout Picking.WCL"))
         cls.breakout_log = cls.breakout_borehole.get_log("Breakouts")
@@ -770,11 +771,19 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertEqual(self.structure_log.get_attribute_name(0), "new_name")
         self.structure_log.set_attribute_name(0, "Type")
 
-    def test_insert_new_attribute(self):
+    def test_insert_remove_attribute(self):
         with self.assertRaises(pywintypes.com_error):
             self.structure_log.get_attribute_name(1)
         self.structure_log.insert_new_attribute("my_new_attribute")
         self.assertEqual(self.structure_log.get_attribute_name(1), "my_new_attribute")
+
+        # get the number of attributes linked to the log (2)
+        nb_attribs = self.structure_log.nb_of_attributes
+        # remove the newly added attribute
+        self.structure_log.remove_attribute("my_new_attribute")
+
+        # get the number of attributes and verify that it is lower than the previous number now that one of them has been eliminated
+        self.assertGreater(nb_attribs, self.structure_log.nb_of_attributes)
 
     def test_attach_attribute_dictionary(self):
         attribute_dictionary = str(self.fixture_path / "DefaultStructure.tad")
@@ -878,6 +887,89 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item(0)
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
+
+    def test_set_caliper_log(self):
+        self.structure_log.set_caliper_log("C1")
+
+    def test_set_depth_of_img_log(self):
+        self.structure_log.set_depth_of_img_log("C2")
+
+    def test_caliper_from_log(self):
+        # verify that the property is initially set to False, then set it to True
+        self.assertEqual(self.structure_log.caliper_from_log, False)
+        self.structure_log.caliper_from_log = True
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.structure_log.caliper_from_log, False)
+        self.structure_log.caliper_from_log = False
+
+    def test_depth_of_img_from_log(self):
+        # verify that the property is initially set to False, then set it to True
+        self.assertEqual(self.structure_log.depth_of_img_from_log, False)
+        self.structure_log.depth_of_img_from_log = True
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.structure_log.depth_of_img_from_log, False)
+        self.structure_log.depth_of_img_from_log = False
+
+    def test_caliper_value(self):
+        # verify that the property is initially set to 228.6, then set it to 300
+        original_value = self.structure_log.caliper_value
+        self.assertEqual(self.structure_log.caliper_value, original_value)
+        self.structure_log.caliper_value = 0.30
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.structure_log.caliper_value, original_value)
+        self.structure_log.caliper_value = original_value
+
+    def test_depth_of_img_value(self):
+        # verify that the property is initially set to 0, then set it to 50
+        self.assertEqual(self.structure_log.depth_of_img_value, 0)
+        self.structure_log.depth_of_img_value = 50
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.structure_log.depth_of_img_value, 0)
+        self.structure_log.depth_of_img_value = 0
+
+    def test_slabcore_azimuth(self):
+        # verify that the property is initially set to 0, then set it to 60
+        self.assertEqual(self.structure_log.slabcore_azimuth, 0)
+        self.structure_log.slabcore_azimuth = 60
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.structure_log.slabcore_azimuth, 0)
+        self.structure_log.slabcore_azimuth = 0
+
+    def test_slabcore_style(self):
+        # verify that the property is initially set to 0 (Full Size), then set it to 1 (Fixed Size)
+        self.assertEqual(self.structure_log.slabcore_style, 0)
+        self.structure_log.slabcore_style = 1
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.structure_log.slabcore_style, 0)
+        self.structure_log.slabcore_style = 0
+
+    def test_display_full_partial_picks(self):
+        # verify that the property is initially set to 20, then set it to 15
+        self.assertEqual(self.structure_log.display_full_partial_picks, True)
+        self.structure_log.display_full_partial_picks = False
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.structure_log.display_full_partial_picks, True)
+        self.structure_log.display_full_partial_picks = True
+
+    def test_display_nodes(self):
+        # verify that the property is initially set to 20, then set it to 15
+        self.assertEqual(self.structure_log.display_nodes, True)
+        self.structure_log.display_nodes = False
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.structure_log.display_nodes, True)
+        self.structure_log.display_nodes = True
+
+    def test_display_opening(self):
+        # verify that the property is initially set to False, then set it to True
+        self.assertEqual(self.breakout_log.display_opening, False)
+        self.breakout_log.display_opening = True
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.breakout_log.display_opening, False)
+        self.breakout_log.display_opening = False
+
+    def test_nb_attributes(self):
+        # verify that the structure log contains only 1 attribute
+        self.assertEqual(self.structure_log.nb_of_attributes, 1)
 
 if __name__ == '__main__':
     unittest.main()
