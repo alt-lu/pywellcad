@@ -2357,3 +2357,188 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+    @property
+    def drawing_mode(self):
+        """int: The index of the drawing mode.
+        0: All slices in interval superimposed
+        1: Interval average slice
+        """
+        return self._dispatch.DrawingMode
+
+    @drawing_mode.setter
+    def drawing_mode(self, mode):
+        self._dispatch.DrawingMode = mode
+
+    @property
+    def display_internal_circle(self):
+        """BOOL: Specifies whether or not we display the internal circle."""
+        return self._dispatch.DisplayInternalCircle
+
+    @display_internal_circle.setter
+    def display_internal_circle(self, display):
+        self._dispatch.DisplayInternalCircle = display
+
+    @property
+    def internal_radius(self):
+        """float: The radius of the internal circle."""
+        return self._dispatch.InternalRadius
+
+    @internal_radius.setter
+    def internal_radius(self, radius):
+        self._dispatch.InternalRadius = radius
+
+    @property
+    def internal_shading_position(self):
+        """int: The index of the internal shading position.
+        0: None
+        1: Inside
+        2: Outside
+        3: Both
+        """
+        return self._dispatch.InternalShadingPosition
+
+    @internal_shading_position.setter
+    def internal_shading_position(self, pos):
+        self._dispatch.InternalShadingPosition = pos
+
+    @property
+    def internal_shading_color(self):
+        """int: The color of the internal shading.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.InternalShadingColor
+
+    @internal_shading_color.setter
+    def internal_shading_color(self, color):
+        self._dispatch.InternalShadingColor = color
+
+    @property
+    def internal_shading_style(self):
+        """int: The index of the internal shading's style.
+        0: None
+        1: Solid
+        2: Horizontal Hatch
+        3: Vertical Hatch
+        4: Downward Diagonal Hatch
+        5: Upward Diagonal Hatch
+        6: Cross Hatch
+        7: Diagonal Cross Hatch
+        """
+        return self._dispatch.InternalShadingStyle
+
+    @internal_shading_style.setter
+    def internal_shading_style(self, style):
+        self._dispatch.InternalShadingStyle = style
+
+    @property
+    def display_external_circle(self):
+        """BOOL: Specifies whether or not we display the external circle."""
+        return self._dispatch.DisplayExternalCircle
+
+    @display_external_circle.setter
+    def display_external_circle(self, display):
+        self._dispatch.DisplayExternalCircle = display
+
+    @property
+    def external_radius(self):
+        """float: The radius of the external circle."""
+        return self._dispatch.ExternalRadius
+
+    @external_radius.setter
+    def external_radius(self, radius):
+        self._dispatch.ExternalRadius = radius
+
+    @property
+    def external_shading_position(self):
+        """int: The index of the external shading position.
+        0: None
+        1: Inside
+        2: Outside
+        3: Both
+        """
+        return self._dispatch.ExternalShadingPosition
+
+    @external_shading_position.setter
+    def external_shading_position(self, pos):
+        self._dispatch.ExternalShadingPosition = pos
+
+    @property
+    def external_shading_color(self):
+        """int: The color of the external shading.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.ExternalShadingColor
+
+    @external_shading_color.setter
+    def external_shading_color(self, color):
+        self._dispatch.ExternalShadingColor = color
+
+    @property
+    def external_shading_style(self):
+        """int: The index of the external shading's style.
+        0: None
+        1: Solid
+        2: Horizontal Hatch
+        3: Vertical Hatch
+        4: Downward Diagonal Hatch
+        5: Upward Diagonal Hatch
+        6: Cross Hatch
+        7: Diagonal Cross Hatch
+        """
+        return self._dispatch.ExternalShadingStyle
+
+    @external_shading_style.setter
+    def external_shading_style(self, style):
+        self._dispatch.ExternalShadingStyle = style
+
+    @property
+    def display_azimuth(self):
+        """BOOL: Specifies whether or not we display the azimuth grid."""
+        return self._dispatch.DisplayAzimuth
+
+    @display_azimuth.setter
+    def display_azimuth(self, display):
+        self._dispatch.DisplayAzimuth = display
+
+    @property
+    def azimuth_spacing(self):
+        """int: The step (in degree) between two azimuth tick marks."""
+        return self._dispatch.AzimuthSpacing
+
+    @azimuth_spacing.setter
+    def azimuth_spacing(self, spacing):
+        self._dispatch.AzimuthSpacing = spacing
+
+    @property
+    def display_caliper(self):
+        """BOOL: Specifies whether or not we display the caliper grid."""
+        return self._dispatch.DisplayCaliper
+
+    @display_caliper.setter
+    def display_caliper(self, display):
+        self._dispatch.DisplayCaliper = display
+
+    @property
+    def caliper_spacing(self):
+        """float: The step (in degree) between two concentric circles of the caliper grid."""
+        return self._dispatch.CaliperSpacing
+
+    @caliper_spacing.setter
+    def caliper_spacing(self, spacing):
+        self._dispatch.CaliperSpacing = spacing
+
+    @property
+    def display_labels(self):
+        """BOOL: Specifies whether or not we display the labels."""
+        return self._dispatch.DisplayLabels
+
+    @display_labels.setter
+    def display_labels(self, display):
+        self._dispatch.DisplayLabels = display
+
