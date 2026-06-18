@@ -878,6 +878,38 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item(0)
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
+    def test_cardinal_points_color(self):
+        # verify that the color is initially set to no color, then set it to red
+        self.assertEqual(self.image_log.cardinal_points_color, 0)
+        self.image_log.cardinal_points_color = 0x0000ff
+        # verify that the property has been changed and turn back to the original color
+        self.assertNotEqual(self.image_log.cardinal_points_color, 0)
+        self.image_log.cardinal_points_color = 0
+
+    def test_left_shading_color(self):
+        # verify that the color is initially undefined, then set it to red
+        self.assertEqual(self.image_log.left_shading_color, -1)
+        self.image_log.left_shading_color = 0x0000ff
+        # verify that the property has been changed and turn back to the original color
+        self.assertNotEqual(self.image_log.left_shading_color, -1)
+        self.image_log.left_shading_color = -1
+
+    def test_right_shading_color(self):
+        # verify that the color is initially undefined, then set it to red
+        self.assertEqual(self.image_log.right_shading_color, -1)
+        self.image_log.right_shading_color = 0x0000ff
+        # verify that the property has been changed and turn back to the original color
+        self.assertNotEqual(self.image_log.right_shading_color, -1)
+        self.image_log.right_shading_color = -1
+
+    def test_curves_count(self):
+        # verify that the property is initially set to 1, then set it to 3
+        self.assertEqual(self.image_log.curves_count, 1)
+        self.image_log.curves_count = 3
+        # verify that the property has been changed and turn back to the original value
+        self.assertNotEqual(self.image_log.curves_count, 1)
+        self.image_log.curves_count = 1
+
 
 if __name__ == '__main__':
     unittest.main()

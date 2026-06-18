@@ -2357,3 +2357,55 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+
+    @property
+    def cardinal_points_color(self):
+        """int: The color of the cardinal points.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.CardinalPointsColor
+
+    @cardinal_points_color.setter
+    def cardinal_points_color(self, color):
+        self._dispatch.CardinalPointsColor = color
+
+    @property
+    def left_shading_color(self):
+        """int: The color of the left shading.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.LeftShadingColor
+
+    @left_shading_color.setter
+    def left_shading_color(self, color):
+        self._dispatch.LeftShadingColor = color
+
+    @property
+    def right_shading_color(self):
+        """int: The color of the right shading.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.RightShadingColor
+
+    @right_shading_color.setter
+    def right_shading_color(self, color):
+        self._dispatch.RightShadingColor = color
+
+    @property
+    def curves_count(self):
+        """int: The index multiplier of the displayed traces."""
+        return self._dispatch.CurvesCount
+
+    @curves_count.setter
+    def curves_count(self, count):
+        self._dispatch.CurvesCount = count
+
