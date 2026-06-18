@@ -878,6 +878,22 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item(0)
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
+    def test_classifier_dictionary(self):
+        # Get the classifier dictionary of the interval log
+        classif_dict = self.gr_litho_interval_log.classifier_dictionary
+        self.assertIsInstance(classif_dict, wellcad.com.ClassifierDictionary)
+
+        # Make a copy of a well log and assign the same dictionary
+        copy_gr_log = self.borehole.add_log(self.gr_log)
+        copy_gr_log.classifier_dictionary = classif_dict #doesn't work, same issue as with the "test_litho_dictionary_scope"
+
+        # Get the classifier dictionary of the new well log to verify that it has been correctly affected
+        classif_dict_well = self.gr_log.classifier_dictionary
+        self.assertIsInstance(classif_dict_well, wellcad.com.ClassifierDictionary)
+
+        # Remove the new well log
+        self.borehole.remove_log(copy_gr_log)
+
 
 if __name__ == '__main__':
     unittest.main()

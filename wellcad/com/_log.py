@@ -12,7 +12,7 @@ from ._marker_item import MarkerItem
 from ._stacking_pattern_item import StackingPatternItem
 from ._cross_section_box import CrossSectionBox
 from ._litho_dictionary import LithoDictionary
-
+from ._classifier_dictionary import ClassifierDictionary
 
 class Log(DispatchWrapper):
     """The Log class represents a depth or time referenced set of data displayed as a column in a borehole document.
@@ -2357,3 +2357,26 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+    @property
+    def classifier_dictionary(self):
+        """ClassifierDictionary: The classifier library used by the log (Well/Mud/Interval)."""
+        return ClassifierDictionary(self._dispatch.ClassifierDictionary)
+
+    @classifier_dictionary.setter
+    def classifier_dictionary(self, dictionary):
+        self._dispatch.ClassifierDictionary = dictionary._dispatch
+
+    def attach_classifier_dictionary(self, dictionary_name):
+        """Attaches a new classifier dictionary to the Well/Mud/Interval Log.
+
+        Parameters
+        ----------
+        dictionary : str
+            path and name of the file to attach
+
+        Returns
+        -------
+            ClassifierDictionary
+                The ClassifierDictionary object
+        """
+        return ClassifierDictionary(self._dispatch.AttachClassifierDictionary(dictionary_name))
