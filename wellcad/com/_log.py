@@ -2357,3 +2357,183 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+    @property
+    def text_format(self):
+        """int: The index corresponding to the text format.
+        0 = Plain Text
+        1 = Rich Text
+        """
+        return self._dispatch.TextFormat
+
+    @text_format.setter
+    def text_format(self, format_index):
+        self._dispatch.TextFormat = format_index
+
+    @property
+    def horz_text_align(self):
+        """
+        int: The index corresponding to the horizontal text alignment.
+        0 = Left
+        1 = Center
+        2 = Right
+        """
+        return self._dispatch.HorzTextAlignment
+
+    @horz_text_align.setter
+    def horz_text_align(self, align_index):
+        self._dispatch.HorzTextAlignment = align_index
+
+    @property
+    def vert_text_align(self):
+        """
+        int: The index corresponding to the vertical text alignment.
+        0 = Top
+        1 = Center
+        2 = Bottom
+        """
+        return self._dispatch.VertTextAlignment
+
+    @vert_text_align.setter
+    def vert_text_align(self, align_index):
+        self._dispatch.VertTextAlignment = align_index
+
+    @property
+    def text_orientation(self):
+        """
+        int: The index corresponding to the text orientation.
+        0 = Normal
+        1 = Left
+        2 = Right
+        3 = Reverse (only for Comment Log)
+        """
+        return self._dispatch.TextOrientation
+
+    @text_orientation.setter
+    def text_orientation(self, orientation_index):
+        self._dispatch.TextOrientation = orientation_index
+
+    @property
+    def repeat_text(self):
+        """bool: Whether the text will be repeated in a text box or not."""
+        return self._dispatch.RepeatText
+
+    @repeat_text.setter
+    def repeat_text(self, repeat):
+        self._dispatch.RepeatText = repeat
+
+    @property
+    def repeat_text_spacing(self):
+        """int: The spacing (in mm/10) between each repeated text box."""
+        return self._dispatch.RepeatTextSpacing
+
+    @repeat_text_spacing.setter
+    def repeat_text_spacing(self, spacing):
+        self._dispatch.RepeatTextSpacing = spacing
+
+    @property
+    def top_depth_indicator(self):
+        """
+        int: The index corresponding to the top depth indicator.
+        0 = None
+        1 = Left
+        2 = Center
+        3 = Right
+        """
+        return self._dispatch.TopDepthIndicator
+
+    @top_depth_indicator.setter
+    def top_depth_indicator(self, indicator_index):
+        self._dispatch.TopDepthIndicator = indicator_index
+
+    @property
+    def bottom_depth_indicator(self):
+        """
+        int: The index corresponding to the bottom depth indicator.
+        0 = None
+        1 = Left
+        2 = Center
+        3 = Right
+        """
+        return self._dispatch.BottomDepthIndicator
+
+    @bottom_depth_indicator.setter
+    def bottom_depth_indicator(self, indicator_index):
+        self._dispatch.BottomDepthIndicator = indicator_index
+
+    @property
+    def depth_font(self):
+        """Gets the font used in a Comment Log for the depth."""
+        return Font(self._dispatch.DepthFont)
+
+    @depth_font.setter
+    def depth_font(self, font):
+        self._dispatch.DepthFont = font._dispatch
+
+    @property
+    def depth_digits(self):
+        """int: The number of digits used for the depth."""
+        return self._dispatch.DepthDigits
+
+    @depth_digits.setter
+    def depth_digits(self, nb_digits):
+        self._dispatch.DepthDigits = nb_digits
+
+    @property
+    def pinches_position(self):
+        """
+        int: The index corresponding to the position of the pinches.
+        1 = Left
+        2 = Right
+        3 = Center
+        4 = None
+        """
+        return self._dispatch.PinchesPosition
+
+    @pinches_position.setter
+    def pinches_position(self, position_index):
+        self._dispatch.PinchesPosition = position_index
+
+    @property
+    def allow_pinches(self):
+        """bool: Whether pinches are allowed (height of the box optimized) or not (height of the box corresponding to the depth interval)."""
+        return self._dispatch.AllowPinches
+
+    @allow_pinches.setter
+    def allow_pinches(self, allow):
+        self._dispatch.AllowPinches = allow
+
+    @property
+    def display_depth(self):
+        """bool: Whether or not the markers' depths are displayed."""
+        return self._dispatch.DisplayDepth
+
+    @display_depth.setter
+    def display_depth(self, display):
+        self._dispatch.DisplayDepth = display
+
+    @property
+    def display_name(self):
+        """bool: Whether or not the markers' names are displayed."""
+        return self._dispatch.DisplayName
+
+    @display_name.setter
+    def display_name(self, display):
+        self._dispatch.DisplayName = display
+
+    @property
+    def name_font(self):
+        """Gets the font used in a Marker Log for the names."""
+        return Font(self._dispatch.NameFont)
+
+    @name_font.setter
+    def name_font(self, font):
+        self._dispatch.NameFont = font._dispatch
+
+    @property
+    def display_comment(self):
+        """bool: Whether or not the markers' comments are displayed."""
+        return self._dispatch.DisplayComment
+
+    @display_comment.setter
+    def display_comment(self, display):
+        self._dispatch.DisplayComment = display
