@@ -879,5 +879,32 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
 
+    def test_attach_contact_dictionary(self):
+        # Copy the original litho log.
+        copied_litho_log = self.litho_borehole.add_log(self.litho_log)
+
+        # Update the litho dictionary.
+        new_dict = self.litho_log.attach_contact_dictionary(self.contact_dict)
+        self.assertIsInstance(new_dict, wellcad.com.ContactDictionary)
+
+        # Delete the copied litho log.
+        self.litho_borehole.remove_log(copied_litho_log.name)
+
+    def test_contact_dictionary(self):
+        # Attach a new contact dictionary to the lithological log
+        new_dict = self.litho_log.attach_contact_dictionary(self.contact_dict)
+        self.assertIsInstance(new_dict, wellcad.com.ContactDictionary)
+
+        # Get the contact dictionary of this log
+        dict = self.litho_log.contact_dictionary
+        self.assertIsInstance(dict, wellcad.com.ContactDictionary)
+
+        # Create a new lithological log
+        new_litho_log = self.litho_borehole.insert_new_log(7)
+
+        # Use the dictionary for this log
+        new_litho_log.contact_dictionary = dict
+        self.assertEqual(dict.name, new_litho_log.contact_dictionary.name)
+
 if __name__ == '__main__':
     unittest.main()

@@ -12,7 +12,7 @@ from ._marker_item import MarkerItem
 from ._stacking_pattern_item import StackingPatternItem
 from ._cross_section_box import CrossSectionBox
 from ._litho_dictionary import LithoDictionary
-
+from ._contact_dictionary import ContactDictionary
 
 class Log(DispatchWrapper):
     """The Log class represents a depth or time referenced set of data displayed as a column in a borehole document.
@@ -2357,3 +2357,27 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+
+    def attach_contact_dictionary(self, dictionary):
+        """Attaches a new contact library (\*.ctd file) to a Litho, Strata or Marker Log.
+
+        Parameters
+        ----------
+        dictionary : str
+            path and name of the .CTD file to attach
+
+        Returns
+        -------
+            ContactDictionary
+                The ContactDictionary object
+        """
+        return ContactDictionary(self._dispatch.AttachContactDictionary(dictionary))
+
+    @property
+    def contact_dictionary(self):
+        """ContactDictionary: The contact database used by the log (Litho/Strata/Marker Log)."""
+        return ContactDictionary(self._dispatch.ContactDictionary)
+
+    @contact_dictionary.setter
+    def contact_dictionary(self, dictionary):
+        self._dispatch.ContactDictionary = dictionary._dispatch
