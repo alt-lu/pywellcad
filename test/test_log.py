@@ -879,5 +879,39 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
 
+    def test_shading_up_down(self):
+        # for the upper values
+        # verify that the color is initially undefined, then set it to red
+        self.assertEqual(self.fws_log.shading_color_up, 0)
+        self.fws_log.shading_color_up = 0x0000ff
+        # verify that the property has been changed and turn back to the original color
+        self.assertNotEqual(self.fws_log.shading_color_up, 0)
+        self.fws_log.shading_color_up = 0
+
+        # for the lower values
+        # verify that the color is initially undefined, then set it to green
+        self.assertEqual(self.fws_log.shading_color_down, 0)
+        self.fws_log.shading_color_down = 0x00ff00
+        # verify that the property has been changed and turn back to the original color
+        self.assertNotEqual(self.fws_log.shading_color_down, 0)
+        self.fws_log.shading_color_down = 0
+
+    def test_zero_line(self):
+        # verify that the property is initially set to 0, then set it to 5
+        self.assertEqual(self.fws_log.zero_line, 0)
+        self.fws_log.zero_line = 5
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.fws_log.zero_line, 0)
+        self.fws_log.zero_line = 0
+
+    def test_scale_factor(self):
+        # verify that the property is initially set to 1, then set it to 1.5
+        self.assertEqual(self.fws_log.scale_factor, 1)
+        self.fws_log.scale_factor = 1.5
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.fws_log.scale_factor, 1)
+        self.fws_log.scale_factor = 1
+
+
 if __name__ == '__main__':
     unittest.main()
