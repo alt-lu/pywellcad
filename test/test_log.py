@@ -879,5 +879,162 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
 
+    def test_text_format(self):
+        # verify that the property is initially set to 0 (plain text), then set it to 1 (rich text)
+        self.assertEqual(self.comment_log.text_format, 0)
+        self.comment_log.text_format = 1
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.comment_log.text_format, 0)
+        self.comment_log.text_format = 0
+
+    def test_horz_text_align(self):
+        # for comment logs
+        # verify that the property is initially set to 1 (center), then set it to 0 (left)
+        self.assertEqual(self.comment_log.horz_text_align, 1)
+        self.comment_log.horz_text_align = 0
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.comment_log.horz_text_align, 1)
+        self.comment_log.horz_text_align = 1
+
+        # for marker logs
+        # verify that the property is initially set to 0 (left), then set it to 1 (center)
+        self.assertEqual(self.marker_log.horz_text_align, 0)
+        self.marker_log.horz_text_align = 1
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.marker_log.horz_text_align, 0)
+        self.marker_log.horz_text_align = 0
+
+    def test_vert_text_align(self):
+        # verify that the property is initially set to 1 (center), then set it to 2 (bottom)
+        self.assertEqual(self.comment_log.vert_text_align, 1)
+        self.comment_log.vert_text_align = 0
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.comment_log.vert_text_align, 1)
+        self.comment_log.vert_text_align = 1
+
+    def test_text_orientation(self):
+        # verify that the property is initially set to 0 (normal), then set it to 1 (left)
+        self.assertEqual(self.comment_log.text_orientation, 0)
+        self.comment_log.text_orientation = 1
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.comment_log.text_orientation, 0)
+        self.comment_log.text_orientation = 0
+
+    def test_repeat_text(self):
+        # verify that the property is initially set to false, then set it to true
+        self.assertEqual(self.comment_log.repeat_text, False)
+        self.comment_log.repeat_text = True
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.comment_log.repeat_text, False)
+        self.comment_log.repeat_text = False
+
+    def test_repeat_text_spacing(self):
+        # verify that the property is initially set to 100mm, then set it to 50mm
+        self.assertEqual(self.comment_log.repeat_text_spacing, 1000)
+        self.comment_log.repeat_text_spacing = 500
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.comment_log.repeat_text_spacing, 1000)
+        self.comment_log.repeat_text_spacing = 1000
+
+    def test_top_depth_indicator(self):
+        # verify that the property is initially set to 1 (left), then set it to 2 (center)
+        self.assertEqual(self.comment_log.top_depth_indicator, 1)
+        self.comment_log.top_depth_indicator = 2
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.comment_log.top_depth_indicator, 1)
+        self.comment_log.top_depth_indicator = 1
+
+    def test_bottom_depth_indicator(self):
+        # verify that the property is initially set to 0 (None), then set it to 1 (left)
+        self.assertEqual(self.comment_log.bottom_depth_indicator, 0)
+        self.comment_log.bottom_depth_indicator = 1
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.comment_log.bottom_depth_indicator, 0)
+        self.comment_log.bottom_depth_indicator = 0
+
+    def test_depth_font(self):
+        font = self.comment_log.depth_font
+        self.assertIsInstance(font, wellcad.com.Font)
+        self.assertEqual(font.italic, False)
+        new_comment_log = self.borehole.insert_new_log(8)
+        new_comment_log.depth_font.italic = True
+        new_comment_log.depth_font = font
+        self.assertEqual(new_comment_log.depth_font.italic, False)
+
+    def test_depth_digits(self):
+        # for comment logs
+        # verify that the property is initially set to 2, then set it to 3
+        self.assertEqual(self.comment_log.depth_digits, 2)
+        self.comment_log.depth_digits = 3
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.comment_log.depth_digits, 2)
+        self.comment_log.depth_digits = 2
+
+        # for marker logs
+        # verify that the property is initially set to 2, then set it to 3
+        self.assertEqual(self.marker_log.depth_digits, 2)
+        self.marker_log.depth_digits = 3
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.marker_log.depth_digits, 2)
+        self.marker_log.depth_digits = 2
+
+    def test_pinches_position(self):
+        # for comment logs
+        # verify that the property is initially set to 1 (left), then set it to 2 (right)
+        self.assertEqual(self.comment_log.pinches_position, 1)
+        self.comment_log.pinches_position = 2
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.comment_log.pinches_position, 1)
+        self.comment_log.pinches_position = 1
+
+        # for marker logs
+        # verify that the property is initially set to 1 (left), then set it to 2 (right)
+        self.assertEqual(self.marker_log.pinches_position, 1)
+        self.marker_log.pinches_position = 2
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.marker_log.pinches_position, 1)
+        self.marker_log.pinches_position = 1
+
+    def test_allow_pinches(self):
+        # verify that the property is initially set to true, then set it to  false
+        self.assertEqual(self.comment_log.allow_pinches, True)
+        self.comment_log.allow_pinches = False
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.comment_log.allow_pinches, True)
+        self.comment_log.allow_pinches = True
+
+    def test_display_depth(self):
+        # verify that the property is initially set to true, then set it to  false
+        self.assertEqual(self.marker_log.display_depth, True)
+        self.marker_log.display_depth = False
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.marker_log.display_depth, True)
+        self.marker_log.display_depth = True
+
+    def test_display_name(self):
+        # verify that the property is initially set to true, then set it to  false
+        self.assertEqual(self.marker_log.display_name, True)
+        self.marker_log.display_name = False
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.marker_log.display_name, True)
+        self.marker_log.display_name = True
+
+    def test_display_comment(self):
+        # verify that the property is initially set to true, then set it to  false
+        self.assertEqual(self.marker_log.display_comment, False)
+        self.marker_log.display_comment = True
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.marker_log.display_comment, False)
+        self.marker_log.display_comment = False
+
+    def test_name_font(self):
+        font = self.marker_log.name_font
+        self.assertIsInstance(font, wellcad.com.Font)
+        self.assertEqual(font.italic, False)
+        new_marker_log = self.borehole.insert_new_log(8)
+        new_marker_log.font.italic = True
+        new_marker_log.font = font
+        self.assertEqual(new_marker_log.font.italic, False)
+
 if __name__ == '__main__':
     unittest.main()
