@@ -59,6 +59,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
 
         cls.nmr_borehole = cls.app.open_borehole(str(cls.sample_path / "NMR Demo.WCL"))
         cls.percentage_log = cls.nmr_borehole.get_log("Fluid Volumes")
+        cls.contact_dict = str(cls.fixture_path / "Bedding contacts.ctd")
 
     @classmethod
     def tearDownClass(cls):
