@@ -39,6 +39,9 @@ class TestFossilItem(unittest.TestCase, ExtraAsserts):
         self.fossil.dominance = 3
         self.assertAlmostEqual(self.fossil.dominance, 1.0, 3)
 
+    def test_position(self):
+        self.assertEqual(self.fossil.position, 0.5)
+        self.assertAttrAlmostChange(self.fossil, 'position', 0.8, 5)
 
 if __name__ == '__main__':
     unittest.main()
