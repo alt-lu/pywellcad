@@ -823,8 +823,17 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertIsInstance(column, wellcad.com.Log)
 
     def test_insert_remove_strata_column(self):
-        self.fail("There is no way to programmatically add a strata column")
-        self.strata_log.remove_strata_column(0)  # This works
+        # Insert a new column into the Strata Log
+        self.strata_log.insert_new_strata_column("new_col")
+
+        # Get the number of columns in the Strata Log
+        nb_columns_init = self.strata_log.nb_of_columns
+
+        # Remove the last column of the Strata Log (the one we just added)
+        self.strata_log.remove_strata_column(nb_columns_init - 1)
+
+        # Verify that the number of column decreased
+        self.assertGreater(nb_columns_init, self.strata_log.nb_of_columns)
 
     def test_insert_delete_comment_box(self):
         self.comment_log.insert_new_comment_box(top_depth=10.0, bottom_depth=12.0, text="kind text")
@@ -877,6 +886,34 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrEqual(stack_item2, "top_depth", 14.0)
         self.stacking_pattern_log.remove_stack_item(0)
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
+
+    def test_limit_contact_to_column(self):
+        # Verify that the contacts are limited to the columns of the strata log
+        initial_value = self.strata_log.limit_contact_to_column
+        self.assertEqual(False, initial_value)
+
+        # Disable the option
+        self.strata_log.limit_contact_to_column = True
+
+        # Verify that the value changed
+        self.assertNotEqual(initial_value, self.strata_log.limit_contact_to_column)
+
+        # Reset to initial value
+        self.strata_log.limit_contact_to_column = initial_value
+
+    def test_display_background(self):
+        # Verify that the background of the strata log is displayed
+        initial_value = self.strata_log.limit_contact_to_column
+        self.assertEqual(False, initial_value)
+
+        # Disable the option
+        self.strata_log.limit_contact_to_column = True
+
+        # Verify that the value changed
+        self.assertNotEqual(initial_value, self.strata_log.limit_contact_to_column)
+
+        # Reset to initial value
+        self.strata_log.limit_contact_to_column = initial_value
 
 
 if __name__ == '__main__':
