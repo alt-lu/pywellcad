@@ -2357,3 +2357,69 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+    @property
+    def shading_style(self):
+        """int: The index of the shading style.
+        0: None
+        1: Solid
+        2: Horizontal Hatch
+        3: Vertical Hatch
+        4: Downward Diagonal Hatch
+        5: Upward Diagonal Hatch
+        6: Cross Hatch
+        7: Diagonal Cross Hatch
+        """
+        return self._dispatch.ShadingStyle
+
+    @shading_style.setter
+    def shading_style(self, style):
+        self._dispatch.ShadingStyle = style
+
+    @property
+    def shading_color(self):
+        """int: The color of the shading.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.ShadingColor
+
+    @shading_color.setter
+    def shading_color(self, color):
+        self._dispatch.ShadingColor = color
+
+    @property
+    def opacity(self):
+        """int: The opacity of the shading, between 0 (transparent) and 100 (opaque)."""
+        return self._dispatch.Opacity
+
+    @opacity.setter
+    def opacity(self, value):
+        self._dispatch.Opacity = value
+
+
+    def set_left_right_border(self, left_border, right_border):
+        """Selects the left and right borders of the zone where the shading will be painted.
+
+        Parameters
+        ----------
+        left_border : str or float
+            Can be a constant value, the name of a log or the left border of the shading log (if the log's right border has not already been selected.
+
+
+        right_border : str or float
+            Can be a constant value, the name of a log or the right border of the shading log (if the log's left border has not already been selected).
+        """
+        self._dispatch.SetLeftRightBorder(left_border, right_border)
+
+    @property
+    def get_left_border(self):
+        """str: The name of the left border. It can be the name of a log, the left border of the shading log or a string containing a number."""
+        return self._dispatch.LeftBorder
+
+    @property
+    def get_right_border(self):
+        """str: The name of the right border. It can be the name of a log, the right border of the shading log or a string containing a number."""
+        return self._dispatch.RightBorder
+
