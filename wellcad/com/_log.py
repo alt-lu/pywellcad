@@ -2357,3 +2357,104 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+
+    @property
+    def top_arrow_shape(self):
+        """int: The index of the top arrow shape.
+        0: None
+        1: Flat
+        2: Semi Flat Left
+        3: Semi Flat Right
+        4: Arrow
+        5: Semi Arrow Left
+        6: Semi Arrow Right
+        7: Empty Triangle
+        8: Fill Triangle
+        9: Empty Rounded Triangle
+        10: Fill Rounded Triangle
+        11: Empty Rectangle
+        12: Fill Rectangle
+        13: Empty Circle
+        14: Fill Circle
+        15: Empty Lozenge
+        16: Fill Lozenge
+        """
+        return self._dispatch.TopArrowShape
+
+    @top_arrow_shape.setter
+    def top_arrow_shape(self, shape):
+        self._dispatch.TopArrowShape = shape
+
+    @property
+    def top_arrow_width(self):
+        """int: Top arrow width, between 0 and 1000."""
+        return self._dispatch.TopArrowWidth
+
+    @top_arrow_width.setter
+    def top_arrow_width(self, width):
+        self._dispatch.TopArrowWidth = width
+
+    @property
+    def top_arrow_height(self):
+        """int: Top arrow height, between 0 and 1000."""
+        return self._dispatch.TopArrowHeight
+
+    @top_arrow_height.setter
+    def top_arrow_height(self, height):
+        self._dispatch.TopArrowHeight = height
+
+    @property
+    def bottom_arrow_shape(self):
+        """int: The index of the bottom arrow shape.
+        0: None
+        1: Flat
+        2: Semi Flat Left
+        3: Semi Flat Right
+        4: Arrow
+        5: Semi Arrow Left
+        6: Semi Arrow Right
+        7: Empty Triangle
+        8: Fill Triangle
+        9: Empty Rounded Triangle
+        10: Fill Rounded Triangle
+        11: Empty Rectangle
+        12: Fill Rectangle
+        13: Empty Circle
+        14: Fill Circle
+        15: Empty Lozenge
+        16: Fill Lozenge
+        """
+        return self._dispatch.BottomArrowShape
+
+    @bottom_arrow_shape.setter
+    def bottom_arrow_shape(self, shape):
+        self._dispatch.BottomArrowShape = shape
+
+    @property
+    def bottom_arrow_width(self):
+        """int: Bottom arrow width, between 0 and 1000."""
+        return self._dispatch.BottomArrowWidth
+
+    @bottom_arrow_width.setter
+    def bottom_arrow_width(self, width):
+        self._dispatch.BottomArrowWidth = width
+
+    @property
+    def bottom_arrow_height(self):
+        """int: Bottom arrow height, between 0 and 1000."""
+        return self._dispatch.BottomArrowHeight
+
+    @bottom_arrow_height.setter
+    def bottom_arrow_height(self, height):
+        self._dispatch.BottomArrowHeight = height
+
+    @property
+    def classified(self):
+        """BOOL: Whether or not the log (well, mud or interval) is classified."""
+        return self._dispatch.Classified
+
+    @classified.setter
+    def classified(self, classified):
+        self._dispatch.Classified = classified
+
+

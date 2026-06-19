@@ -879,5 +879,62 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
 
+
+    def test_top_arrow_shape(self):
+        # verify that the property is initially set to 0 (None), then set it to 8 (Full Triangle)
+        self.assertEqual(self.gr_litho_interval_log.top_arrow_shape, 0)
+        self.gr_litho_interval_log.top_arrow_shape = 8
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.gr_litho_interval_log.top_arrow_shape, 0)
+        self.gr_litho_interval_log.top_arrow_shape = 0
+
+    def test_bottom_arrow_shape(self):
+        # verify that the property is initially set to 0 (None), then set it to 8 (Full Triangle)
+        self.assertEqual(self.gr_litho_interval_log.bottom_arrow_shape, 0)
+        self.gr_litho_interval_log.bottom_arrow_shape = 8
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.gr_litho_interval_log.bottom_arrow_shape, 0)
+        self.gr_litho_interval_log.bottom_arrow_shape = 0
+
+    def test_top_arrow_width(self):
+        # verify that the property is initially set to 30, then set it to 60
+        self.assertEqual(self.gr_litho_interval_log.top_arrow_width, 30)
+        self.gr_litho_interval_log.top_arrow_width = 60
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.gr_litho_interval_log.top_arrow_width, 30)
+        self.gr_litho_interval_log.top_arrow_width = 30
+
+    def test_bottom_arrow_width(self):
+        # verify that the property is initially set to 30, then set it to 60
+        self.assertEqual(self.gr_litho_interval_log.bottom_arrow_width, 30)
+        self.gr_litho_interval_log.bottom_arrow_width = 60
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.gr_litho_interval_log.bottom_arrow_width, 30)
+        self.gr_litho_interval_log.bottom_arrow_width = 30
+
+    def test_top_arrow_height(self):
+        # verify that the property is initially set to 30, then set it to 60
+        self.assertEqual(self.gr_litho_interval_log.top_arrow_height, 30)
+        self.gr_litho_interval_log.top_arrow_height = 60
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.gr_litho_interval_log.top_arrow_height, 30)
+        self.gr_litho_interval_log.top_arrow_height = 30
+
+    def test_bottom_arrow_height(self):
+        # verify that the property is initially set to 30, then set it to 60
+        self.assertEqual(self.gr_litho_interval_log.bottom_arrow_height, 30)
+        self.gr_litho_interval_log.bottom_arrow_height = 60
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.gr_litho_interval_log.bottom_arrow_height, 30)
+        self.gr_litho_interval_log.bottom_arrow_height = 30
+
+    def test_classified(self):
+        # verify that the property is initially set to True, then set it to False
+        self.assertEqual(self.gr_litho_interval_log.classified, True)
+        self.gr_litho_interval_log.classified = False
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.gr_litho_interval_log.classified, True)
+        self.gr_litho_interval_log.classified = True
+
 if __name__ == '__main__':
     unittest.main()
