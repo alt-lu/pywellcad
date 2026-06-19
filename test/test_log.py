@@ -897,14 +897,14 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
 
     def test_attach_classifier_dictionary(self):
         # Copy the original well log.
-        copied_gr_log = self.litho_borehole.add_log(self.gr_log)
+        copied_gr_log = self.borehole.add_log(self.gr_log)
 
         # Add a classifier dictionnary to this well log.
-        new_dict = self.litho_log.attach_classifier_dictionary(self.classifier_dict)
+        new_dict = copied_gr_log.attach_classifier_dictionary(self.classifier_dict)
         self.assertIsInstance(new_dict, wellcad.com.ClassifierDictionary)
 
         # Delete the copied well log.
-        self.litho_borehole.remove_log(copied_gr_log.name)
+        self.borehole.remove_log(copied_gr_log.name)
 
 
 if __name__ == '__main__':
