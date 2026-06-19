@@ -879,5 +879,142 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
 
+
+    def test_scale(self):
+        # disable master scale
+        self.depth_log.used_as_depth_scale = False
+        # select date/time scale
+        self.depth_log.log_unit = "Date/Time"
+
+        # verify that the scale is initially set to 1:20, then set it to  1:30
+        self.assertEqual(self.depth_log.scale, 20)
+        self.depth_log.scale = 30
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.scale, 20)
+        self.depth_log.scale = 20
+
+        # verify that the paper scale unit is set to 1 (foot), then set it to 0 (meter)
+        self.assertEqual(self.depth_log.paper_scale_unit, 0)
+        self.depth_log.paper_scale_unit = 1
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.paper_scale_unit, 0)
+        self.depth_log.paper_scale_unit = 0
+
+        # verify that the data scale unit when using Date/Time is set to 8 (seconds), then set it to 7 (minutes)
+        self.assertEqual(self.depth_log.data_scale_unit, 8)
+        self.depth_log.data_scale_unit = 7
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.data_scale_unit, 8)
+        self.depth_log.data_scale_unit = 8
+
+        # enable master scale
+        self.depth_log.used_as_depth_scale = False
+        # select depth scale (meters)
+        self.depth_log.log_unit = "meters"
+
+    def test_date_time_scale(self):
+        # select date/time scale
+        self.depth_log.log_unit = "Date/Time"
+
+        # verify that the date format is initially set to 1 (DD/MM/YY), then set it to 4 (DD/MMM/YYYY)
+        self.assertEqual(self.depth_log.date_format, 1)
+        self.depth_log.date_format = 4
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.date_format, 1)
+        self.depth_log.date_format = 1
+
+        # verify that the date frequence (date stamp) is initially set to 0, then set it to 1
+        self.assertEqual(self.depth_log.date_stamp, 0)
+        self.depth_log.date_stamp = 1
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.date_stamp, 0)
+        self.depth_log.date_stamp = 0
+
+        # verify that the date format is initially set to 1 (HH:MM:SS), then set it to 4 (MM:SS.0)
+        self.assertEqual(self.depth_log.time_format, 1)
+        self.depth_log.time_format = 4
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.time_format, 1)
+        self.depth_log.time_format = 1
+
+        # verify that the GMTOffset is initially set to 0, then set it to 10
+        self.assertEqual(self.depth_log.gmt_offset, 0)
+        self.depth_log.gmt_offset = 10
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.gmt_offset, 0)
+        self.depth_log.gmt_offset = 0
+
+        # verify that the starting time is set to 0 second (01/01/1970 at 00:00:00), then set it to 90130 (02/01/1970 at 01:02:10)
+        self.assertEqual(self.depth_log.time_zero, 0)
+        self.depth_log.time_zero = 90130
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.time_zero, 0)
+        self.depth_log.time_zero = 0
+
+        # verify that the horizontal text alignment is initially set to 1 (center), then set it to 0 (left)
+        self.assertEqual(self.depth_log.horz_text_align, 1)
+        self.depth_log.horz_text_align = 0
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.horz_text_align, 1)
+        self.depth_log.horz_text_align = 1
+
+        # verify that the text orientation is initially set to 0 (normal), then set it to 1 (left)
+        self.assertEqual(self.depth_log.text_orientation, 0)
+        self.depth_log.text_orientation = 1
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.text_orientation, 0)
+        self.depth_log.text_orientation = 0
+
+        # select depth scale (meters)
+        self.depth_log.log_unit = "meters"
+
+    def test_indicators_per_spacing(self):
+        # verify that the property is initially set to 1, then set it to 2
+        self.assertEqual(self.depth_log.indicators_per_spacing, 1)
+        self.depth_log.indicators_per_spacing = 2
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.indicators_per_spacing, 1)
+        self.depth_log.indicators_per_spacing = 1
+
+    def test_ticks_position(self):
+        # verify that the property is initially set to 3 (Both), then set it to 2 (Right)
+        self.assertEqual(self.depth_log.ticks_position, 3)
+        self.depth_log.ticks_position = 2
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.ticks_position, 3)
+        self.depth_log.ticks_position = 3
+
+    def test_min_grid_number(self):
+        # verify that the property is initially set to 2, then set it to 3
+        self.assertEqual(self.depth_log.min_grid_number, 2)
+        self.depth_log.min_grid_number = 3
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.min_grid_number, 2)
+        self.depth_log.min_grid_number = 2
+
+    def test_maj_grid_number(self):
+        # verify that the property is initially set to 1, then set it to 2 (Right)
+        self.assertEqual(self.depth_log.maj_grid_number, 1)
+        self.depth_log.maj_grid_number = 2
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.maj_grid_number, 1)
+        self.depth_log.maj_grid_number = 1
+
+    def test_min_grid_tick_style(self):
+        # verify that the property is initially set to 0 (small line), then set it to 2 (small triangle)
+        self.assertEqual(self.depth_log.min_grid_tick_style, 0)
+        self.depth_log.min_grid_tick_style = 2
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.min_grid_tick_style, 0)
+        self.depth_log.min_grid_tick_style = 0
+
+    def test_maj_grid_tick_style(self):
+        # verify that the property is initially set to 0 (small line), then set it to 2 (small triangle)
+        self.assertEqual(self.depth_log.maj_grid_tick_style, 0)
+        self.depth_log.maj_grid_tick_style = 2
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.maj_grid_tick_style, 0)
+        self.depth_log.maj_grid_tick_style = 0
+
 if __name__ == '__main__':
     unittest.main()
