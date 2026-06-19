@@ -879,5 +879,136 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
 
+    def test_drawing_mode(self):
+        # verify that the property is initially set to 1 (average slice), then set it to 0 (slices superimposed)
+        self.assertEqual(self.cross_section_log.drawing_mode, 1)
+        self.cross_section_log.drawing_mode = 0
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.drawing_mode, 1)
+        self.cross_section_log.drawing_mode = 1
+
+    def test_display_internal_circle(self):
+        # verify that the property is initially set to True, then set it to False
+        self.assertEqual(self.cross_section_log.display_internal_circle, True)
+        self.cross_section_log.display_internal_circle = False
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.display_internal_circle, True)
+        self.cross_section_log.display_internal_circle = True
+
+    def test_internal_radius(self):
+        # verify that the property is initially set to 4.37, then set it to 5
+        radius = self.cross_section_log.internal_radius
+        self.assertEqual(self.cross_section_log.internal_radius, radius)
+        self.cross_section_log.internal_radius = 5
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.internal_radius, radius)
+        self.cross_section_log.internal_radius = radius
+
+    def test_internal_shading_position(self):
+        # verify that the property is initially set to 2 (Outside), then set it to 3 (Both)
+        self.assertEqual(self.cross_section_log.internal_shading_position, 2)
+        self.cross_section_log.internal_shading_position = 3
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.internal_shading_position, 2)
+        self.cross_section_log.internal_shading_position = 2
+
+    def test_internal_shading_color(self):
+        # verify that the property is initially set to pink, then set it to red
+        color = 9020344
+        self.assertEqual(self.cross_section_log.internal_shading_color, color)
+        self.cross_section_log.internal_shading_color = 0x0000ff
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.internal_shading_color, color)
+        self.cross_section_log.internal_shading_color = color
+
+    def test_internal_shading_style(self):
+        # verify that the property is initially 1 (Solid), then set it to 3 (Vertical Hatch)
+        self.assertEqual(self.cross_section_log.internal_shading_style, 1)
+        self.cross_section_log.internal_shading_style = 3
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.internal_shading_style, 1)
+        self.cross_section_log.internal_shading_style = 1
+
+    def test_display_external_circle(self):
+        # verify that the property is initially set to True, then set it to False
+        self.assertEqual(self.cross_section_log.display_external_circle, True)
+        self.cross_section_log.display_external_circle = False
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.display_external_circle, True)
+        self.cross_section_log.display_external_circle = True
+
+    def test_external_radius(self):
+        # verify that the property is initially set to 8.75, then set it to 10
+        self.assertEqual(self.cross_section_log.external_radius, 8.75)
+        self.cross_section_log.external_radius = 10
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.external_radius, 8.75)
+        self.cross_section_log.external_radius = 8.75
+
+    def test_external_shading_position(self):
+        # verify that the property is initially set to 1 (Inside), then set it to 3 (Both)
+        self.assertEqual(self.cross_section_log.external_shading_position, 1)
+        self.cross_section_log.external_shading_position = 3
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.external_shading_position, 1)
+        self.cross_section_log.external_shading_position = 1
+
+    def test_external_shading_color(self):
+        # verify that the property is initially set to grey, then set it to green
+        color = 8355711
+        self.assertEqual(self.cross_section_log.external_shading_color, color)
+        self.cross_section_log.external_shading_color = 0x00ff00
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.external_shading_color, color)
+        self.cross_section_log.external_shading_color = color
+
+    def test_external_shading_style(self):
+        # verify that the property is initially 7 (Diagonal Cross Hatch), then set it to 2 (Horizontal Hatch)
+        self.assertEqual(self.cross_section_log.external_shading_style, 7)
+        self.cross_section_log.external_shading_style = 3
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.external_shading_style, 7)
+        self.cross_section_log.external_shading_style = 7
+
+    def test_display_azimuth(self):
+        # verify that the property is initially set to True, then set it to False
+        self.assertEqual(self.cross_section_log.display_azimuth, True)
+        self.cross_section_log.display_azimuth = False
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.display_azimuth, True)
+        self.cross_section_log.display_azimuth = True
+
+    def test_azimuth_spacing(self):
+        # verify that the property is initially set to 30, then set it to 20
+        self.assertEqual(self.cross_section_log.azimuth_spacing, 30)
+        self.cross_section_log.azimuth_spacing = 20
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.azimuth_spacing, 30)
+        self.cross_section_log.azimuth_spacing = 30
+
+    def test_display_caliper(self):
+        # verify that the property is initially set to False, then set it to True
+        self.assertEqual(self.cross_section_log.display_caliper, False)
+        self.cross_section_log.display_caliper = True
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.display_caliper, False)
+        self.cross_section_log.display_caliper = False
+
+    def test_caliper_spacing(self):
+        # verify that the property is initially set to 2, then set it to 3
+        self.assertEqual(self.cross_section_log.caliper_spacing, 2)
+        self.cross_section_log.caliper_spacing = 3
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.caliper_spacing, 2)
+        self.cross_section_log.caliper_spacing = 2
+
+    def test_display_labels(self):
+        # verify that the property is initially set to True, then set it to False
+        self.assertEqual(self.cross_section_log.display_labels, True)
+        self.cross_section_log.display_labels = False
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.cross_section_log.display_labels, True)
+        self.cross_section_log.display_labels = True
+
 if __name__ == '__main__':
     unittest.main()
