@@ -35,6 +35,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.volume_analysis_borehole = cls.app.open_borehole(str(cls.sample_path / "Volume Analysis.wcl"))
         cls.formula_log = cls.volume_analysis_borehole.get_log("GR percent")
         cls.analysis_log = cls.volume_analysis_borehole.get_log("Volume")
+        cls.shading_log = cls.volume_analysis_borehole.get_log("#1")
 
         cls.fmi_borehole = cls.app.open_borehole(str(cls.sample_path / "FMI and Net Sand Estimation.wcl"))
         cls.structure_log = cls.fmi_borehole.get_log("Structure")
@@ -878,6 +879,46 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item(0)
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
+
+
+    def test_shading_style(self):
+        # verify that the property is initially set to 1 (Solid), then set it to 4 (Downward Diagonal Batch)
+        self.assertEqual(self.shading_log.shading_style, 1)
+        self.shading_log.shading_style = 4
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.shading_log.shading_style, 1)
+        self.shading_log.shading_style = 1
+
+    def test_shading_color(self):
+        # verify that the property is initially set to Lime (green), then set it to red
+        original_color = 65280
+        self.assertEqual(self.shading_log.shading_color, original_color)
+        self.shading_log.shading_color = 0x0000ff
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.shading_log.shading_color, original_color)
+        self.shading_log.shading_color = original_color
+
+    def test_opacity(self):
+        # verify that the property is initially set to 100%, then set it to 60%
+        self.assertEqual(self.shading_log.opacity, 100)
+        self.shading_log.opacity = 60
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.shading_log.opacity, 100)
+        self.shading_log.opacity = 100
+
+
+    def test_left_right_border(self):
+        # verify that the left border is the "RHOB" and that the right border is the "NPHI" log
+        self.assertEqual(self.shading_log.get_left_border, "RHOB")
+        self.assertEqual(self.shading_log.get_right_border, "NPHI")
+
+        # change the left border to "- log border -" and the right border to "RHOB"
+        self.shading_log.set_left_right_border("-log border-", "RHOB")
+
+        # verify that the properties has been changed and turn it back to the original value
+        self.assertNotEqual(self.shading_log.get_left_border, "RHOB")
+        self.assertNotEqual(self.shading_log.get_right_border, "NPHI")
+        self.shading_log.set_left_right_border("RHOB", "NPHI")
 
 if __name__ == '__main__':
     unittest.main()
