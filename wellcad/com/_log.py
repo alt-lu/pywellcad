@@ -2357,3 +2357,50 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+
+    @property
+    def shading_color_up(self):
+        """int: The color of the shading used for the upper amplitudes.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.ShadingColorUp
+
+    @shading_color_up.setter
+    def shading_color_up(self, color):
+        self._dispatch.ShadingColorUp = color
+
+    @property
+    def shading_color_down(self):
+        """int: The color of the shading used for the lower amplitudes.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.ShadingColorDown
+
+    @shading_color_down.setter
+    def shading_color_down(self, color):
+        self._dispatch.ShadingColorDown = color
+
+    @property
+    def zero_line(self):
+        """float: The amplitude corresponding to the zero line."""
+        return self._dispatch.ZeroLine
+
+    @zero_line.setter
+    def zero_line(self, value):
+        self._dispatch.ZeroLine = value
+
+    @property
+    def scale_factor(self):
+        """float: The scale factor of the amplitude."""
+        return self._dispatch.ScaleFactor
+
+    @scale_factor.setter
+    def scale_factor(self, value):
+        self._dispatch.ScaleFactor = value
+
