@@ -39,6 +39,33 @@ class TestLithoDictionary(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertIsNone(self.dict.litho_pattern(self.dict.nb_of_patterns))
         self.assertIsNone(self.dict.litho_pattern('code_not_present'))
 
+    def test_add_pattern(self):
+        # get the initial number of patterns in the dictionary
+        nb_init = self.dict.nb_of_patterns
+
+        # add a new pattern to the dictionary
+        new_pattern = self.dict.add_pattern()
+        # verify that it exists, that it's a LithoPattern object and that it has been added to the dictionary
+        self.assertIsNotNone(new_pattern)
+        self.assertIsInstance(new_pattern, wellcad.com.LithoPattern)
+        self.assertGreater(self.dict.nb_of_patterns, nb_init)
+
+        # remove it from the dictionary
+        self.dict.remove_pattern(new_pattern.code)
+
+    def test_remove_pattern(self):
+        # add a new pattern
+        new_pattern = self.dict.add_pattern()
+
+        # get the initial number of pattern
+        nb_init = self.dict.nb_of_patterns
+        # remove the newly created pattern
+        removed = self.dict.remove_pattern(new_pattern.code)
+
+        # verify that it has been removed, and that the size of the dictionary decreased
+        self.assertEqual(removed, True)
+        self.assertGreater(nb_init, self.dict.nb_of_patterns)
+
 
 if __name__ == '__main__':
     unittest.main()
