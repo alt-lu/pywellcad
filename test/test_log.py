@@ -878,8 +878,6 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item(0)
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
-
-
     def test_scale(self):
         # disable master scale
         self.depth_log.used_as_depth_scale = False
@@ -894,11 +892,11 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.depth_log.scale = 20
 
         # verify that the paper scale unit is set to 1 (foot), then set it to 0 (meter)
-        self.assertEqual(self.depth_log.paper_scale_unit, 0)
-        self.depth_log.paper_scale_unit = 1
-        # verify that the property has been changed and turn it back to the original value
-        self.assertNotEqual(self.depth_log.paper_scale_unit, 0)
+        self.assertEqual(self.depth_log.paper_scale_unit, 1)
         self.depth_log.paper_scale_unit = 0
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.depth_log.paper_scale_unit, 1)
+        self.depth_log.paper_scale_unit = 1
 
         # verify that the data scale unit when using Date/Time is set to 8 (seconds), then set it to 7 (minutes)
         self.assertEqual(self.depth_log.data_scale_unit, 8)

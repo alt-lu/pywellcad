@@ -2564,3 +2564,32 @@ class Log(DispatchWrapper):
     def time_zero(self, enable):
         self._dispatch.TimeZero = enable
 
+    @property
+    def horz_text_align(self):
+        """
+        int: The index corresponding to the horizontal text alignment.
+        0 = Left
+        1 = Center
+        2 = Right
+        """
+        return self._dispatch.HorzTextAlignment
+
+    @horz_text_align.setter
+    def horz_text_align(self, align_index):
+        self._dispatch.HorzTextAlignment = align_index
+
+    @property
+    def text_orientation(self):
+        """
+        int: The index corresponding to the text orientation.
+        0 = Normal
+        1 = Left
+        2 = Right
+        3 = Reverse (only for Comment Log)
+        """
+        return self._dispatch.TextOrientation
+
+    @text_orientation.setter
+    def text_orientation(self, orientation_index):
+        self._dispatch.TextOrientation = orientation_index
+
