@@ -2357,3 +2357,45 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+    @property
+    def retrogradation_color(self):
+        """int: The color of the retrogradation patterns.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.RetrogradationColor
+
+    @retrogradation_color.setter
+    def retrogradation_color(self, color):
+        self._dispatch.RetrogradationColor = color
+
+    @property
+    def progradation_color(self):
+        """int: The color of the progradation patterns.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.ProgradationColor
+
+    @progradation_color.setter
+    def progradation_color(self, color):
+        self._dispatch.ProgradationColor = color
+
+    @property
+    def aggradation_color(self):
+        """int: The color of the aggradation patterns.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.AggradationColor
+
+    @aggradation_color.setter
+    def aggradation_color(self, color):
+        self._dispatch.AggradationColor = color
+

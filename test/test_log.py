@@ -879,5 +879,32 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
 
+    def test_retrogradation_color(self):
+        # verify that the property is initially set to red, then set it to green
+        color = 16711680
+        self.assertEqual(self.stacking_pattern_log.retrogradation_color, color)
+        self.stacking_pattern_log.retrogradation_color = 0x00ff00
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.stacking_pattern_log.retrogradation_color, color)
+        self.stacking_pattern_log.retrogradation_color = color
+
+    def test_progradation_color(self):
+        # verify that the property is initially set to blue, then set it to green
+        color = 255
+        self.assertEqual(self.stacking_pattern_log.progradation_color, color)
+        self.stacking_pattern_log.progradation_color = 0x00ff00
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.stacking_pattern_log.progradation_color, color)
+        self.stacking_pattern_log.progradation_color = color
+
+    def test_aggradation_color(self):
+        # verify that the property is initially set to yellow, then set it to green
+        color = 65535
+        self.assertEqual(self.stacking_pattern_log.aggradation_color, color)
+        self.stacking_pattern_log.aggradation_color = 0x00ff00
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.stacking_pattern_log.aggradation_color, color)
+        self.stacking_pattern_log.aggradation_color = color
+
 if __name__ == '__main__':
     unittest.main()
