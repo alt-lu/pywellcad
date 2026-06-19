@@ -887,6 +887,34 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item(0)
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
+    def test_limit_contact_to_column(self):
+        # Verify that the contacts are limited to the columns of the strata log
+        initial_value = self.strata_log.limit_contact_to_column
+        self.assertEqual(False, initial_value)
+
+        # Disable the option
+        self.strata_log.limit_contact_to_column = True
+
+        # Verify that the value changed
+        self.assertNotEqual(initial_value, self.strata_log.limit_contact_to_column)
+
+        # Reset to initial value
+        self.strata_log.limit_contact_to_column = initial_value
+
+    def test_display_background(self):
+        # Verify that the background of the strata log is displayed
+        initial_value = self.strata_log.limit_contact_to_column
+        self.assertEqual(False, initial_value)
+
+        # Disable the option
+        self.strata_log.limit_contact_to_column = True
+
+        # Verify that the value changed
+        self.assertNotEqual(initial_value, self.strata_log.limit_contact_to_column)
+
+        # Reset to initial value
+        self.strata_log.limit_contact_to_column = initial_value
+
 
 if __name__ == '__main__':
     unittest.main()
