@@ -2357,3 +2357,111 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+    @property
+    def caliper_from_log(self):
+        """BOOL: Specifies whether we extract the caliper values from the caliper log or not (then we use the fixed value)."""
+        return self._dispatch.CaliperFromLog
+
+    @caliper_from_log.setter
+    def caliper_from_log(self, enable):
+        self._dispatch.CaliperFromLog = enable
+
+    @property
+    def depth_of_img_from_log(self):
+        """BOOL: Specifies whether we extract the DoI values from the DoI log or not (then we use the fixed value)."""
+        return self._dispatch.DepthOfImgFromLog
+
+    @depth_of_img_from_log.setter
+    def depth_of_img_from_log(self, enable):
+        self._dispatch.DepthOfImgFromLog = enable
+
+    @property
+    def caliper_value(self):
+        """float: The caliper fixed value."""
+        return self._dispatch.CaliperValue
+
+    @caliper_value.setter
+    def caliper_value(self, value):
+        self._dispatch.CaliperValue = value
+
+    @property
+    def depth_of_img_value(self):
+        """float: The depth of image fixed value."""
+        return self._dispatch.DepthOfImgValue
+
+    @depth_of_img_value.setter
+    def depth_of_img_value(self, value):
+        self._dispatch.DepthOfImgValue = value
+
+    @property
+    def slabcore_azimuth(self):
+        """float: The slabcore azimuth of the structure log."""
+        return self._dispatch.SlabCoreAzimuth
+
+    @slabcore_azimuth.setter
+    def slabcore_azimuth(self, value):
+        self._dispatch.SlabCoreAzimuth = value
+
+    @property
+    def slabcore_style(self):
+        """int: The index of the slabcore style.
+        0: Full Size
+        1: Fixed Size
+        """
+        return self._dispatch.SlabCoreStyle
+
+    @slabcore_style.setter
+    def slabcore_style(self, style_index):
+        self._dispatch.SlabCoreStyle = style_index
+
+    @property
+    def display_full_partial_picks(self):
+        """BOOL: Specifies whether or not the sinusoids are entirely drawn when dealing with partial picks (with a dotted line for parts not included in the offsets of the fracture)."""
+        return self._dispatch.DisplayFullPartialPicks
+
+    @display_full_partial_picks.setter
+    def display_full_partial_picks(self, display):
+        self._dispatch.DisplayFullPartialPicks = display
+
+    @property
+    def display_nodes(self):
+        """BOOL: Specifies whether the nodes of a structure log are displayed or not."""
+        return self._dispatch.DisplayNodes
+
+    @display_nodes.setter
+    def display_nodes(self, display):
+        self._dispatch.DisplayNodes = display
+
+    @property
+    def display_opening(self):
+        """BOOL: Specifies for a breakout log using a symbol style whether the opening angles are displayed or not."""
+        return self._dispatch.DisplayOpening
+
+    @display_opening.setter
+    def display_opening(self, display):
+        self._dispatch.DisplayOpening = display
+
+    def set_caliper_log(self, caliper_log):
+        """caliper_log: The index or the title of the caliper log"""
+        self._dispatch.SetCaliperLog(caliper_log)
+
+    def set_depth_of_img_log(self, depth_of_img_log):
+        """depth_of_img_log: The index or the title of the depth of image log"""
+        self._dispatch.SetDepthOfImgLog(depth_of_img_log)
+        return self._dispatch.MajGridTickStyle
+
+    def remove_attribute(self, name):
+        """Remove the chosen attribute from a Breakout/Lineation/Structure Log.
+
+        Parameters
+        ----------
+        name : str
+            Name of the attribute to delete.
+        """
+        self._dispatch.RemoveAttribute(name)
+
+    @property
+    def nb_of_attributes(self):
+        """int: The number of attributes associated to the Structure/Breakout/Lineation Log."""
+        return self._dispatch.NbOfAttributes
+
