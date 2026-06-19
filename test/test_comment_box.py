@@ -30,6 +30,14 @@ class TestCommentBox(unittest.TestCase, ExtraAsserts):
     def test_get_bottom_depth(self):
         self.assertEqual(self.box.bottom_depth, self.bottom_depth)
 
+    def test_box_color(self):
+        # verify that the color is initially undefined, then set it to blue
+        self.assertEqual(self.box.color, -1)
+        self.box.color = 0x0000ff
+        # verify that the property has been changed and turn back to the original color
+        self.assertNotEqual(self.box.color, -1)
+        self.box.color = -1
+
 
 if __name__ == '__main__':
     unittest.main()
