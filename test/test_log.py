@@ -878,6 +878,104 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item(0)
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
+    def test_grid_width(self):
+        # verify the initial widths of the vertical grids, then verify that they can be changed
+        self.assertAttrEqual(self.gr_log, "maj_grid_width", 1)
+        self.assertAttrChange(self.gr_log, "maj_grid_width", 4)
+        self.assertAttrEqual(self.gr_log, "min_grid_width", 1)
+        self.assertAttrChange(self.gr_log, "min_grid_width", 2)
+
+    def test_grid_color(self):
+        # verify the initial colors of the vertical grids, then verify that they can be changed
+        # reset the boolean since the grids are activated by modifying their color
+
+        # major grid
+        is_enabled_maj = self.gr_log.maj_grid_enable
+        self.assertAttrEqual(self.gr_log, "maj_grid_color", 0)
+        self.assertAttrChange(self.gr_log, "maj_grid_color", 0x0000ff)
+        self.gr_log.maj_grid_enable = is_enabled_maj
+        # minor grid
+        is_enabled_min = self.gr_log.min_grid_enable
+        self.assertAttrEqual(self.gr_log, "min_grid_color", 0)
+        self.assertAttrChange(self.gr_log, "min_grid_color", 0x0000ff)
+        self.gr_log.min_grid_enable = is_enabled_min
+
+    def test_grid_style(self):
+        # verify the initial styles of the vertical grids, then verify that they can be changed
+        self.assertAttrEqual(self.gr_log, "maj_grid_style", 0)
+        self.assertAttrChange(self.gr_log, "maj_grid_style", 1)
+        self.assertAttrEqual(self.gr_log, "min_grid_style", 2)
+        self.assertAttrChange(self.gr_log, "min_grid_style", 3)
+
+    def test_overwrite_depth_grid(self):
+        # verify that the property is initially enabled, then disable it
+        self.assertEqual(self.gr_log.overwrite_depth_grids, True)
+        self.gr_log.overwrite_depth_grids = False
+        # verify that the property has been changed and turn back to the original value
+        self.assertNotEqual(self.gr_log.overwrite_depth_grids, True)
+        self.gr_log.overwrite_depth_grids = True
+
+    def test_overflow_type(self):
+        # verify that the property is initially set to 2, then set it to 1
+        self.assertEqual(self.gr_log.overflow_type, 2)
+        self.gr_log.overflow_type = 1
+        # verify that the property has been changed and turn back to the original value
+        self.assertNotEqual(self.gr_log.overflow_type, 2)
+        self.gr_log.overflow_type = 2
+
+    def test_decades(self):
+        # verify that the property is initially set to 1, then set it to 3
+        self.assertEqual(self.gr_log.decades, 1)
+        self.gr_log.decades = 3
+        # verify that the property has been changed and turn back to the original value
+        self.assertNotEqual(self.gr_log.decades, 1)
+        self.gr_log.decades = 1
+
+    def test_symbol_style(self):
+        # verify that the property is initially set to 0 (None), then set it to 3 (Square)
+        self.assertEqual(self.sonic_e1_mud_log.symbol_style, 0)
+        self.sonic_e1_mud_log.symbol_style = 3
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.sonic_e1_mud_log.symbol_style, 0)
+        self.sonic_e1_mud_log.symbol_style = 0
+
+    def test_symbol_color(self):
+        # verify that the property is initially set to blue, then set it to red
+        original_value = 16711680
+        self.assertEqual(self.sonic_e1_mud_log.symbol_color, original_value)
+        self.sonic_e1_mud_log.symbol_color = 0x0000ff
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.sonic_e1_mud_log.symbol_color, original_value)
+        self.sonic_e1_mud_log.symbol_color = original_value
+
+    def test_symbol_size(self):
+        # verify that the property is initially set to 20 (2.0mm), then set it to  40 (4.0mm)
+        self.assertEqual(self.sonic_e1_mud_log.symbol_size, 20)
+        self.sonic_e1_mud_log.symbol_size = 40
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.sonic_e1_mud_log.symbol_size, 20)
+        self.sonic_e1_mud_log.symbol_size = 20
+
+    def test_attach_depth_to(self):
+        # verify that the property is initially set to "Middle of Bar" (2), then set it to "Top of Bar" (1)
+        self.assertEqual(self.sonic_e1_mud_log.attach_depth_to, 2)
+        self.sonic_e1_mud_log.attach_depth_to = 1
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.sonic_e1_mud_log.attach_depth_to, 2)
+        self.sonic_e1_mud_log.attach_depth_to = 2
+
+    def test_digits(self):
+        # verify that the property is initially set to 2, then set it to  4
+        self.assertEqual(self.sonic_e1_mud_log.digits, 2)
+        self.sonic_e1_mud_log.digits = 4
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.sonic_e1_mud_log.digits, 2)
+        self.sonic_e1_mud_log.digits = 2
+
+
+    def test_attach_palette(self):
+        self.gr_log.attach_palette("Palette1")
+
 
 if __name__ == '__main__':
     unittest.main()

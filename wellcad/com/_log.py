@@ -2357,3 +2357,198 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+    @property
+    def maj_grid_color(self):
+        """int: The background color of the major vertical grid.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.MajGridColor
+
+    @maj_grid_color.setter
+    def maj_grid_color(self, color):
+        self._dispatch.MajGridColor = color
+
+    @property
+    def min_grid_color(self):
+        """int: The background color of the minor vertical grids.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.MinGridColor
+
+    @min_grid_color.setter
+    def min_grid_color(self, color):
+        self._dispatch.MinGridColor = color
+
+    @property
+    def maj_grid_width(self):
+        """int: The width of the major vertical grid lines (in mm/10)."""
+        return self._dispatch.MajGridWidth
+
+    @maj_grid_width.setter
+    def maj_grid_width(self, width):
+        self._dispatch.MajGridWidth = width
+
+    @property
+    def min_grid_width(self):
+        """int: The width of the minor vertical grid lines (in mm/10)."""
+        return self._dispatch.MinGridWidth
+
+    @min_grid_width.setter
+    def min_grid_width(self, width):
+        self._dispatch.MinGridWidth = width
+
+    @property
+    def maj_grid_style(self):
+        """int: The pen style of the major vertical grid lines.
+
+        Styles are specified as an integer:
+
+        * Solid = 0
+        * Dashed = 1
+        * Dotted = 2
+        * Dash-Dot = 3
+        * Dash-dot-dot = 4
+        """
+        return self._dispatch.MajGridStyle
+
+    @maj_grid_style.setter
+    def maj_grid_style(self, style):
+        self._dispatch.MajGridStyle = style
+
+    @property
+    def min_grid_style(self):
+        """int: The pen style of the minor vertical grid lines.
+
+        Styles are specified as an integer:
+
+        * Solid = 0
+        * Dashed = 1
+        * Dotted = 2
+        * Dash-Dot = 3
+        * Dash-dot-dot = 4
+        """
+        return self._dispatch.MinGridStyle
+
+    @min_grid_style.setter
+    def min_grid_style(self, style):
+        self._dispatch.MinGridStyle = style
+
+    @property
+    def overwrite_depth_grids(self):
+        """bool: Whether the depth grids shall be overwritten or not."""
+        return self._dispatch.OverwriteDepthGrids
+
+    @overwrite_depth_grids.setter
+    def overwrite_depth_grids(self, overwrite):
+        self._dispatch.OverwriteDepthGrids = overwrite
+
+    @property
+    def overflow_type(self):
+        """int: The type of overflow."""
+        return self._dispatch.OverflowType
+
+    @overflow_type.setter
+    def overflow_type(self, type):
+        self._dispatch.OverflowType = type
+
+    @property
+    def decades(self):
+        """int: The number of decades for the logarithmic scale."""
+        return self._dispatch.Decades
+
+    @decades.setter
+    def decades(self, dec):
+        self._dispatch.Decades = dec
+
+
+    @property
+    def shading_type(self):
+        """int: The type of shading."""
+        return self._dispatch.ShadingType
+
+    @shading_type.setter
+    def shading_type(self, type):
+        self._dispatch.ShadingType = type
+
+    @property
+    def symbol_style(self):
+        """int: The index of the symbol style.
+        0: Circle
+        1: Disk
+        2: Square
+        3: Box
+        4: Triangle
+        5: Pyramid
+        6: Lozenge
+        7: Diamond
+        8: Cross
+        9: Star
+        """
+        return self._dispatch.SymbolStyle
+
+    @symbol_style.setter
+    def symbol_style(self, style):
+        self._dispatch.SymbolStyle = style
+
+    @property
+    def symbol_color(self):
+        """int: The color of the symbols.
+
+        Colours are specified as a 32 bit integer with an ``xBGR`` structure.
+        Each of the blue (B), green (G) and red (R) components are 8 bit
+        values.
+        """
+        return self._dispatch.SymbolColor
+
+    @symbol_color.setter
+    def symbol_color(self, color):
+        self._dispatch.SymbolColor = color
+
+    @property
+    def symbol_size(self):
+        """int: The size of the symbol (in mm/10)."""
+        return self._dispatch.SymbolSize
+
+    @symbol_size.setter
+    def symbol_size(self, size):
+        self._dispatch.SymbolSize = size
+
+    @property
+    def attach_depth_to(self):
+        """int: The index indicating if the depth is attached to the top, the middle or the bottom of the bar.
+        1: Attach to top
+        2: Attach to middle
+        3: Attach to bottom
+        """
+        return self._dispatch.AttachDepthTo
+
+    @attach_depth_to.setter
+    def attach_depth_to(self, size):
+        self._dispatch.AttachDepthTo = size
+
+    @property
+    def digits(self):
+        """int: The number of displayed digits."""
+        return self._dispatch.Digits
+
+    @digits.setter
+    def digits(self, nb):
+        self._dispatch.Digits = nb
+
+    def attach_palette(self, palette_name):
+        """Attaches an existing palette to the log.
+
+        Parameters
+        ----------
+        palette_name : str
+            path and name of the palette file to attach
+        """
+        self._dispatch.AttachPalette(palette_name)
+
+
