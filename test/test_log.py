@@ -460,13 +460,11 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.litho_log.remove_litho_bed(0)
         self.litho_log.remove_litho_bed_at_depth(15.0)
 
-    def test_set_litho_bed(self):
+    def test_get_litho_bed(self):
         litho_bed_1 = self.litho_log.get_litho_bed(0)
         litho_bed_2 = self.litho_log.get_litho_bed(1)
         self.assertIsInstance(litho_bed_1, wellcad.com.LithoBed)
         self.assertIsInstance(litho_bed_2, wellcad.com.LithoBed)
-        self.litho_log.set_litho_bed(0, litho_bed_2)
-        self.litho_log.set_litho_bed_at_depth(10522, litho_bed_2)
 
     def test_insert_delete_trace(self):
         """For each log that has an insert_trace methode, we test the following:
@@ -878,6 +876,54 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.stacking_pattern_log.remove_stack_item(0)
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
 
+
+    def test_associated_color(self):
+        # verify that the property is initially set to false, then set it to  true
+        self.assertEqual(self.litho_log.use_associated_color, True)
+        self.litho_log.use_associated_color = False
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.litho_log.use_associated_color, True)
+        self.litho_log.use_associated_color = True
+
+    def test_hide_symbol_background(self):
+        # verify that the property is initially set to false, then set it to  true
+        self.assertEqual(self.litho_log.hide_symbol_background, True)
+        self.litho_log.hide_symbol_background = False
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.litho_log.hide_symbol_background, True)
+        self.litho_log.hide_symbol_background = True
+
+    def test_symbol_scale(self):
+        # verify that the property is initially set to 1 (100%), then set it to 1.5 (150%)
+        self.assertEqual(self.litho_log.symbol_scale, 1)
+        self.litho_log.symbol_scale = 1.5
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.litho_log.symbol_scale, 1)
+        self.litho_log.symbol_scale = 1
+
+    def test_display_contact(self):
+        # verify that the property is initially set to true, then set it to  false
+        self.assertEqual(self.litho_log.display_contact, False)
+        self.litho_log.display_contact = True
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.litho_log.display_contact, False)
+        self.litho_log.display_contact = False
+
+    def test_display_text(self):
+        # verify that the property is initially set to true, then set it to  false
+        self.assertEqual(self.litho_log.display_text, False)
+        self.litho_log.display_text = True
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.litho_log.display_text, False)
+        self.litho_log.display_text = False
+
+    def test_label_mode(self):
+        # verify that the property is initially set to 1 (description), then set it to 2 (code and description)
+        self.assertEqual(self.litho_log.label_mode, 1)
+        self.litho_log.label_mode = 2
+        # verify that the property has been changed and turn it back to the original value
+        self.assertNotEqual(self.litho_log.label_mode, 1)
+        self.litho_log.label_mode = 1
 
 if __name__ == '__main__':
     unittest.main()

@@ -2357,3 +2357,63 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+
+    @property
+    def use_associated_color(self):
+        """BOOL: Specifies whether the beds will be filled with the associated colors instead of the patterns."""
+        return self._dispatch.UseAssociatedColor
+
+    @use_associated_color.setter
+    def use_associated_color(self, enable):
+        self._dispatch.UseAssociatedColor = enable
+
+    @property
+    def hide_symbol_background(self):
+        """BOOL: Specifies whether or not the symbols' background will be transparent."""
+        return self._dispatch.HideSymbolBackground
+
+    @hide_symbol_background.setter
+    def hide_symbol_background(self, hide):
+        self._dispatch.HideSymbolBackground = hide
+
+    @property
+    def symbol_scale(self):
+        """float: The scale factor for the symbols' size.
+        1.0 corresponds to 100%."""
+        return self._dispatch.SymbolScale
+
+    @symbol_scale.setter
+    def symbol_scale(self, value):
+        self._dispatch.SymbolScale = value
+
+    @property
+    def display_contact(self):
+        """BOOL: Specifies whether or not the contacts are displayed on the log."""
+        return self._dispatch.DisplayContact
+
+    @display_contact.setter
+    def display_contact(self, display):
+        self._dispatch.DisplayContact = display
+
+    @property
+    def display_text(self):
+        """BOOL: Specifies whether or not the text will be displayed."""
+        return self._dispatch.DisplayText
+
+    @display_text.setter
+    def display_text(self, display):
+        self._dispatch.DisplayText = display
+
+    @property
+    def label_mode(self):
+        """int: The index of the text displaying mode.
+        0: Code only
+        1: Description
+        2: Code and description.
+        """
+        return self._dispatch.LabelMode
+
+    @label_mode.setter
+    def label_mode(self, mode):
+        self._dispatch.LabelMode = mode
+
