@@ -59,6 +59,7 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
 
         cls.nmr_borehole = cls.app.open_borehole(str(cls.sample_path / "NMR Demo.WCL"))
         cls.percentage_log = cls.nmr_borehole.get_log("Fluid Volumes")
+        cls.classifier_dict = str(cls.fixture_path / "Classifier.cct")
 
     @classmethod
     def tearDownClass(cls):
@@ -877,6 +878,33 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertAttrEqual(stack_item2, "top_depth", 14.0)
         self.stacking_pattern_log.remove_stack_item(0)
         self.stacking_pattern_log.remove_stack_item_at_depth(15.0)
+
+    def test_classifier_dictionary(self):
+        # Get the classifier dictionary of the interval log
+        classif_dict = self.gr_litho_interval_log.classifier_dictionary
+        self.assertIsInstance(classif_dict, wellcad.com.ClassifierDictionary)
+
+        # Make a copy of a well log and assign the same dictionary
+        copy_gr_log = self.borehole.add_log(self.gr_log)
+        copy_gr_log.classifier_dictionary = classif_dict #doesn't work, same issue as with the "test_litho_dictionary_scope"
+
+        # Get the classifier dictionary of the new well log to verify that it has been correctly affected
+        classif_dict_well = self.gr_log.classifier_dictionary
+        self.assertIsInstance(classif_dict_well, wellcad.com.ClassifierDictionary)
+
+        # Remove the new well log
+        self.borehole.remove_log(copy_gr_log)
+
+    def test_attach_classifier_dictionary(self):
+        # Copy the original well log.
+        copied_gr_log = self.borehole.add_log(self.gr_log)
+
+        # Add a classifier dictionnary to this well log.
+        new_dict = copied_gr_log.attach_classifier_dictionary(self.classifier_dict)
+        self.assertIsInstance(new_dict, wellcad.com.ClassifierDictionary)
+
+        # Delete the copied well log.
+        self.borehole.remove_log(copied_gr_log.name)
 
 
 if __name__ == '__main__':
