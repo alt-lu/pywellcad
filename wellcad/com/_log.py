@@ -2357,3 +2357,41 @@ class Log(DispatchWrapper):
             the password needed to make changes to the protection level.
         """
         self._dispatch.AllowViewLogHistory(export, password)
+
+    @property
+    def limit_contact_to_column(self):
+        """BOOL: Whether or not the contacts are limited to non empty columns."""
+        return self._dispatch.LimitContactToColumn
+
+    @limit_contact_to_column.setter
+    def limit_contact_to_column(self, enable):
+        self._dispatch.LimitContactToColumn = enable
+
+    @property
+    def display_background(self):
+        """BOOL: Whether or not the background is filled with a pattern/color."""
+        return self._dispatch.DisplayBackground
+
+    @display_background.setter
+    def display_background(self, enable):
+        self._dispatch.DisplayBackground = enable
+
+    @property
+    def nb_of_columns(self):
+        """int: The number of columns in the Strata Log."""
+        return self._dispatch.NbOfColumns
+
+    def insert_new_strata_column(self, name):
+        """Insert a new column (comment log) into a strata log.
+
+        Parameters
+        ----------
+        name : str
+            The name of the new column.
+
+        Returns
+        -------
+        CommentLog
+            The CommentLog corresponding to the newly created column.
+        """
+        return Log(self._dispatch.InsertNewStrataColumn(name))

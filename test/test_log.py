@@ -823,8 +823,17 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.assertIsInstance(column, wellcad.com.Log)
 
     def test_insert_remove_strata_column(self):
-        self.fail("There is no way to programmatically add a strata column")
-        self.strata_log.remove_strata_column(0)  # This works
+        # Insert a new column into the Strata Log
+        self.strata_log.insert_new_strata_column("new_col")
+
+        # Get the number of columns in the Strata Log
+        nb_columns_init = self.strata_log.nb_of_columns
+
+        # Remove the last column of the Strata Log (the one we just added)
+        self.strata_log.remove_strata_column(nb_columns_init - 1)
+
+        # Verify that the number of column decreased
+        self.assertGreater(nb_columns_init, self.strata_log.nb_of_columns)
 
     def test_insert_delete_comment_box(self):
         self.comment_log.insert_new_comment_box(top_depth=10.0, bottom_depth=12.0, text="kind text")
