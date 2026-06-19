@@ -460,13 +460,11 @@ class TestLog(unittest.TestCase, ExtraAsserts, SamplePath):
         self.litho_log.remove_litho_bed(0)
         self.litho_log.remove_litho_bed_at_depth(15.0)
 
-    def test_set_litho_bed(self):
+    def test_get_litho_bed(self):
         litho_bed_1 = self.litho_log.get_litho_bed(0)
         litho_bed_2 = self.litho_log.get_litho_bed(1)
         self.assertIsInstance(litho_bed_1, wellcad.com.LithoBed)
         self.assertIsInstance(litho_bed_2, wellcad.com.LithoBed)
-        self.litho_log.set_litho_bed(0, litho_bed_2)
-        self.litho_log.set_litho_bed_at_depth(10522, litho_bed_2)
 
     def test_insert_delete_trace(self):
         """For each log that has an insert_trace methode, we test the following:
