@@ -4403,11 +4403,11 @@ class Borehole(DispatchWrapper):
             ; TopDepth and BottomDepth in meters. If equal, the full depth range is considered
 
             Method = 1
-            OutputUnit = one of GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            OutputUnit = psi
             Constant = 100
-            ConstantUnit = one of GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ConstantUnit = psi
             PSlowness = P Slowness
-            PSlownessUnit = one of m/s, ft/s, km/s, us/ft, us/m, ft/us, uSec/ft
+            PSlownessUnit = us/ft
             TopDepth = 100
             BottomDepth = 135
 
