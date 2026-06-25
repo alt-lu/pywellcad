@@ -21,7 +21,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.elog_borehole = cls.app.open_borehole(str(cls.fixture_path / "borehole/ElogCorrection.wcl"))
         cls.classic_borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.survey_borehole = cls.app.open_borehole(str(cls.sample_path / "Borehole Survey (Deviation Module).wcl"))
-        cls.rock_mechanics = cls.app.open_borehole(str(cls.fixture_path / "Rock Stress.wcl"))
+        cls.rock_mechanics = cls.app.open_borehole(str(cls.fixture_path / "Rock Mechanics.wcl"))
 
         cls.app.show_window()
 
@@ -392,14 +392,14 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         self.rock_mechanics.remove_log(output_log.name)
 
         # Try to compute the dynamic poisson ratio using the Edimann method
-        config = "Method=4, Porosity=PHI"
+        config = "Method=4, Porosity=0.3"
         self.assertIsInstance(self.rock_mechanics.dynamic_poisson_ratio(config), wellcad.com.Log)
         output_log = self.rock_mechanics.dynamic_poisson_ratio(config)
         self.assertIsInstance(output_log, wellcad.com.Log)
         self.rock_mechanics.remove_log(output_log.name)
 
         # Try to compute the dynamic poisson ratio using the Yale and Jamieson method
-        config = "Method=5, Porosity=PHI"
+        config = "Method=5, Porosity=0.3"
         self.assertIsInstance(self.rock_mechanics.dynamic_poisson_ratio(config), wellcad.com.Log)
         output_log = self.rock_mechanics.dynamic_poisson_ratio(config)
         self.assertIsInstance(output_log, wellcad.com.Log)
