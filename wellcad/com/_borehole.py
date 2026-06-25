@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "CompWaveVelocity")
 
     @property
     def name(self):
@@ -4381,3 +4381,39 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def comp_wave_velocity(self, config=None):
+        """Computes the compressional wave velocity using the method and parameters specified in the configuration file.
+
+        Parameters
+        ----------
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+             .. code-block:: ini
+
+            [CompWaveVelocity]
+            ; method : one of : 0 (constant), 1 (Christensen and Stanley, for all types of rocks), 2 (Lindseth, for sedimentary rocks), 3 (Christensen, for ultrabasic volcanic rocks), 4 (Yasar and Erdogan, for carbonates); default = 0
+            ; OutputUnit : one of : m/s, ft/s, km/s, us/ft, us/m, ft/us, uSec/ft
+            ; ConstantOrLog : lof or value
+            ; ConstantUnit : one of : m/s, ft/s, km/s, us/ft, us/m, ft/us, uSec/ft
+            ; Density : one of : g/cc, g/cm3, kg/m3, lb/ft3, lb/in3, lb/gal, kg/l
+            ; DensityUnit : one of : g/cc, g/cm3, kg/m3, lb/ft3, lb/in3, lb/gal, kg/l
+            ; TopDepth and BottomDepth in meters. If equal, the full depth range is considered
+
+            Method = 1
+            OutputUnit = m/s
+            ConstantOrLog = 1700
+            ConstantUnit = m/s
+            Density = 2.5
+            DensityUnit = g/cc
+            TopDepth = 100
+            BottomDepth = 135
+
+        Returns
+        -------
+        Log
+            A log containing the compressional wave velocity.
+        """
+        return Log(self._dispatch.CompWaveVelocity(config))
