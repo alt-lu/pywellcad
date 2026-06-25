@@ -21,6 +21,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.elog_borehole = cls.app.open_borehole(str(cls.fixture_path / "borehole/ElogCorrection.wcl"))
         cls.classic_borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.survey_borehole = cls.app.open_borehole(str(cls.sample_path / "Borehole Survey (Deviation Module).wcl"))
+        cls.rock_mechanics = cls.app.open_borehole(str(cls.fixture_path / "Rock Mechanics.wcl"))
 
         cls.app.show_window()
 
@@ -361,6 +362,80 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         # Reset the log and hope we haven't broken other tests from our manipulations
         linked_linked_log.get_litho_bed(3).litho_code = original_litho_code
         linked_linked_log.name = "Litho"
+
+    def test_static_young_modulus(self):
+        # Try to compute the static Young modulus using the constant method
+        config = "Method=0, OutputUnit=Mpsi, Constant=10, ConstantUnit=Mpsi"
+        output_log = self.rock_mechanics.static_young_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the static Young modulus using the constant method
+        config = "Method=1, OutputUnit=Mpsi, DynamicYoungModulus=E_DYN, DynamicYoungModulusUnit=Mpsi"
+        output_log = self.rock_mechanics.static_young_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the static Young modulus using the constant method
+        config = "Method=2, OutputUnit=Mpsi, DynamicYoungModulus=E_DYN, DynamicYoungModulusUnit=Mpsi"
+        output_log = self.rock_mechanics.static_young_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the static Young modulus using the constant method
+        config = "Method=3, OutputUnit=Mpsi, DynamicYoungModulus=E_DYN, DynamicYoungModulusUnit=Mpsi"
+        output_log = self.rock_mechanics.static_young_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the static Young modulus using the constant method
+        config = "Method=4, OutputUnit=Mpsi, DynamicYoungModulus=E_DYN, DynamicYoungModulusUnit=Mpsi"
+        output_log = self.rock_mechanics.static_young_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+    def test_dynamic_young_modulus(self):
+        # Try to compute the dynamic Young modulus using the constant method
+        config = "Method=0, OutputUnit=Mpsi, Constant=10, ConstantUnit=Mpsi"
+        output_log = self.rock_mechanics.dynamic_young_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the dynamic Young modulus using the shear modulus and Poisson ratio method
+        config = "Method=1, OutputUnit=Mpsi, ShearModulus=5, ShearModulusUnit=GPa, PoissonRatio=0.3"
+        output_log = self.rock_mechanics.dynamic_young_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the dynamic Young modulus using the slowness and density method
+        config = "Method=2, OutputUnit=Mpsi, PSlowness=DTCO, PSlownessUnit=us/ft, SSlowness=DTSM, SSlownessUnit=us/ft, Density=RHOB, DensityUnit=g/cc"
+        output_log = self.rock_mechanics.dynamic_young_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the dynamic Young modulus using the Horsud method
+        config = "Method=3, OutputUnit=Mpsi, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.dynamic_young_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the dynamic Young modulus using the Sabatakakis method (for limestones)
+        config = "Method=4, OutputUnit=Mpsi, UCS=UCS, UCSUnit=psi"
+        output_log = self.rock_mechanics.dynamic_young_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the dynamic Young modulus using the Sabatakakis method (for sandstones)
+        config = "Method=5, OutputUnit=Mpsi, UCS=UCS, UCSUnit=psi"
+        output_log = self.rock_mechanics.dynamic_young_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the dynamic Young modulus using the Sabatakakis method (for sandstones)
+        config = "Method=6, OutputUnit=Mpsi, Porosity=0.3"
+        output_log = self.rock_mechanics.dynamic_young_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
 
 if __name__ == '__main__':
     unittest.main()
