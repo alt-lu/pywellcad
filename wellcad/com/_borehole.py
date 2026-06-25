@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "BulkModulus")
 
     @property
     def name(self):
@@ -4381,3 +4381,43 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def bulk_modulus(self, config=None):
+        """Computes the bulk modulus using the method and parameters specified in the configuration file.
+
+        Parameters
+        ----------
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+             .. code-block:: ini
+
+            [BulkModulus]
+            ; method : one of : 0 (constant), 1 (Khair, for sandstone) 2 (Abbas, for sandstone), 3 (Elastic, for all rocks); default = 0
+            ; OutputUnit : one of GPa, MPa, Pa, bar, psi, atm, Mpsi, N/m2
+            ; ConstantOrLog : log name or value
+            ; ConstantUnit : one of GPa, MPa, Pa, bar, psi, atm, Mpsi, N/m2
+            ; Porosity : log name or constant (in fraction : 0-1)
+            ; TopDepth and BottomDepth in meters. If equal, the full depth range is considered
+            ; YoungModulus : log name or value
+            ; YoungModulusUnit : one of GPa, MPa, Pa, bar, psi, atm, Mpsi, N/m2
+            ; PoissonRatio : log name or value
+
+            Method = 1
+            OutputUnit = GPa
+            ConstantOrLog = 0.2
+            ConstantUnit = GPa
+            Porosity = 0.2
+            YoungModulus = E_DYN
+            YoungModulusUnit = psi
+            PoissonRatio = POISSON_DYN
+            TopDepth = 100
+            BottomDepth = 135
+
+        Returns
+        -------
+        Log
+            A log containing the bulk modulus.
+        """
+        return Log(self._dispatch.BulkModulus(config))
