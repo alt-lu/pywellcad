@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "FrictionAngle")
 
     @property
     def name(self):
@@ -4381,3 +4381,37 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def friction_angle(self, config=None):
+        """Computes the friction angle using the method and parameters specified in the configuration file.
+
+        Parameters
+        ----------
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+             .. code-block:: ini
+
+            [FrictionAngle]
+            ; method : one of : 0 (constant), 1 (Weingarten and Perkins, for sandstones), 2 (Ameen, for carbonates), 3 (Lal, for shales); default = 0
+            ; Constant : log or value
+            ; Porosity : log or value
+            ; PSlowness : log or value
+            ; PSlownessUnit : one of m/s, ft/s, km/s, us/ft, us/m, ft/us, uSec/ft
+            ; TopDepth and BottomDepth in meters. If equal, the full depth range is considered
+
+            Method = 1
+            ConstantOrLog = 20
+            Porosity = 0.3
+            PSlowness = P Slowness
+            PSlownessUnit = us/ft
+            TopDepth = 100
+            BottomDepth = 135
+
+        Returns
+        -------
+        Log
+            A log containing the friction angle.
+        """
+        return Log(self._dispatch.FrictionAngle(config))
