@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "UCS")
 
     @property
     def name(self):
@@ -4381,3 +4381,53 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def UCS(self, config=None):
+        """Computes the uniaxial compressive strength using the method and parameters specified in the configuration file.
+
+        Parameters
+        ----------
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+             .. code-block:: ini
+
+            [UCS]
+            ; method : one of : 0 (constant), 1 (McNally, for sandstones), 2 (Bradford, for sandstones), 3 (Militzer, for limestones and dolomites),
+            4 (Plumb, for sandstones), 5 (Golubev, for carbonates), 6 (Chang (1), for shales), 7 (Horsud, for shales), 8 (Nygaard and Hareland, for shales),
+            9 (Edimann, for sandstones), 10 (Vernik, for sandstones), 11 (Freyburg, for sandstones), 12 (Chang (2), for shales), 13 (Chang (1), for sandstones),
+            14 (Chang (2), for sandstones), 15 (Nygaard and Hareland, for sandstones), 16 (Chang (3), for sandstones), 17 (Lal, for shales),
+            18 (Moos, for sandstones), 19 (Horsud (2), for shales); default = 0
+            ; OutputUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; Constant : log or value
+            ; ConstantUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; Porosity : log or value
+            ; PSlowness : log or value
+            ; PSlownessUnit : one of : m/s, ft/s, km/s, us/ft, us/m, ft/us, uSec/ft
+            ; DynamicYoungModulus : log or value
+            ; DynamicYoungModulusUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; Density = log or value
+            ; DensityUnit = one of : g/cc, g/cm3, kg/m3, lb/ft3, lb/in3, lb/gal, kg/l
+            ; TopDepth and BottomDepth in meters. If equal, the full depth range is considered
+
+            Method = 1
+            OutputUnit = MPa
+            Constant = 100
+            ConstantUnit = MPa
+            Porosity = 0.3
+            PSlowness = 2000
+            PSlownessUnit = m/s
+            DynamicYoungModulus = 10
+            DynamicYoungModulusUnit = Mpsi
+            Density = 2.5
+            DensityUnit = g/cc
+            TopDepth = 100
+            BottomDepth = 135
+
+        Returns
+        -------
+        Log
+            A log containing the uniaxial compressive strength.
+        """
+        return Log(self._dispatch.UCS(config))

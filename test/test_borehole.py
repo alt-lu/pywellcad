@@ -21,6 +21,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.elog_borehole = cls.app.open_borehole(str(cls.fixture_path / "borehole/ElogCorrection.wcl"))
         cls.classic_borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.survey_borehole = cls.app.open_borehole(str(cls.sample_path / "Borehole Survey (Deviation Module).wcl"))
+        cls.rock_mechanics = cls.app.open_borehole(str(cls.fixture_path / "Rock Mechanics.wcl"))
 
         cls.app.show_window()
 
@@ -361,6 +362,127 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         # Reset the log and hope we haven't broken other tests from our manipulations
         linked_linked_log.get_litho_bed(3).litho_code = original_litho_code
         linked_linked_log.name = "Litho"
+
+    def test_UCS(self):
+        # Try to compute the shear modulus using the constant method
+        config = "Method=0, OutputUnit=psi, Constant=10000, ConstantUnit= psi"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the McNally method
+        config = "Method=1, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the Bradford method
+        config = "Method=2, OutputUnit=psi, DynamicYoungModulus=E_DYN, DynamicYoungModulusUnit=Mpsi"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the Militzer method
+        config = "Method=3, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the Plumb method
+        config = "Method=4, OutputUnit=psi, DynamicYoungModulus=E_DYN, DynamicYoungModulusUnit=Mpsi"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the Golubev method
+        config = "Method=5, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the first Chang method for shales
+        config = "Method=6, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the first Horsud method for shales
+        config = "Method=7, OutputUnit=psi, DynamicYoungModulus=E_DYN, DynamicYoungModulusUnit=Mpsi"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the Nygaard and Hareland method for shales
+        config = "Method=8, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the Edimann method
+        config = "Method=9, OutputUnit=psi, Porosity=0.3"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the Vernik method
+        config = "Method=10, OutputUnit=psi, Porosity=0.3"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the Freyburg method
+        config = "Method=11, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the second Chang method for shales
+        config = "Method=12, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the first Chang method for sandstones
+        config = "Method=13, OutputUnit=psi, DynamicYoungModulus=E_DYN, DynamicYoungModulusUnit=Mpsi"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the second Chang method for sandstone
+        config = "Method=14, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the Nygaard and Hareland method for sandstone
+        config = "Method=15, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the third Chang method for sandstone
+        config = "Method=16, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft, Density=RHOB, DensityUnit=g/cc"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the Lal method
+        config = "Method=17, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the Moos method
+        config = "Method=18, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft, Density=RHOB, DensityUnit=g/cc"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear modulus using the second Horsud method for shales
+        config = "Method=19, OutputUnit=psi, Constant=10000, ConstantUnit= psi, Porosity=0.3, PSlowness=DTCO, PSlownessUnit=us/ft, DynamicYoungModulus=E_DYN, DynamicYoungModulusUnit=Mpsi, Density=RHOB, DensityUnit=g/cc"
+        output_log = self.rock_mechanics.UCS(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
 
 if __name__ == '__main__':
     unittest.main()
