@@ -21,7 +21,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.elog_borehole = cls.app.open_borehole(str(cls.fixture_path / "borehole/ElogCorrection.wcl"))
         cls.classic_borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.survey_borehole = cls.app.open_borehole(str(cls.sample_path / "Borehole Survey (Deviation Module).wcl"))
-
+        cls.rock_stress = cls.app.open_borehole(str(cls.fixture_path / "Rock Stress.wcl"))
         cls.app.show_window()
 
 
@@ -361,6 +361,19 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         # Reset the log and hope we haven't broken other tests from our manipulations
         linked_linked_log.get_litho_bed(3).litho_code = original_litho_code
         linked_linked_log.name = "Litho"
+
+    def test_hydrostatic_pressure(self):
+        # Try to compute the hydrostatic pressure using the constant method
+        config = "Method=0, OutputUnit=psi, Constant=5000, ConstantUnit=psi"
+        output_log = self.rock_stress.hydrostatic_pressure(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_stress.remove_log(output_log.name)
+
+        # Try to compute the hydrostatic pressure using the fluid method
+        config = "Method=1, OutputUnit=psi, Density=1.1, DensityUnit=g/cc"
+        output_log = self.rock_stress.hydrostatic_pressure(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_stress.remove_log(output_log.name)
 
 if __name__ == '__main__':
     unittest.main()
