@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "DynamicPoissonRatio")
 
     @property
     def name(self):
@@ -4381,3 +4381,37 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def dynamic_poisson_ratio(self, config=None):
+        """Computes the dynamic poisson ratio using the method and parameters specified in the configuration file.
+
+        Parameters
+        ----------
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+             .. code-block:: ini
+
+                [DynamicPoissonRatio]
+                ; method : one of : 0 (constant), 1 (Slowness, for all rocks), 2 (Abbas, for shales), 3 (Khandelwal, for all rocks), 4 (Edimann, for sandstones), 5 (Yale and Jamieson, for carbonates); default = 1
+                ; PSlownessUnit : one of us/ft, us/m, ft/us, m/s
+                ; SSlownessUnit : one of us/ft, us/m, ft/us, m/s
+                ; PSlowness : log name or value
+                ; SSlowness : log name or value
+                ; Porosity :log name or value
+
+                Method = 1
+                Constant = 0.2
+                PSlowness = P Slowness
+                PSlownessUnit = us/ft
+                SSlowness = S Slowness
+                SSlownessUnit = us/ft
+                Porosity = 0.3
+
+        Returns
+        -------
+        Log
+            A log containing the dynamic poisson ratio.
+        """
+        return Log(self._dispatch.DynamicPoissonRatio(config))

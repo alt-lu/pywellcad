@@ -21,6 +21,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.elog_borehole = cls.app.open_borehole(str(cls.fixture_path / "borehole/ElogCorrection.wcl"))
         cls.classic_borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.survey_borehole = cls.app.open_borehole(str(cls.sample_path / "Borehole Survey (Deviation Module).wcl"))
+        cls.rock_mechanics = cls.app.open_borehole(str(cls.fixture_path / "Rock Mechanics.wcl"))
 
         cls.app.show_window()
 
@@ -361,6 +362,48 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         # Reset the log and hope we haven't broken other tests from our manipulations
         linked_linked_log.get_litho_bed(3).litho_code = original_litho_code
         linked_linked_log.name = "Litho"
+
+    def test_dynamic_poisson_ratio(self):
+        # Try to compute the dynamic poisson ratio using the constant method
+        config = "Method=0, Constant = 0.5"
+        output_log = self.rock_mechanics.dynamic_poisson_ratio(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the dynamic poisson ratio using the classic slowness method
+        config = "Method=1, PSlowness=DTCO, PSlownessUnit=us/ft, SSlowness=DTSM, SSlownessUnit=us/ft"
+        self.assertIsInstance(self.rock_mechanics.dynamic_poisson_ratio(config), wellcad.com.Log)
+        output_log = self.rock_mechanics.dynamic_poisson_ratio(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the dynamic poisson ratio using the Abbas method
+        config = "Method=2, PSlowness=DTCO, PSlownessUnit=us/ft"
+        self.assertIsInstance(self.rock_mechanics.dynamic_poisson_ratio(config), wellcad.com.Log)
+        output_log = self.rock_mechanics.dynamic_poisson_ratio(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the dynamic poisson ratio using the Khandelwal method
+        config = "Method=3, PSlowness=DTCO, PSlownessUnit=us/ft"
+        self.assertIsInstance(self.rock_mechanics.dynamic_poisson_ratio(config), wellcad.com.Log)
+        output_log = self.rock_mechanics.dynamic_poisson_ratio(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the dynamic poisson ratio using the Edimann method
+        config = "Method=4, Porosity=0.3"
+        self.assertIsInstance(self.rock_mechanics.dynamic_poisson_ratio(config), wellcad.com.Log)
+        output_log = self.rock_mechanics.dynamic_poisson_ratio(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the dynamic poisson ratio using the Yale and Jamieson method
+        config = "Method=5, Porosity=0.3"
+        self.assertIsInstance(self.rock_mechanics.dynamic_poisson_ratio(config), wellcad.com.Log)
+        output_log = self.rock_mechanics.dynamic_poisson_ratio(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
 
 if __name__ == '__main__':
     unittest.main()
