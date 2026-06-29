@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "PorePressure")
 
     @property
     def name(self):
@@ -4381,3 +4381,65 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def pore_pressure(self, config=None):
+        """Computes the pore pressure using the method and parameters specified in the configuration.
+
+        Parameters
+        ----------
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+             .. code-block:: ini
+
+            [PorePressure]
+            ; method : one of : 0 (constant), 1 (Eaton (Sonic)), 2 (Eaton (Resistivity)); default = 0
+            ; OutputUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; Constant : log or value
+            ; ConstantUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; PSlowness : log or value
+            ; PSlownessUnit : one of : m/s, ft/s, km/s, us/ft, us/m, ft/us, uSec/ft
+            ; Resistivity : log or value
+            ; ResistivityUnit : one of : ohm.m, ohm.ft, ohmm
+            ; OverburdenPressure : log or value
+            ; OverburdenPressureUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; HydrostaticPressure : log or value
+            ; HydrostaticPressureUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; NCTSonic : log or value
+            ; NCTSonicUnit : one of : m/s, ft/s, km/s, us/ft, us/m, ft/us, uSec/ft
+            ; NCTResistivity : log or value
+            ; NCTResistivityUnit : one of : ohm.m, ohm.ft, ohmm
+            ; Exponent : value
+            ; ClayIndicator : log
+            ; Interpolate : bool
+            ; TopDepth and BottomDepth in meters. If equal, the full depth range is considered
+
+            Method = 1
+            OutputUnit = MPa
+            Constant = 100
+            ConstantUnit = MPa
+            PSlowness = 2000
+            PSlownessUnit = m/s
+            Resistivity = 100
+            ResistivityUnit = ohm.m
+            OverburdenPressure = OverburdenPressure
+            OverburdenPressureUnit = psi
+            HydrostaticPressure = HydroStaticPressure
+            HydrostaticPressureUnit = psi
+            NCTSonic = 2000
+            NCTSonicUnit = m/s
+            NCTResistivity = 100
+            NCTResistivityUnit = ohm.m
+            Exponent = 1.2
+            ClayIndicator = Clay
+            Interpolate = True
+            TopDepth = 100
+            BottomDepth = 135
+
+        Returns
+        -------
+        Log
+            A log containing the pore pressure.
+        """
+        return Log(self._dispatch.PorePressure(config))
