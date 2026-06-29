@@ -21,6 +21,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.elog_borehole = cls.app.open_borehole(str(cls.fixture_path / "borehole/ElogCorrection.wcl"))
         cls.classic_borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.survey_borehole = cls.app.open_borehole(str(cls.sample_path / "Borehole Survey (Deviation Module).wcl"))
+        cls.rock_stress = cls.app.open_borehole(str(cls.fixture_path / "Rock Stress.wcl"))
 
         cls.app.show_window()
 
@@ -361,6 +362,25 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         # Reset the log and hope we haven't broken other tests from our manipulations
         linked_linked_log.get_litho_bed(3).litho_code = original_litho_code
         linked_linked_log.name = "Litho"
+
+    def test_pore_pressure(self):
+        # Try to compute the pore pressure using the constant method
+        config = "Method=0, OutputUnit=psi, Constant=5000, ConstantUnit=psi"
+        output_log = self.rock_stress.pore_pressure(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_stress.remove_log(output_log.name)
+
+        # Try to compute the pore pressure using the Eaton sonic method
+        config = "Method=1, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft, OverburdenPressure=OverburdenPressure, OverburdenPressureUnit=psi, HydrostaticPressure=HydroStaticPressure, HydrostaticPressureUnit=psi, NCTSonic=NCT_S, NCTSonicUnit = us/ft, Exponent=1.2, ClayIndicator=Clay, Interpolate=True"
+        output_log = self.rock_stress.pore_pressure(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_stress.remove_log(output_log.name)
+
+        # Try to compute the pore pressure using the Eaton resistivity method
+        config = "Method=2, OutputUnit=psi, Resistivity=100, ResistivityUnit=ohm.m, OverburdenPressure=OverburdenPressure, OverburdenPressureUnit=psi, HydrostaticPressure=HydroStaticPressure, HydrostaticPressureUnit=psi, NCTResistivity=100, NCTResistivityUnit=ohm.m, Exponent=1.2, ClayIndicator=Clay, Interpolate=True"
+        output_log = self.rock_stress.pore_pressure(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_stress.remove_log(output_log.name)
 
 if __name__ == '__main__':
     unittest.main()
