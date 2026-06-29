@@ -21,6 +21,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.elog_borehole = cls.app.open_borehole(str(cls.fixture_path / "borehole/ElogCorrection.wcl"))
         cls.classic_borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.survey_borehole = cls.app.open_borehole(str(cls.sample_path / "Borehole Survey (Deviation Module).wcl"))
+        cls.rock_mechanics = cls.app.open_borehole(str(cls.fixture_path / "Rock Mechanics.wcl"))
 
         cls.app.show_window()
 
@@ -361,6 +362,31 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         # Reset the log and hope we haven't broken other tests from our manipulations
         linked_linked_log.get_litho_bed(3).litho_code = original_litho_code
         linked_linked_log.name = "Litho"
+
+    def test_shear_wave_velocity(self):
+        # Try to compute the shear wave velocity using the constant method
+        config = "Method=0, OutputUnit=m/s, Constant=2000, ConstantUnit=m/s"
+        output_log = self.rock_mechanics.shear_wave_velocity_ex(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear wave velocity using the Greenberg and Castagna method (for sandstones)
+        config = "Method=1, OutputUnit=m/s, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.shear_wave_velocity_ex(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear wave velocity using the Brocher method
+        config = "Method=2, OutputUnit=m/s, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.shear_wave_velocity_ex(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the shear wave velocity using the Greenberg and Castagna method (for shales)
+        config = "Method=3, OutputUnit=m/s, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.shear_wave_velocity_ex(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
 
 if __name__ == '__main__':
     unittest.main()
