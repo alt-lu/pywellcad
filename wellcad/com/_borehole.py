@@ -4399,6 +4399,7 @@ class Borehole(DispatchWrapper):
             ; Constant : log or value
             ; ConstantUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
             ; Porosity : log or value
+            ; PSlowness : log or value
             ; PSlownessUnit : one of : m/s, ft/s, km/s, us/ft, us/m, ft/us, uSec/ft
             ; YoungModulus : log or value
             ; YoungModulusUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
