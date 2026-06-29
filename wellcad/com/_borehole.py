@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "HorzStressMin")
 
     @property
     def name(self):
@@ -4381,3 +4381,55 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def min_horz_stress(self, config=None):
+        """Computes the minimum horizontal stress using the method and parameters specified in the configuration.
+
+        Parameters
+        ----------
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+             .. code-block:: ini
+
+            [MinimumHorizontalStress]
+            ; method : one of : 0 (constant), 1 (poro-elastic); default = 0
+            ; OutputUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; Constant : log or value
+            ; ConstantUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; VerticalPressure : log or value
+            ; VerticalPressureUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; PorePressure : log or value
+            ; PorePressureUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; YoungModulus : log or value
+            ; YoungModulusUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; PoissonRatio : log or value
+            ; BiotCoefficient : log or value
+            ; StrainMin : value
+            ; StrainMax : value
+            ; TopDepth and BottomDepth in meters. If equal, the full depth range is considered
+
+            Method = 1
+            OutputUnit = psi
+            Constant = 5000
+            ConstantUnit = psi
+            VerticalPressure = 5000
+            VerticalPressureUnit = psi
+            PorePressure = 5000
+            PorePressureUnit = psi
+            YoungModulus = 10000000
+            YoungModulusUnit = psi
+            PoissonRatio = 0.3
+            BiotCoefficient = 0.25
+            StrainMin = 0.00015
+            StrainMax = 0.00005
+            TopDepth = 100
+            BottomDepth = 135
+
+        Returns
+        -------
+        Log
+            A log containing the minimum horizontal stress.
+        """
+        return Log(self._dispatch.HorzStressMin(config))
