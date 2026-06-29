@@ -4396,9 +4396,9 @@ class Borehole(DispatchWrapper):
             [CompWaveVelocity]
             ; method : one of : 0 (constant), 1 (Christensen and Stanley, for all types of rocks), 2 (Lindseth, for sedimentary rocks), 3 (Christensen, for ultrabasic volcanic rocks), 4 (Yasar and Erdogan, for carbonates); default = 0
             ; OutputUnit : one of : m/s, ft/s, km/s, us/ft, us/m, ft/us, uSec/ft
-            ; ConstantOrLog : lof or value
+            ; ConstantOrLog : log or value
             ; ConstantUnit : one of : m/s, ft/s, km/s, us/ft, us/m, ft/us, uSec/ft
-            ; Density : one of : g/cc, g/cm3, kg/m3, lb/ft3, lb/in3, lb/gal, kg/l
+            ; Density : log or value
             ; DensityUnit : one of : g/cc, g/cm3, kg/m3, lb/ft3, lb/in3, lb/gal, kg/l
             ; TopDepth and BottomDepth in meters. If equal, the full depth range is considered
 
