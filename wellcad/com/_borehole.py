@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "StaticYoungModulus", "DynamicYoungModulus")
 
     @property
     def name(self):
@@ -4381,3 +4381,87 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def static_young_modulus(self, config=None):
+        """Computes the static Young modulus using the method and parameters specified in the configuration file.
+
+        Parameters
+        ----------
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+             .. code-block:: ini
+
+        [StaticYoungModulus]
+        ; method : one of : 0 (constant), 1 (Lacy, for sandstones), 2 (Lacy, for shales), 3 (Ranjbar and Karami, for carbonates), 4 (Christaras, for all rocks); default = 1
+        ; OutputUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+        ; Constant : log or value
+        ; ConstantUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+        ; DynamicYoungModulus : log or value
+        ; DynamicYoungModulusUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+
+        Method = 1
+        OutputUnit = psi
+        Constant = 100
+        ConstantUnit = psi
+        DynamicYoungModulus = 100
+        DynamicYoungModulusUnit = MPa
+
+        Returns
+        -------
+        Log
+            A log containing the static Young modulus.
+        """
+        return Log(self._dispatch.StaticYoungModulus(config))
+
+    def dynamic_young_modulus(self, config=None):
+        """Computes the dynamic Young modulus using the method and parameters specified in the configuration file.
+
+        Parameters
+        ----------
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+             .. code-block:: ini
+
+        [DynamicYoungModulus]
+        ; method : one of : 0 (constant), 1 (Shear modulus and Poisson, for all types of rocks), 2 (Raw Inputs), 3 (Horsud, for shales), 4 (Sabatakakis, for limestones), 5 (Sabatakakis, for sandstones), 6 (Edimann, for sandstones); default = 1
+        ; OutputUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+        ; Constant : log or value
+        ; ConstantUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+        ; PSlowness : log or value
+        ; PSlownessUnit : one of : m/s, ft/s, km/s, us/ft, us/m, ft/us, uSec/ft
+        ; Density : log or value
+        ; DensityUnit : one of : one of : g/cc, g/cm3, kg/m3, lb/ft3, lb/in3, lb/gal, kg/l
+        ; SSlowness : log or value
+        ; SSlownessUnit : one of : m/s, ft/s, km/s, us/ft, us/m, ft/us, uSec/ft
+        ; ShearModulus : log or value
+        ; ShearModulusUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+        ; PoissonRatio : log or value
+        ; UCS : log or value
+        ; UCSUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+
+        Method = 0
+        OutputUnit = Mpsi
+        Constant = 20
+        ConstantUnit = Mpsi
+        PSlowness = 50
+        PSlownessUnit = us/ft
+        SSlowness = 80
+        SSlownessUnit = us/ft
+        Density= 2.5
+        DensityUnit = g/cc
+        ShearModulus = 1
+        ShearModulusUnit = GPa
+        PoissonRatio = 0.4
+        UCS = 50
+        UCSUnit = MPa
+
+        Returns
+        -------
+        Log
+            A log containing the dynamic Young modulus.
+        """
+        return Log(self._dispatch.DynamicYoungModulus(config))
