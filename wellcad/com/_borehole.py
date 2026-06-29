@@ -4394,7 +4394,7 @@ class Borehole(DispatchWrapper):
              .. code-block:: ini
 
             [HydrostaticPressure]
-            ; method : one of : 0 (constant), 1 (fluid, for sandstones); default = 0
+            ; method : one of : 0 (constant), 1 (fluid); default = 0
             ; OutputUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
             ; Constant : log or value
             ; ConstantUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
