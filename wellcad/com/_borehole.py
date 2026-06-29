@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "OverburdenPressure")
 
     @property
     def name(self):
@@ -4381,3 +4381,41 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def overburden_pressure(self, config=None):
+        """Computes the overburden pressure using the method and parameters specified in the configuration file.
+
+        Parameters
+        ----------
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+             .. code-block:: ini
+
+            [OverburdenPressure]
+            ; method : one of : 0 (constant), 1 (density); default = 0
+            ; OutputUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; Constant : log or value
+            ; ConstantUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; Density : log or value
+            ; DensityUnit : one of : g/cc, g/cm3, kg/m3, lb/ft3, lb/in3, lb/gal, kg/l
+            ; TVD : log or value
+            ; TopDepth and BottomDepth in meters. If equal, the full depth range is considered
+
+            Method = 1
+            OutputUnit = MPa
+            Constant = 100
+            ConstantUnit = MPa
+            Density = 2.5
+            DensityUnit = g/cc
+            TVD = TVD
+            TopDepth = 100
+            BottomDepth = 135
+
+        Returns
+        -------
+        Log
+            A log containing the overburden pressure.
+        """
+        return Log(self._dispatch.OverburdenPressure(config))
