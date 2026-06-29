@@ -21,6 +21,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.elog_borehole = cls.app.open_borehole(str(cls.fixture_path / "borehole/ElogCorrection.wcl"))
         cls.classic_borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.survey_borehole = cls.app.open_borehole(str(cls.sample_path / "Borehole Survey (Deviation Module).wcl"))
+        cls.rock_mechanics = cls.app.open_borehole(str(cls.fixture_path / "Rock Mechanics.wcl"))
 
         cls.app.show_window()
 
@@ -361,6 +362,31 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         # Reset the log and hope we haven't broken other tests from our manipulations
         linked_linked_log.get_litho_bed(3).litho_code = original_litho_code
         linked_linked_log.name = "Litho"
+
+    def test_bulk_modulus(self):
+        # Try to compute the bulk modulus using the constant method
+        config = "Method=0, OutputUnit=GPa, ConstantOrLog=0.2, ConstantUnit=GPa"
+        output_log = self.rock_mechanics.bulk_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the bulk modulus using the Khair method
+        config = "Method=1, OutputUnit=GPa, Porosity=0.2"
+        output_log = self.rock_mechanics.bulk_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the bulk modulus using the Abbas method
+        config = "Method=2, OutputUnit=GPa, Porosity=0.2"
+        output_log = self.rock_mechanics.bulk_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the bulk modulus using the elastic method
+        config = "Method=3, OutputUnit=GPa, YoungModulus=E_DYN, YoungModulusUnit=psi, PoissonRatio=POISSON_DYN"
+        output_log = self.rock_mechanics.bulk_modulus(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
 
 if __name__ == '__main__':
     unittest.main()
