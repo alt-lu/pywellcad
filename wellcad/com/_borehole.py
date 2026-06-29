@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "ShearModulus")
 
     @property
     def name(self):
@@ -4381,3 +4381,47 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def shear_modulus(self, config=None):
+        """Computes the shear modulus using the method and parameters specified in the configuration file.
+
+        Parameters
+        ----------
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+             .. code-block:: ini
+
+            [ShearModulus]
+            ; method : one of : 0 (constant), 1 (Khair, for sandstones), 2 (Horsud, for shales), 3 (Elastic, for all rocks); default = 0
+            ; OutputUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; Constant : log or value
+            ; ConstantUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; Porosity : log or value
+            ; PSlowness : log or value
+            ; PSlownessUnit : one of : m/s, ft/s, km/s, us/ft, us/m, ft/us, uSec/ft
+            ; YoungModulus : log or value
+            ; YoungModulusUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
+            ; PoissonRatio : log or value
+            ; TopDepth and BottomDepth in meters. If equal, the full depth range is considered
+
+            Method = 1
+            OutputUnit = MPa
+            Constant = 100
+            ConstantUnit = MPa
+            Porosity = 0.3
+            PSlowness = 2000
+            PSlownessUnit = m/s
+            YoungModulus = 10
+            YoungModulusUnit = Mpsi
+            PoissonRatio = 0.35
+            TopDepth = 100
+            BottomDepth = 135
+
+        Returns
+        -------
+        Log
+            A log containing the shear modulus.
+        """
+        return Log(self._dispatch.ShearModulus(config))
