@@ -21,6 +21,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.elog_borehole = cls.app.open_borehole(str(cls.fixture_path / "borehole/ElogCorrection.wcl"))
         cls.classic_borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.survey_borehole = cls.app.open_borehole(str(cls.sample_path / "Borehole Survey (Deviation Module).wcl"))
+        cls.rock_mechanics = cls.app.open_borehole(str(cls.fixture_path / "Rock Mechanics.WCL"))
 
         cls.app.show_window()
 
@@ -361,6 +362,37 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         # Reset the log and hope we haven't broken other tests from our manipulations
         linked_linked_log.get_litho_bed(3).litho_code = original_litho_code
         linked_linked_log.name = "Litho"
+
+    def test_tensile_strength(self):
+        # Try to compute the tensile strength ratio using the constant method
+        config = "Method=0, OutputUnit=psi, Constant=100, ConstantUnit=psi"
+        output_log = self.rock_mechanics.tensile_strength(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the tensile strength ratio using the Khandelwal method
+        config = "Method=1, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.tensile_strength(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the tensile strength ratio using the Singh method
+        config = "Method=2, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.tensile_strength(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the tensile strength ratio using the Li method
+        config = "Method=3, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.tensile_strength(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
+
+        # Try to compute the tensile strength ratio using the Zheng method
+        config = "Method=4, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft"
+        output_log = self.rock_mechanics.tensile_strength(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_mechanics.remove_log(output_log.name)
 
 if __name__ == '__main__':
     unittest.main()
