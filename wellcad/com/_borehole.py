@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "DensityEx")
 
     @property
     def name(self):
@@ -4381,3 +4381,49 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def density(self, config=None):
+        """Computes the density using the method and parameters specified in the configuration file.
+
+        Parameters
+        ----------
+        config : str, optional
+            Path to a configuration file or a parameter string. The
+            configuration file can contain the following options:
+
+             .. code-block:: ini
+
+            [Density]
+            ; method : one of : 0 (constant), 1 (Gardner), 2 (Extrapolation); default = 0
+            ; OutputUnit : one of : g/cc, g/cm3, kg/m3, lb/ft3, lb/in3, lb/gal, kg/l
+            ; Constant : log or value
+            ; ConstantUnit : one of : g/cc, g/cm3, kg/m3, lb/ft3, lb/in3, lb/gal, kg/l
+            ; PSlowness : log or value
+            ; PSlownessUnit : one of : m/s, ft/s, km/s, us/ft, us/m, ft/us, uSec/ft
+            ; VelocityFactor : value
+            ; VelocityExponent : value
+            ; ExtrapolationMethod : one of : Linear, Polynomial
+            ; DensityAtTop : value
+            ; BackwardDepth : value
+            ; TopDepth and BottomDepth in meters. If equal, the full depth range is considered
+
+            Method = 1
+            OutputUnit = g/cc
+            Constant = 2.2
+            ConstantUnit = g/cc
+            PSlowness = 2000
+            PSlownessUnit = m/s
+            VelocityFactor = 0.23
+            VelocityExponent = 0.25
+            ExtrapolationMethod = Linear
+            DensityAtTop = 2.0
+            BackwardDepth = 1000
+            TopDepth = 100
+            BottomDepth = 135
+
+        Returns
+        -------
+        Log
+            A log containing the density.
+        """
+        return Log(self._dispatch.DensityEx(config))
