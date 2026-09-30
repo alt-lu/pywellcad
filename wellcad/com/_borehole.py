@@ -4381,3 +4381,41 @@ class Borehole(DispatchWrapper):
             log from.
         """
         return Log(self._dispatch.CreateLinkedLog(log))
+
+    def dip_trend(self, log=None, prompt_user=None, config=None):
+        """Detects the dip trends in a structure log.
+
+        Parameters
+        ----------
+        log : int or str, optional
+            Zero based index or title of the structure log.
+            If not provided, the process returns None.
+        prompt_user : bool, optional
+            Whether dialog boxes are displayed to interact with the user.
+            If set to ``False`` the processing parameters will be retrieved from the specified
+            configuration.  If no configuration has been specified, default values will be used.
+            Default is True.
+        config : str, optional
+            Path and name of the configuration file or a parameter string.  The configuration file
+            or string can contain the following options:
+
+            .. code-block:: ini
+
+                [DipTrend]
+                ; Sensitivity: float, between 1 and 9
+                ; MinDipChange: float, in degree
+                ; MaxDepthGap: float, in meter
+                ; MinSize: integer
+
+                Sensitivity = 7.0
+                MinDipChange = 5.0
+                MaxDepthGap = 0.0
+                MinSize = 4
+
+        Returns
+        -------
+        Log
+            A stacking pattern log containing the different trends. The fractures in the input log will also receive a new attribute corresponding to the type of trend they belong to.
+        """
+
+        return Log(self._dispatch.DipTrend(log, prompt_user, config))
