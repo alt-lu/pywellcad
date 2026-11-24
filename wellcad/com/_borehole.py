@@ -22,7 +22,7 @@ class Borehole(DispatchWrapper):
                          "ConvertLogTo", "FilterLog", "ResampleLog", "InterpolateLog", "ElogCorrection",
                          "NMRFluidVolumes", "ROPAverage", "SharpenRGBLog", "RetinexFilterRGBLog", 
                          "Transmissivity", "ShearWaveVelocity", "EllipseFitting", "BreakoutAutoPick",
-                         "CreateLinkedLog")
+                         "CreateLinkedLog", "DipTrend")
 
     @property
     def name(self):

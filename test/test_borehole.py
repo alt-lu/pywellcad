@@ -362,9 +362,9 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         linked_linked_log.get_litho_bed(3).litho_code = original_litho_code
         linked_linked_log.name = "Litho"
 
-    def test_tvd(self):
+    def test_dip_trend(self):
         config = "Sensitivity=7, MinDipChange=5, MaxDepthGap=0, MinSize=4"
-        stack_log = self.survey_borehole.dip_trend("BH Azimuth & Tilt", False, config)
+        stack_log = self.survey_borehole.dip_trend("Litho", False, config)
 
         # verify that the stacking pattern log has been created
         self.assertIsInstance(stack_log, wellcad.com.Log)
