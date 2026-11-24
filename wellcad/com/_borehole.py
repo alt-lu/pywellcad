@@ -4394,13 +4394,13 @@ class Borehole(DispatchWrapper):
              .. code-block:: ini
 
             [OverburdenPressure]
-            ; method : one of : 0 (constant), 1 (density); default = 0
+            ; Method : one of : 0 (constant), 1 (density); default = 0
             ; OutputUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
             ; Constant : log or value
             ; ConstantUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
             ; Density : log or value
             ; DensityUnit : one of : g/cc, g/cm3, kg/m3, lb/ft3, lb/in3, lb/gal, kg/l
-            ; TVD : log or value
+            ; TVD : log, or measured depth if not specified; the unit comes directly from the log
             ; TopDepth and BottomDepth in meters. If equal, the full depth range is considered
 
             Method = 1
