@@ -375,6 +375,13 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         output_log = self.rock_stress.overburden_pressure(config)
         self.assertIsInstance(output_log, wellcad.com.Log)
         self.rock_stress.remove_log(output_log.name)
+        
+    def test_dip_trend(self):
+        config = "Sensitivity=7, MinDipChange=5, MaxDepthGap=0, MinSize=4"
+        stack_log = self.survey_borehole.dip_trend("Litho", False, config)
+
+        # verify that the stacking pattern log has been created
+        self.assertIsInstance(stack_log, wellcad.com.Log)
 
 if __name__ == '__main__':
     unittest.main()
