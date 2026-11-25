@@ -371,13 +371,13 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         self.rock_stress.remove_log(output_log.name)
 
         # Try to compute the pore pressure using the Eaton sonic method
-        config = "Method=1, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft, OverburdenPressure=OverburdenPressure, OverburdenPressureUnit=psi, HydrostaticPressure=HydroStaticPressure, HydrostaticPressureUnit=psi, NCTSonic=NCT_S, NCTSonicUnit = us/ft, Exponent=1.2, ClayIndicator=Clay, Interpolate=True"
+        config = "Method=1, OutputUnit=psi, PSlowness=DTCO, PSlownessUnit=us/ft, OverburdenPressure=OverburdenPressure, OverburdenPressureUnit=psi, HydrostaticPressure=HydroStaticPressure, HydrostaticPressureUnit=psi, NCTSonic=NCT_S, NCTSonicUnit = us/ft, ExponentSonic=1.2, ClayIndicator=Clay, Interpolate=True"
         output_log = self.rock_stress.pore_pressure(config)
         self.assertIsInstance(output_log, wellcad.com.Log)
         self.rock_stress.remove_log(output_log.name)
 
         # Try to compute the pore pressure using the Eaton resistivity method
-        config = "Method=2, OutputUnit=psi, Resistivity=100, ResistivityUnit=ohm.m, OverburdenPressure=OverburdenPressure, OverburdenPressureUnit=psi, HydrostaticPressure=HydroStaticPressure, HydrostaticPressureUnit=psi, NCTResistivity=100, NCTResistivityUnit=ohm.m, Exponent=1.2, ClayIndicator=Clay, Interpolate=True"
+        config = "Method=2, OutputUnit=psi, Resistivity=100, ResistivityUnit=ohm.m, OverburdenPressure=OverburdenPressure, OverburdenPressureUnit=psi, HydrostaticPressure=HydroStaticPressure, HydrostaticPressureUnit=psi, NCTResistivity=100, NCTResistivityUnit=ohm.m, ExponentResistivity=1.5, ClayIndicator=Clay, Interpolate=True"
         output_log = self.rock_stress.pore_pressure(config)
         self.assertIsInstance(output_log, wellcad.com.Log)
         self.rock_stress.remove_log(output_log.name)

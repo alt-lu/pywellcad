@@ -4394,7 +4394,7 @@ class Borehole(DispatchWrapper):
              .. code-block:: ini
 
             [PorePressure]
-            ; method : one of : 0 (constant), 1 (Eaton (Sonic)), 2 (Eaton (Resistivity)); default = 0
+            ; method : one of : 0 (constant), 1 (Eaton (Sonic)), 2 (Eaton (Resistivity)); default = 1
             ; OutputUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
             ; Constant : log or value
             ; ConstantUnit : one of : GPa, MPa, Pa, bar, atm, psi, Mpsi, N/m2
@@ -4410,7 +4410,8 @@ class Borehole(DispatchWrapper):
             ; NCTSonicUnit : one of : m/s, ft/s, km/s, us/ft, us/m, ft/us, uSec/ft
             ; NCTResistivity : log or value
             ; NCTResistivityUnit : one of : ohm.m, ohm.ft, ohmm
-            ; Exponent : value
+            ; ExponentSonic : value
+            ; ExponentResistivity : value
             ; ClayIndicator : log
             ; Interpolate : bool
             ; TopDepth and BottomDepth in meters. If equal, the full depth range is considered
@@ -4431,7 +4432,8 @@ class Borehole(DispatchWrapper):
             NCTSonicUnit = m/s
             NCTResistivity = 100
             NCTResistivityUnit = ohm.m
-            Exponent = 1.2
+            ExponentSonic = 1.2
+            ExponentResistivity = 1.2
             ClayIndicator = Clay
             Interpolate = True
             TopDepth = 100
@@ -4440,6 +4442,6 @@ class Borehole(DispatchWrapper):
         Returns
         -------
         Log
-            A log containing the pore pressure.
+            A log containing the pore pressure, or None if the process failed.
         """
         return Log(self._dispatch.PorePressure(config))
