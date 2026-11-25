@@ -4416,6 +4416,6 @@ class Borehole(DispatchWrapper):
         Returns
         -------
         Log
-            A log containing the overburden pressure.
+            A log containing the overburden pressure, or None if the process failed
         """
         return Log(self._dispatch.OverburdenPressure(config))
