@@ -21,6 +21,7 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         cls.elog_borehole = cls.app.open_borehole(str(cls.fixture_path / "borehole/ElogCorrection.wcl"))
         cls.classic_borehole = cls.app.open_borehole(str(cls.sample_path / "Classic Sample.wcl"))
         cls.survey_borehole = cls.app.open_borehole(str(cls.sample_path / "Borehole Survey (Deviation Module).wcl"))
+        cls.rock_stress = cls.app.open_borehole(str(cls.fixture_path / "Rock Stress.wcl"))
 
         cls.app.show_window()
 
@@ -362,6 +363,19 @@ class TestBorehole(unittest.TestCase, ExtraAsserts, SamplePath):
         linked_linked_log.get_litho_bed(3).litho_code = original_litho_code
         linked_linked_log.name = "Litho"
 
+    def test_overbuden_pressure(self):
+        # Try to compute the overburden pressure using the constant method
+        config = "Method=0, OutputUnit=MPa, Constant=100, ConstantUnit=MPa"
+        output_log = self.rock_stress.overburden_pressure(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_stress.remove_log(output_log.name)
+
+        # Try to compute the overburden pressure using the density method
+        config = "Method=1, OutputUnit=MPa, Density=DENS_EST, DensityUnit=g/cc"
+        output_log = self.rock_stress.overburden_pressure(config)
+        self.assertIsInstance(output_log, wellcad.com.Log)
+        self.rock_stress.remove_log(output_log.name)
+        
     def test_dip_trend(self):
         config = "Sensitivity=7, MinDipChange=5, MaxDepthGap=0, MinSize=4"
         stack_log = self.survey_borehole.dip_trend("Litho", False, config)
